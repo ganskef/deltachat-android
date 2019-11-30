@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.FileObserver;
 import android.util.JsonReader;
@@ -242,9 +241,6 @@ public class Location__DRAFT implements CompassListener {
         if (cm == null) {
             Log.e(TAG, String.format("ConnectivityManager is null"));
             return false;
-        }
-        for (Network each : cm.getAllNetworks()) {
-            Log.d(TAG, String.format("Network %s", cm.getNetworkInfo(each)));
         }
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null || activeNetwork.getType() != ConnectivityManager.TYPE_WIFI) {

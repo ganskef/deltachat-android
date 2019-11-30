@@ -157,7 +157,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            applicationIdSuffix ".beta"
+            applicationIdSuffix
         }
         release {
             // minification and proguard disabled for now.

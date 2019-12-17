@@ -21,6 +21,10 @@
     <string name="attachment">Attachment</string>
     <string name="back">Back</string>
     <string name="close">Close</string>
+    <string name="forward">Forward</string>
+    <string name="archive">Archive</string>
+    <string name="unarchive">Unarchive</string>
+    <string name="mute">Mute</string>
     <string name="save">Save</string>
     <string name="chat">Chat</string>
     <string name="media">Media</string>
@@ -177,6 +181,8 @@
     <string name="title_share_location">Share location with all group members</string>
     <string name="device_talk">Device messages</string>
     <string name="device_talk_subtitle">Locally generated messages</string>
+    <string name="device_talk_explain">Messages in this chat are generated locally by your Delta Chat app. Its makers use it to inform about app updates and problems during usage.</string>
+    <string name="device_talk_welcome_message">Welcome to Delta Chat! – Delta Chat looks and feels like other popular messenger apps, but does not involve centralized control, tracking or selling you, friends, colleagues or family out to large organizations.\n\nTechnically, Delta Chat is an email application with a modern chat interface. Email in a new dress if you will 👻\n\nUse Delta Chat with anyone out of billions of people: just use their e-mail address. Recipients don\'t need to install Delta Chat, visit websites or sign up anywhere - however, of course, if they like, you may point them to 👉 https://get.delta.chat</string>
     <string name="edit_contact">Edit contact</string>
 
     <string name="mute_for_one_hour">Mute for 1 hour</string>
@@ -255,6 +261,8 @@
     <string name="chat_archived_label">Archived</string>
     <string name="chat_no_messages">No messages.</string>
     <string name="chat_self_talk_subtitle">Messages I sent to myself</string>
+    <string name="saved_messages">Saved messages</string>
+    <string name="saved_messages_explain">• Forward messages here for easy access\n\n• Take notes or voice memos\n\n• Attach media to save them</string>
     <string name="chat_contact_request">Contact request</string>
     <string name="chat_no_contact_requests">No contact requests.\n\nIf you want classic emails to appear here as contact requests, you can change the corresponding setting in the app settings.</string>
     <string name="retry_send">Retry to send message</string>
@@ -300,20 +308,7 @@
 
 
     <!-- welcome and login -->
-    <string name="welcome_intro1_headline">Delta Chat</string>
     <string name="welcome_intro1_message">The messenger with the broadest audience in the world. Free and independent.</string>
-    <string name="welcome_intro2_headline">Independent</string>
-    <string name="welcome_intro2_message">There is no Delta Chat server. The app only uses your mail server.</string>
-    <string name="welcome_intro3_headline">Fast</string>
-    <string name="welcome_intro3_message">Push messages in seconds.\nRapid interface.</string>
-    <string name="welcome_intro4_headline">Powerful</string>
-    <string name="welcome_intro4_message">Unlimited chats, images, videos, audio messages and more. Multi-client capable.</string>
-    <string name="welcome_intro5_headline">Free</string>
-    <string name="welcome_intro5_message">Delta Chat is a free software. No ad or subscription. No vendor lock-in.</string>
-    <string name="welcome_intro6_headline">Encrypted</string>
-    <string name="welcome_intro6_message">Encrypted with all common algorithms. Messages stay on your servers.</string>
-    <string name="welcome_intro7_headline">Trustworthy</string>
-    <string name="welcome_intro7_message">Delta Chat is safe for business use, compatible and standards-based.</string>
     <string name="welcome_start_messaging">Start messaging</string>
     <string name="login_title">Log in</string>
     <string name="login_header">Log in to your server</string>
@@ -580,6 +575,7 @@
     <string name="perm_explain_access_to_location_denied">To attach a location, go to the app settings, select \"Permissions\", and enable \"Location\".</string>
     <string name="perm_enable_bg_reminder_title">Tap here to receive messages while Delta Chat is in the background.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat uses few resources and takes care not to drain your battery.</string>
+    <string name="perm_enable_bg_already_done">You already allowed Delta Chat to receive messages in the background.\n\nIf messages still do not arrive in background, please also check your system settings.</string>
 
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Encrypted message</string>

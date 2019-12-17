@@ -21,6 +21,10 @@
     <string name="attachment">Adjunto</string>
     <string name="back">Atrás</string>
     <string name="close">Cerrar</string>
+    <string name="forward">Reenviar</string>
+    <string name="archive">Archivar</string>
+    <string name="unarchive">Des-archivar</string>
+    <string name="mute">Silenciar</string>
     <string name="save">Guardar</string>
     <string name="chat">Chat</string>
     <string name="media">Multimedia</string>
@@ -177,6 +181,8 @@
     <string name="title_share_location">Compartir ubicación con todos los miembros del grupo</string>
     <string name="device_talk">Mensajes del dispositivo</string>
     <string name="device_talk_subtitle">Mensajes generados localmente</string>
+    <string name="device_talk_explain">Los mensajes en este chat son generados localmente por tu aplicación Delta Chat. Los creadores lo usan para informar sobre actualizaciones y problemas durante el uso de la aplicación.</string>
+    <string name="device_talk_welcome_message">¡Bienvenido a Delta Chat! – Delta Chat luce como otras aplicaciones de mensajería populares, pero sin control centralizado, seguimiento ni venta de tus datos, o los de tus amigos, colegas o familiares a grandes organizaciones.\n\nTécnicamente, Delta Chat es una aplicación de correo electrónico con una interfaz de chat moderna. Correo electrónico en un nuevo vestido si quieres 👻\n\nUsa Delta Chat con cualquiera de miles de millones de personas: solo necesitas su dirección de correo electrónico. Los destinatarios no necesitan instalar Delta Chat, visitar sitios web o registrarse en ningún lugar - sin embargo, por supuesto, si lo desean, puedes indicarles 👉 https://get.delta.chat</string>
     <string name="edit_contact">Editar contacto</string>
 
     <string name="mute_for_one_hour">Silenciar por 1 hora</string>
@@ -255,6 +261,8 @@
     <string name="chat_archived_label">Archivado</string>
     <string name="chat_no_messages">No hay mensajes.</string>
     <string name="chat_self_talk_subtitle">Mensajes que envié a mí mismo</string>
+    <string name="saved_messages">Mensajes guardados</string>
+    <string name="saved_messages_explain">• Reenvía mensajes aquí para accederlos fácilmente luego\n\n• Toma notas o mensajes de voz\n\n• Adjunta archivos para guardarlos</string>
     <string name="chat_contact_request">Solicitud de contacto</string>
     <string name="chat_no_contact_requests">No hay solicitudes de contacto.\n\nSi desea que los correos electrónicos clásicos aparezcan aquí como solicitudes de contacto, puede cambiar la configuración correspondiente en la configuración de la aplicación.</string>
     <string name="retry_send">Reintentar enviar mensaje</string>
@@ -292,7 +300,7 @@
     <string name="tab_gallery_empty_hint">Las imágenes y videos compartidos en este chat se mostrarán aquí.</string>
     <string name="tab_docs_empty_hint">Documentos, música y otros archivos compartidos en este chat se mostrarán aquí.</string>
     <string name="media_preview">Vista previa de multimedia</string>
-
+    
 
     <!-- invite -->
     <string name="invite_slogan">Los amigos no dejan a los amigos encerrados en silos de mensajería.</string>
@@ -300,22 +308,7 @@
 
 
     <!-- welcome and login -->
-    <string name="welcome_intro1_headline">Delta Chat</string>
     <string name="welcome_intro1_message">La aplicación de mensajería instantánea con la audiencia más amplia del mundo. Libre e independiente. </string>
-    <string name="welcome_intro2_headline">Independiente</string>
-    <string name="welcome_intro2_message">No hay un servidor de Delta Chat. La aplicación solo utiliza tu servidor de correo.</string>
-    <string name="welcome_intro3_headline">Rápida</string>
-    <string name="welcome_intro3_message">Envíe mensajes en segundos.\nInterfaz rápida.</string>
-    <string name="welcome_intro4_headline">Poderosa</string>
-    <string name="welcome_intro4_message">Chats ilimitados, imágenes, videos, mensajes de audio y más. Capacidad multi-cliente.</string>
-    <!-- Translators: "free" as in freedom here, not "free" as in "free beer" -->
-    <string name="welcome_intro5_headline">Libre</string>
-    <!-- Translators: "free" as in freedom here, not "free" as in "free beer" -->
-    <string name="welcome_intro5_message">Delta Chat es gratis y libre para siempre. De código libre. Sin publicidad. Sin suscripción. Sin limitaciones de otras empresas.</string>
-    <string name="welcome_intro6_headline">Cifrada</string>
-    <string name="welcome_intro6_message">Cifrada con todos los algoritmos comunes. Los mensajes se guardan solo en tu servidor de correo.</string>
-    <string name="welcome_intro7_headline">Confiable</string>
-    <string name="welcome_intro7_message">Delta Chat es seguro para usos comerciales y de negocio, compatible y basado en estándares abiertos.</string>
     <string name="welcome_start_messaging">Empezar a Chatear</string>
     <string name="login_title">Iniciar sesión</string>
     <string name="login_header">Inicie sesión en su servidor</string>
@@ -669,4 +662,10 @@
     <string name="a11y_remove_account_btn_label">Eliminar cuenta</string>
     <string name="a11y_message_context_menu_btn_label">Acciones del mensaje</string>
     <string name="a11y_background_preview_label">Previsualización del fondo</string>
+
+    <!-- Translators: These strings are only used on iOS -->
+    <string name="INFOPLIST.Privacy._.Camera.Usage.Description">Al permitir el acceso a la cámara podrás tomar fotos y videos.</string>
+    <string name="INFOPLIST.Privacy._.Contacts.Usage.Description">Al permitir acceder a tu libreta de direcciones podrás chatear con los contactos de tu dispositivo.</string>
+    <string name="INFOPLIST.Privacy._.Microphone.Usage.Description">Al permitir el acceso al micrófono podrás grabar audio.</string>
+    <string name="INFOPLIST.Privacy._.Photo.Library.Usage.Description">Al permitir el acceso a la galería de fotos podrás subir tus imágenes desde allí.</string>
 </resources>

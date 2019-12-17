@@ -1,5 +1,84 @@
 # Delta Chat Android Changelog
 
+## v0.982.0
+2019-12-16
+
+* move doze-reminder to device-chat
+* improve logging
+* update translations
+* fix crashes on connecting to some imap and smtp servers
+
+
+## v0.981.0
+2019-12-15
+
+* avatar recoding to 192x192 to keep file sizes small
+* fix read-receipts appearing as normal messages
+* fix smtp crash
+* fix group name handling if the name contains special characters
+* various other bug fixes
+
+
+## v0.980.0
+2019-12-14
+
+* support for user avatars: select your profile image
+  at "settings / my profile info"
+  and it will be sent out to people you write to
+* previously selected avatars will not be used automatically,
+  you have to select a new avatar
+* rework tls stack
+* alleviate login problems with providers which only support RSA10
+* prototype a provider-database with a testprovider
+* improve key gossiping
+* bug fixes
+
+
+## v0.973.0
+2019-12-10
+
+* names show up correctly again
+* html-attachments are possible again
+* improve adding/removing group members
+* improve connection handling and reconnects
+* update translations
+
+
+## v0.971.0
+2019-12-06
+
+* rework welcome screen
+* update translations
+* improve reconnecting
+* various bug fixes
+
+
+## v0.970.0
+2019-12-04
+
+* introduce a new "Device Chat" that informs the user about app changes
+  and, in the future, problems on the device
+* rename the "Me"-chat to "Saved messages",
+  add a fresh icon and make it visible by default.
+* add Arabic translation
+* add Galician translation
+* update translations
+* use the rust-language for the mail-parsing and -generating part,
+  introducing a vastly improved reliability
+* fix moving messages
+* fix flakyness when receiving messages
+  and in the secure-join process
+* more bug fixes
+
+The changes have been done Alexander Krotov, Allan Nordhøy, Ampli-fier,
+Andrei Guliaikin, Asiel Díaz Benítez, Besnik, Björn Petersen, ButterflyOfFire,
+Calbasi, cyBerta, Daniel Boehrsi, Dmitry Bogatov, dorheim, Emil Lefherz,
+Enrico B., Ferhad Necef, Florian Bruhin, Floris Bruynooghe, Friedel Ziegelmayer,
+Heimen Stoffels, Hocuri, Holger Krekel, Jikstra, Lars-Magnus Skog, Lin Miaoski,
+Moo, Ole Carlsen, Osoitz, Ozancan Karataş, Pablo, Pedro Portela, polo lancien,
+Racer1, Simon Laux, solokot, Waldemar Stoczkowski, Xosé M. Lamas, Zkdc
+
+
 ## v0.960.0
 2019-11-24
 
@@ -8,12 +87,14 @@
 * bug fixes
 * minimum requirement is now Android 4.3 Jelly Bean
 
+
 ## v0.950.0
 2019-11-05
 
 * add "Certificate checks" options to "Login / Advanced"
 * update translations
 * bug fixes
+
 
 ## v0.940.2
 2019-10-31

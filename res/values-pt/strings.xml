@@ -103,7 +103,7 @@
     <string name="menu_new_contact">Novo contacto</string>
     <string name="menu_new_chat">Nova chat</string>
     <string name="menu_new_group">Novo grupo</string>
-    <string name="menu_new_verified_group">Novo grupo verificado (experimental)</string>
+    <string name="menu_new_verified_group">Novo grupo verificado</string>
     <string name="menu_send">Enviar</string>
     <string name="menu_toggle_keyboard">Alternar teclado emoji</string>
     <string name="menu_edit_group">Editar grupo</string>
@@ -413,8 +413,6 @@
     <string name="contact_not_verified">Não é possível verificar %1$s</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
     <string name="contact_setup_changed">Configuração alterada para %1$s</string>
-
-
     <!-- notifications  -->
     <string name="notify_n_messages_in_m_chats">%1$d novas mensagens em %2$d chats</string>
     <string name="notify_most_recent_from">Mais recentes de: %1$s</string>
@@ -444,7 +442,6 @@
     <string name="perm_explain_access_to_location_denied">O Delta Chat necessita permissão de acesso à localização para anexar um local, mas ele negado. Por favor, continue no menu de configurações do aplicativo, selecione \"Permissões \"e ative \"Localização\".</string>
     <string name="perm_enable_bg_reminder_title">Toque aqui para receber mensagens mesmo que o Delta Chat esteja em segundo plano.</string>
     <string name="perm_enable_bg_reminder_text">O Delta Chat usa pouquíssimos recursos e busca não consumir muito a bateria.</string>
-
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Mensagem encriptada</string>
 
@@ -464,7 +461,7 @@
     <string name="global_menu_view_developer_tools_desktop">Ferramentas do programador</string>
     <string name="global_menu_help_desktop">Ajuda</string>
     <string name="global_menu_help_contribute_desktop">Contribuir no GitHub</string>
-    <string name="global_menu_help_report_desktop">Comunicar um problema ...</string>
+    <string name="global_menu_help_report_desktop">Comunicar um problema</string>
     <string name="no_chat_selected_suggestion_desktop">Selecione um CHAT ou crie um novo</string>
     <string name="write_message_desktop">Escreva uma mensagem</string>
     <string name="encryption_info_title_desktop">Informação sobre encriptação</string>

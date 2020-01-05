@@ -135,7 +135,7 @@
     <string name="menu_new_contact">Naujas adresatas</string>
     <string name="menu_new_chat">Naujas pokalbis</string>
     <string name="menu_new_group">Nauja grupė</string>
-    <string name="menu_new_verified_group">Nauja patvirtinta grupė (eksperimentinis)</string>
+    <string name="menu_new_verified_group">Nauja patvirtinta grupė</string>
     <string name="menu_send">Siųsti</string>
     <string name="menu_toggle_keyboard">Perjungti šypsniukų klaviatūrą</string>
     <string name="menu_edit_group">Taisyti grupę</string>
@@ -452,6 +452,8 @@
     <string name="screenlock_inactivity_timeout_interval">Neveiklumui skirtas laiko intervalas</string>
 
 
+    <!-- qr code stuff -->
+    <string name="qr_code">QR kodas</string>
     <string name="qrscan_title">Nuskenuokite QR kodą</string>
     <string name="qrscan_hint">Laikykite savo kamerą virš QR kodo</string>
     <string name="qrscan_ask_join_group">Ar norite prisijungti prie grupės \"%1$s\"?</string>
@@ -491,7 +493,6 @@
     <string name="perm_explain_need_for_storage_access_share">Norint bendrinti pasirinktus failus, Delta Chat reikia prieigos prie jūsų failų.</string>
     <string name="perm_enable_bg_reminder_title">Bakstelėkite čia, norėdami gauti žinutes, kol Delta Chat veikia fone.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat naudoja mažai išteklių ir rūpinasi, kad neiškrautų jūsų baterijos.</string>
-
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Šifruota žinutė</string>
 
@@ -514,7 +515,7 @@
     <string name="global_menu_help_desktop">Žinynas</string>
     <string name="global_menu_help_learn_desktop">Sužinokite daugiau apie Delta Chat</string>
     <string name="global_menu_help_contribute_desktop">Talkinti Github svetainėje</string>
-    <string name="global_menu_help_report_desktop">Pranešti apie klaidą...</string>
+    <string name="global_menu_help_report_desktop">Pranešti apie klaidą</string>
     <string name="global_menu_help_about_desktop">Apie Delta Chat</string>
     <string name="no_chat_selected_suggestion_desktop">Pasirinkite arba sukurkite naują pokalbį</string>
     <string name="write_message_desktop">Rašykite žinutę</string>

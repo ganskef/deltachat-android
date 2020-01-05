@@ -7,6 +7,9 @@ cd jni/deltachat-core-rust
 # to setup the toolchains (from https://medium.com/visly/rust-on-android-19f34a2fb43 )
 # run the following in `jni/deltachat-core-rust`:
 # $ rustup target add armv7-linux-androideabi aarch64-linux-android  i686-linux-android x86_64-linux-android
+# 
+# Currently ndk20b is minimum required version
+#
 # after that, add PATH_TO_NDK/toolchains/llvm/prebuilt/HOST/bin to your $PATH
 # and add the correct clang-linkers to `~/.cargo/config`:
 # ```
@@ -46,10 +49,10 @@ cargo build --release --target x86_64-linux-android -p deltachat_ffi
 
 echo -- copy generated .a files --
 cd ..
-rm armeabi-v7a/*
-rm arm64-v8a/*
-rm x86/*
-rm x86_64/*
+rm -f armeabi-v7a/*
+rm -f arm64-v8a/*
+rm -f x86/*
+rm -f x86_64/*
 mkdir -p armeabi-v7a
 mkdir -p arm64-v8a
 mkdir -p x86

@@ -305,6 +305,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   @Override
   protected void onPause() {
     super.onPause();
+    // save draft on pause
+    processComposeControls(ACTION_SAVE_DRAFT);
     MessageNotifierCompat.updateVisibleChat(MessageNotifierCompat.NO_VISIBLE_CHAT_ID);
     if (isFinishing()) overridePendingTransition(R.anim.fade_scale_in, R.anim.slide_to_right);
     quickAttachmentDrawer.onPause();
@@ -993,7 +995,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
             msg = new DcMsg(dcContext,
                 attachment.isVoiceNote()? DcMsg.DC_MSG_VOICE : DcMsg.DC_MSG_AUDIO);
           }
-          else if (MediaUtil.isVideoType(contentType)) {
+          else if (MediaUtil.isVideoType(contentType) && slideDeck.getDocumentSlide()==null) {
             msg = new DcMsg(dcContext, DcMsg.DC_MSG_VIDEO);
             recompress = DcMsg.DC_MSG_VIDEO;
           }

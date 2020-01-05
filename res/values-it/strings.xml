@@ -21,6 +21,10 @@
     <string name="attachment">Allegato</string>
     <string name="back">Indietro</string>
     <string name="close">Chiudi</string>
+    <string name="forward">Inoltra</string>
+    <string name="archive">Archivia</string>
+    <string name="unarchive">Ripristina</string>
+    <string name="mute">Silenzia</string>
     <string name="save">Salva</string>
     <string name="chat">Chat</string>
     <string name="media">Media</string>
@@ -127,7 +131,7 @@
     <string name="menu_new_contact">Nuovo contatto</string>
     <string name="menu_new_chat">Nuova chat</string>
     <string name="menu_new_group">Nuovo gruppo</string>
-    <string name="menu_new_verified_group">Nuovo gruppo verificato (sperimentale)</string>
+    <string name="menu_new_verified_group">Nuovo gruppo verificato</string>
     <string name="menu_send">Inviato</string>
     <string name="menu_toggle_keyboard">Alterna tastiera emoji</string>
     <string name="menu_edit_group">Modifica grupp</string>
@@ -177,6 +181,8 @@
     <string name="title_share_location">Condividi posizione con tutti i membri</string>
     <string name="device_talk">Messaggi del dispositivo</string>
     <string name="device_talk_subtitle">Messaggi generati localmente</string>
+    <string name="device_talk_explain">I messaggio in questa chat vengono generati localmente da Delta Chat. Gli sviluppatori li usano per informarti sugli aggiornamenti o sui problemi d\'utilizzo.</string>
+    <string name="device_talk_welcome_message">Benvenuto in Delta Chat! - Delta Chat ha l\'aspetto e lo stile di altre popolari applicazioni di messaggistica, ma non costringe ad un controllo centralizzato, al tracciamento o alla vendita tua,  dei tuoi amici, colleghi o familiari a grandi organizzazioni.\n \n Tecnicamente, Delta Chat è un\'applicazione di posta elettronica con un\'interfaccia moderna. L\'email sotto una nuova vesta 👻 \n \nUtilizza Delta Chat con chiunque: basta conoscere il loro indirizzo e-mail. I destinatari non hanno bisogno di installare Delta Chat, visitare siti web o iscriversi da nessuna parte -  ma, naturalmente se lo desiderano, puoi suggerirgli 👉 https://get.delta.chat</string>
     <string name="edit_contact">Modifica contatto</string>
 
     <string name="mute_for_one_hour">Silenzia per 1 ora</string>
@@ -255,6 +261,8 @@
     <string name="chat_archived_label">Archiviato</string>
     <string name="chat_no_messages">Nessun messaggio.</string>
     <string name="chat_self_talk_subtitle">Messaggi inviati a me stesso</string>
+    <string name="saved_messages">Messaggi salvati</string>
+    <string name="saved_messages_explain">• Inoltra i messaggi per trovarli facilmente\n\n• Memorizza note scritte o vocali\n\n• Allega oggetti per salvarli</string>
     <string name="chat_contact_request">Richiesta di contatto</string>
     <string name="chat_no_contact_requests">Nessuna richiesta di contatto.\n\nSe vuoi che le email tradizionali appaiano qui come richieste di contatto puoi selezionare la relativa opzione nelle impostazioni.</string>
     <string name="retry_send">Riprova l\'invio del messaggio</string>
@@ -535,6 +543,7 @@
     <string name="contact_not_verified">Impossibile verificare %1$s</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
     <string name="contact_setup_changed">Impostazioni modificate per %1$s</string>
+    <string name="verified_group_explain">I gruppi verificati (sperimentali) garantiscono sicurezza dagli attacchi. I membri vengono verificati con un secondo fattore dagli altri membri e i messaggi sono sempre cifrati end-to-end. </string>
 
 
     <!-- notifications  -->
@@ -567,6 +576,7 @@
     <string name="perm_explain_access_to_location_denied">Delta Chat richiede l\'autorizzazione per allegare la posizione, ma è stata bloccata permanentemente. Vai nelle impostazioni delle App, seleziona \"Autorizzazioni\" e abilita \"Posizione\".</string>
     <string name="perm_enable_bg_reminder_title">Premi qui per ricevere i messaggi anche quando Delta Chat è in background.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat usa poche risorse ed è progettata per consumare meno batteria possibile.</string>
+    <string name="perm_enable_bg_already_done">Hai già autorizzato Delta Chat a ricevere messaggi in background.\n\nSe i messaggi non arrivano in background controlla le impostazioni di sistema.</string>
 
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Messaggio cifrato</string>
@@ -590,7 +600,7 @@
     <string name="global_menu_help_desktop">Aiuto</string>
     <string name="global_menu_help_learn_desktop">Scopri di più su Delta Chat</string>
     <string name="global_menu_help_contribute_desktop">Contribuisci su GitHub</string>
-    <string name="global_menu_help_report_desktop">Segnala un problema...</string>
+    <string name="global_menu_help_report_desktop">Segnala un problema</string>
     <string name="global_menu_help_about_desktop">Informazioni su Delta Chat</string>
     <string name="no_chat_selected_suggestion_desktop">Seleziona o crea una nuova chat</string>
     <string name="write_message_desktop">Scrivi un messaggio</string>
@@ -655,4 +665,9 @@
     <string name="a11y_message_context_menu_btn_label">Azioni messaggio</string>
     <string name="a11y_background_preview_label">Anteprima sfondo</string>
 
-    </resources>
+    <!-- Translators: These strings are only used on iOS -->
+    <string name="INFOPLIST.Privacy._.Camera.Usage.Description">Autorizzare l\'accesso alla camera ti permette di fare foto e video</string>
+    <string name="INFOPLIST.Privacy._.Contacts.Usage.Description">Autorizzare l\'accesso alla rubrica ti permette di chattare con i contatti nel tuo dispositivo.</string>
+    <string name="INFOPLIST.Privacy._.Microphone.Usage.Description">Autorizzare l\'accesso al microfono ti permette di registrare audio.</string>
+    <string name="INFOPLIST.Privacy._.Photo.Library.Usage.Description">Autorizzare l\'accesso alla galleria ti permette di caricare foto da essa.</string>
+</resources>

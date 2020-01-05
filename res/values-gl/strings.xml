@@ -131,7 +131,7 @@
     <string name="menu_new_contact">Novo contacto</string>
     <string name="menu_new_chat">Nova conversa</string>
     <string name="menu_new_group">Novo grupo</string>
-    <string name="menu_new_verified_group">Novo grupo verificado (experimental)</string>
+    <string name="menu_new_verified_group">Novo grupo verificado</string>
     <string name="menu_send">Enviar</string>
     <string name="menu_toggle_keyboard">Activar teclado emoji</string>
     <string name="menu_edit_group">Editar grupo</string>
@@ -543,8 +543,6 @@
     <string name="contact_not_verified">Non se puido verificar %1$s.</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
     <string name="contact_setup_changed">Cambiaron os axustes para %1$s.</string>
-
-
     <!-- notifications  -->
     <string name="notify_n_messages_in_m_chats">%1$d novas mensaxes en %2$d conversas</string>
     <string name="notify_most_recent_from">Máis recente desde: %1$s</string>
@@ -575,7 +573,6 @@
     <string name="perm_explain_access_to_location_denied">Para engadir a localización, vaite aos axustes da app, escolle \"Permisos\" e activa \"Localización\".</string>
     <string name="perm_enable_bg_reminder_title">Toca aquí para recibir mensaxes mentras Delta Chat está en segundo plano.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat utiliza poucos recursos e procura non esgotar a batería.</string>
-
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Mensaxe cifrada</string>
 
@@ -598,7 +595,7 @@
     <string name="global_menu_help_desktop">Axuda</string>
     <string name="global_menu_help_learn_desktop">Coñece máis sobre Delta Chat</string>
     <string name="global_menu_help_contribute_desktop">Contribúe en GitHub</string>
-    <string name="global_menu_help_report_desktop">Informa dun fallo...</string>
+    <string name="global_menu_help_report_desktop">Informa dun fallo</string>
     <string name="global_menu_help_about_desktop">Acerca de Delta Chat</string>
     <string name="no_chat_selected_suggestion_desktop">Escolle unha conversa ou crea unha nova</string>
     <string name="write_message_desktop">Escribe unha mensaxe</string>

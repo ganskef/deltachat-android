@@ -126,7 +126,7 @@
     <string name="menu_new_contact">Nouveau contact</string>
     <string name="menu_new_chat">Nouvelle discussion</string>
     <string name="menu_new_group">Nouveau groupe</string>
-    <string name="menu_new_verified_group">Nouveau groupe vérifié (expérimental)</string>
+    <string name="menu_new_verified_group">Nouveau groupe vérifié</string>
     <string name="menu_send">Envoyer</string>
     <string name="menu_toggle_keyboard">Basculer le clavier emoji</string>
     <string name="menu_edit_group">Modifier le groupe</string>
@@ -528,8 +528,6 @@
     <string name="contact_not_verified">Ne peut pas vérifier %1$s</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
     <string name="contact_setup_changed">Configuration modifiée pour %1$s</string>
-
-
     <!-- notifications  -->
     <string name="notify_n_messages_in_m_chats">%1$d nouveaux messages dans %2$d tchats</string>
     <string name="notify_most_recent_from">Plus récents depuis : %1$s</string>
@@ -560,7 +558,6 @@
     <string name="perm_explain_access_to_location_denied">DeltaChat nécessite l\'autorisation de la position pour attacher une position, mais elle a été définitivement refusée. Continuez jusqu\'au menu des paramètres de l\'application, sélectionnez \"Autorisations\" et activez \"Position\".</string>
     <string name="perm_enable_bg_reminder_title">Touchez ici pour recevoir des messages pendant que DeltaChat est en arrière-plan.</string>
     <string name="perm_enable_bg_reminder_text">DeltaChat utilise un minimum de ressources et veille à ne pas vider votre batterie.</string>
-
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Message chiffré</string>
 
@@ -583,7 +580,7 @@
     <string name="global_menu_help_desktop">Aide</string>
     <string name="global_menu_help_learn_desktop">En savoir plus sur Delta Chat</string>
     <string name="global_menu_help_contribute_desktop">Contribuer sur Github</string>
-    <string name="global_menu_help_report_desktop">Signaler un problème....</string>
+    <string name="global_menu_help_report_desktop">Signaler un problème</string>
     <string name="global_menu_help_about_desktop">À propos de Delta Chat</string>
     <string name="no_chat_selected_suggestion_desktop">Sélectionner une discussion ou en créer une nouvelle</string>
     <string name="write_message_desktop">Écrire un message</string>

@@ -89,13 +89,13 @@ android {
     }
 
     defaultConfig {
-        versionCode 571
-        versionName "1.0.3"
+        versionCode 574
+        versionName "1.1.2"
 
         applicationId "com.b44t.messenger"
         multiDexEnabled true
 
-        minSdkVersion 18
+        minSdkVersion 16
         targetSdkVersion 28
 
         vectorDrawables.useSupportLibrary = true

@@ -1,17 +1,25 @@
 package org.thoughtcrime.securesms;
 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
+
+import com.b44t.messenger.DcProvider;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +53,7 @@ import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SEND_PASSWORD;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SEND_PORT;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SEND_SERVER;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SEND_USER;
+import static org.thoughtcrime.securesms.connect.DcHelper.getContext;
 
 public class RegistrationActivity extends BaseActionBarActivity implements DcEventCenter.DcEventDelegate {
 
@@ -58,6 +67,12 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
 
     private TextInputEditText emailInput;
     private TextInputEditText passwordInput;
+
+    private View providerLayout;
+    private TextView providerHint;
+    private TextView providerLink;
+    private @Nullable DcProvider provider;
+
     private Group advancedGroup;
     private ImageView advancedIcon;
     private ProgressDialog progressDialog;
@@ -78,6 +93,12 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
 
         emailInput = findViewById(R.id.email_text);
         passwordInput = findViewById(R.id.password_text);
+
+        providerLayout = findViewById(R.id.provider_layout);
+        providerHint = findViewById(R.id.provider_hint);
+        providerLink = findViewById(R.id.provider_link);
+        providerLink.setOnClickListener(l -> onProviderLink());
+
         advancedGroup = findViewById(R.id.advanced_group);
         advancedIcon = findViewById(R.id.advanced_icon);
         TextView advancedTextView = findViewById(R.id.advanced_text);
@@ -99,6 +120,14 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
             actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         }
 
+        emailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            @Override
+            public void afterTextChanged(Editable s) { maybeCleanProviderInfo(); }
+        });
         emailInput.setOnFocusChangeListener((view, focused) -> focusListener(view, focused, VerificationType.EMAIL));
         imapServerInput.setOnFocusChangeListener((view, focused) -> focusListener(view, focused, VerificationType.SERVER));
         imapPortInput.setOnFocusChangeListener((view, focused) -> focusListener(view, focused, VerificationType.PORT));
@@ -184,16 +213,20 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
         int id = item.getItemId();
 
         if (id == R.id.do_register) {
+            // "log in" button clicked - even if oauth2DeclinedByUser is true,
+            // we will ask for oauth2 to allow reverting the decision.
             checkOauth2start().addListener(new ListenableFuture.Listener<Boolean>() {
                 @Override
                 public void onSuccess(Boolean oauth2started) {
                     if(!oauth2started) {
+                        updateProviderInfo();
                         onLogin();
                     }
                 }
 
                 @Override
                 public void onFailure(ExecutionException e) {
+                    updateProviderInfo();
                     onLogin();
                 }
             });
@@ -218,12 +251,29 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
     }
 
     private void focusListener(View view, boolean focused, VerificationType type) {
+
         if (!focused) {
             TextInputEditText inputEditText = (TextInputEditText) view;
             switch (type) {
                 case EMAIL:
                     verifyEmail(inputEditText);
-                    checkOauth2start();
+                    if (!oauth2DeclinedByUser) {
+                        checkOauth2start().addListener(new ListenableFuture.Listener<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean oauth2started) {
+                                if (!oauth2started) {
+                                    updateProviderInfo();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(ExecutionException e) {
+                                updateProviderInfo();
+                            }
+                        });
+                    } else {
+                        updateProviderInfo();
+                    }
                     break;
                 case SERVER:
                     verifyServer(inputEditText);
@@ -237,6 +287,14 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
 
     private long oauth2Requested = 0;
 
+    // this flag is set, if the user has declined oauth2 at some point;
+    // if so, we won't bother em on focus changes again,
+    // however, to allow reverting the decision, we will always ask on clicking the login button.
+    private boolean oauth2DeclinedByUser = false;
+
+    // this function checks if oauth2 is available for a given email address
+    // and and asks the user if one wants to start oauth2.
+    // the function returns the future "true" if oauth2 was started and "false" otherwise.
     private ListenableFuture<Boolean> checkOauth2start() {
         SettableFuture<Boolean> oauth2started = new SettableFuture<>();
 
@@ -253,9 +311,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
                     .setTitle(R.string.login_info_oauth2_title)
                     .setMessage(R.string.login_info_oauth2_text)
                     .setNegativeButton(R.string.cancel, (dialog, which)->{
-                        if(isGmail(email)) {
-                            showGmailNoOauth2Hint();
-                        }
+                        oauth2DeclinedByUser = true;
                         oauth2started.set(false);
                     })
                     .setPositiveButton(R.string.perm_continue, (dialog, which)-> {
@@ -266,14 +322,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
                     })
                     .setCancelable(false)
                     .show();
-            } else if (isGmail(email)) {
-                showGmailNoOauth2Hint();
-                oauth2started.set(false);
-            } else if (isOutlook(email)) {
-                showOutlookHint();
-                oauth2started.set(false);
-            }
-            else {
+            } else {
                 oauth2started.set(false);
             }
         }
@@ -282,6 +331,62 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
         }
 
         return oauth2started;
+    }
+
+    private void updateProviderInfo() {
+        provider = getContext(this).getProviderFromEmail(emailInput.getText().toString());
+        if (provider!=null) {
+            Resources res = getResources();
+            providerHint.setText(provider.getBeforeLoginHint());
+            switch (provider.getStatus()) {
+                case DcProvider.DC_PROVIDER_STATUS_PREPARATION:
+                    providerHint.setTextColor(res.getColor(R.color.provider_prep_fg));
+                    providerLink.setTextColor(res.getColor(R.color.provider_prep_fg));
+                    providerLayout.setBackgroundColor(res.getColor(R.color.provider_prep_bg));
+                    providerLayout.setVisibility(View.VISIBLE);
+                    break;
+
+                case DcProvider.DC_PROVIDER_STATUS_BROKEN:
+                    providerHint.setTextColor(res.getColor(R.color.provider_broken_fg));
+                    providerLink.setTextColor(res.getColor(R.color.provider_broken_fg));
+                    providerLayout.setBackgroundColor(getResources().getColor(R.color.provider_broken_bg));
+                    providerLayout.setVisibility(View.VISIBLE);
+                    break;
+
+                default:
+                    providerLayout.setVisibility(View.GONE);
+                    break;
+            }
+        } else {
+            providerLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void maybeCleanProviderInfo() {
+        if (provider!=null && providerLayout.getVisibility()==View.VISIBLE) {
+            DcProvider newProvider = getContext(this).getProviderFromEmail(emailInput.getText().toString());
+            if (newProvider == null
+             || !newProvider.getOverviewPage().equals(provider.getOverviewPage())) {
+                provider = null;
+                providerLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void onProviderLink() {
+        if (provider!=null) {
+            String url = provider.getOverviewPage();
+            if(!url.isEmpty()) {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, R.string.no_browser_installed, Toast.LENGTH_LONG).show();
+                }
+            } else {
+                // this should normally not happen
+                Toast.makeText(this, "ErrProviderWithoutUrl", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -307,45 +412,6 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
 
     private boolean matchesEmailPattern(String email) {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isGmail(String email) {
-        return email != null && (email.toLowerCase().contains("@gmail.") || email.toLowerCase().contains("@googlemail."));
-    }
-
-    private void showGmailNoOauth2Hint()
-    {
-        if(!gmailDialogShown) {
-            gmailDialogShown = true;
-            new AlertDialog.Builder(this)
-                .setMessage(R.string.login_info_gmail_text)
-                .setPositiveButton(R.string.ok, null)
-                .show();
-        }
-    }
-
-    private boolean isOutlook(String email) {
-        return email != null
-           && (email.toLowerCase().contains("@outlook.") || email.toLowerCase().contains("@hotmail."));
-    }
-
-    private boolean outlookDialogShown;
-    private void showOutlookHint()
-    {
-        if(!outlookDialogShown) {
-            outlookDialogShown = true;
-            new AlertDialog.Builder(this)
-                .setMessage(
-                      "Outlook- and Hotmail-e-mail-addresses "
-                    + "may currently not work as expected "
-                    + "as these servers may remove some important transport information."
-                    + "\n\n"
-                    + "Hopefully sooner or later there will be a fix; "
-                    + "for now, we suggest to use another e-mail-address "
-                    + "or try Delta Chat again when the issue is fixed.")
-                .setPositiveButton(R.string.ok, null)
-                .show();
-        }
     }
 
     private void verifyEmail(TextInputEditText view) {

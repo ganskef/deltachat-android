@@ -46,6 +46,7 @@ public class DcContext {
     public final static int DC_QR_FPR_OK            = 210;
     public final static int DC_QR_FPR_MISMATCH      = 220;
     public final static int DC_QR_FPR_WITHOUT_ADDR  = 230;
+    public final static int DC_QR_ACCOUNT           = 250;
     public final static int DC_QR_ADDR              = 320;
     public final static int DC_QR_TEXT              = 330;
     public final static int DC_QR_URL               = 332;
@@ -101,6 +102,7 @@ public class DcContext {
     public native void         maybeNetwork         ();
     public native void         setConfig            (String key, String value);
     public void                setConfigInt         (String key, int value) { setConfig(key, Integer.toString(value)); }
+    public native boolean      setConfigFromQr      (String qr);
     public native String       getConfig            (String key);
     public int                 getConfigInt         (String key) { try{return Integer.parseInt(getConfig(key));} catch(Exception e) {} return 0; }
     @Deprecated public String  getConfig            (String key, String def) { return getConfig(key); }
@@ -129,7 +131,7 @@ public class DcContext {
     public native void         marknoticedChat      (int chat_id);
     public native void         marknoticedAllChats  ();
     public native void         marknoticedContact   (int contact_id);
-    public native void         archiveChat          (int chat_id, int archive);
+    public native void         setChatVisibility    (int chat_id, int visibility);
     public native int          getChatIdByContactId (int contact_id);
     public native int          createChatByContactId(int contact_id);
     public native int          createChatByMsgId    (int msg_id);
@@ -166,7 +168,6 @@ public class DcContext {
     public native boolean      isSendingLocationsToChat(int chat_id);
     public @NonNull DcArray    getLocations         (int chat_id, int contact_id, long timestamp_start, long timestamp_end) { return new DcArray(getLocationsCPtr(chat_id, contact_id, timestamp_start, timestamp_end)); }
     public native void         deleteAllLocations   ();
-    public @Nullable DcProvider getProviderFromDomain(String email) { long cptr = getProviderFromDomainCPtr(email); return cptr!=0 ? new DcProvider(cptr) : null; }
     public @Nullable DcProvider getProviderFromEmail (String email) { long cptr = getProviderFromEmailCPtr(email); return cptr!=0 ? new DcProvider(cptr) : null; }
 
     /**
@@ -195,6 +196,5 @@ public class DcContext {
     private native long getContactCPtr   (int id);
     private native long getLocationsCPtr (int chat_id, int contact_id, long timestamp_start, long timestamp_end);
     private native long checkQrCPtr      (String qr);
-    private native long getProviderFromDomainCPtr (String qr);
-    private native long getProviderFromEmailCPtr  (String qr);
+    private native long getProviderFromEmailCPtr  (String addr);
 }

@@ -163,7 +163,6 @@
     <string name="menu_pause">Pausar</string>
     <string name="menu_scroll_to_bottom">Moverse abaixo</string>
     <string name="menu_scroll_to_top">Moverse arriba</string>
-    <string name="menu_invite">Convidar amigos</string>
     <string name="menu_help">Axuda</string>
     <string name="menu_select_all">Escoller todo</string>
     <string name="menu_expand">Despregar</string>
@@ -198,6 +197,7 @@
     <string name="share_location_for_two_hours">durante 2 h.</string>
     <string name="share_location_for_six_hours">durante 6 h.</string>
 
+    <string name="file_saved_to">Ficheiro gardado en \"%1$s\".</string>
 
     <!-- get confirmations -->
     <string name="ask_leave_group">Seguro que desexa abandonar o grupo?</string>
@@ -300,13 +300,6 @@
     <string name="tab_gallery_empty_hint">As imaxes e vídeos compartidos nesta conversa móstranse aquí.</string>
     <string name="tab_docs_empty_hint">Aquí están os documentos, música e outros ficheiros compartidos na conversa.</string>
     <string name="media_preview">Vista previa dos medios</string>
-    
-
-    <!-- invite -->
-    <string name="invite_slogan">Os amigos non abandonan aos amigos nos cortellos de mensaxería.</string>
-    <string name="invite_default_text">Cambia a Delta Chat  - %1$s - podes escribirme a %2$s</string>
-
-
     <!-- welcome and login -->
     <string name="welcome_intro1_message">O sistema de conversa con maior audiencia no mundo. Libre e independente.</string>
     <string name="welcome_start_messaging">Inicia a conversa</string>
@@ -359,10 +352,6 @@
 
 
     <!-- preferences -->
-    <string name="pref_summary_on">on</string>
-    <string name="pref_summary_off">off</string>
-    <string name="pref_summary_default">por omisión</string>
-    <string name="pref_summary_custom">personalizado</string>
     <string name="pref_using_custom">Utilizar personalizado: %s</string>
     <string name="pref_using_default">Utilizando por omisión: %s</string>
     <string name="pref_profile_info_headline">Info do teu perfil</string>
@@ -543,6 +532,9 @@
     <string name="contact_not_verified">Non se puido verificar %1$s.</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
     <string name="contact_setup_changed">Cambiaron os axustes para %1$s.</string>
+    <string name="verified_group_explain">Os grupos verificados (experimental) proporcionan seguridade contra ataques activos. As integrantes son verificadas cun segundo factor por outros membros e as mensaxes van sempre cifradas E2E.</string>
+
+
     <!-- notifications  -->
     <string name="notify_n_messages_in_m_chats">%1$d novas mensaxes en %2$d conversas</string>
     <string name="notify_most_recent_from">Máis recente desde: %1$s</string>
@@ -573,10 +565,12 @@
     <string name="perm_explain_access_to_location_denied">Para engadir a localización, vaite aos axustes da app, escolle \"Permisos\" e activa \"Localización\".</string>
     <string name="perm_enable_bg_reminder_title">Toca aquí para recibir mensaxes mentras Delta Chat está en segundo plano.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat utiliza poucos recursos e procura non esgotar a batería.</string>
+    <string name="perm_enable_bg_already_done">Xa permitiches que Delta Chat reciba mensaxes en segundo plano\n\nSe aínda así non recibes as mensaxes, por favor comproba os axustes do sistema.</string>
+
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Mensaxe cifrada</string>
 
-    <!-- desktop specific strings -->
+    <!-- strings introduced on desktop. we want to share strings between the os, in general, please do not add generic strings here -->
     <string name="welcome_desktop">Benvida a Delta Chat</string>
     <string name="login_known_accounts_title_desktop">Contas coñecidas</string>
     <string name="global_menu_preferences_language_desktop">Idioma</string>
@@ -612,13 +606,10 @@
     <string name="verified_desktop">verificado</string>
     <string name="remove_desktop">Eliminar</string>
     <string name="save_desktop">Gardar</string>
-    <string name="show_qr_verify_code_desktop">Mostrar código QR de convite</string>
-    <string name="show_qr_invite_code_desktop">Mostrar código QR de convite</string>
     <string name="add_contact_desktop">Engadir contacto</string>
     <string name="login_required_desktop">requerido</string>
     <string name="name_desktop">Nome</string>
     <string name="autocrypt_key_transfer_desktop">Transferir chave Autocrypt</string>
-    <string name="initiate_key_transfer_title_desktop">Iniciar transferencia da chave</string>
     <string name="initiate_key_transfer_desktop">Unha Mensaxe de Configuración Autocrypt comparte de xeito seguro o teu cifrado extremo-a-extremo con outras apps compatibles con Autocrypt. O axuste cífrase cun código seguro que se mostra aquí e debes escribir no outro dispositivo.</string>
     <string name="reply_to_message_desktop">Responder a mensaxe</string>
     <string name="select_group_image_desktop">Escoller imaxe do grupo</string>
@@ -660,9 +651,9 @@
     <string name="a11y_message_context_menu_btn_label">Accións da mensaxe</string>
     <string name="a11y_background_preview_label">Vista previa do fondo</string>
 
-    <!-- Translators: These strings are only used on iOS -->
-    <string name="INFOPLIST.Privacy._.Camera.Usage.Description">Conceder acceso a cámara permíteche tomar fotos e vídeos.</string>
-    <string name="INFOPLIST.Privacy._.Contacts.Usage.Description">Permitir o acceso a libreta de enderezos permíteche conversar con contactos do dispositivo.</string>
-    <string name="INFOPLIST.Privacy._.Microphone.Usage.Description">Permitindo o acceso ao micrófono poderás gravar audio.</string>
-    <string name="INFOPLIST.Privacy._.Photo.Library.Usage.Description">Permitindo o acceso a galería de fotos poderás subir imaxes desde ela.</string>
+    <!-- iOS permissions, copy from "deltachat-ios/Info.plist", which is used on missing translations in "deltachat-ios/LANG.lproj/InfoPlist.strings" -->
+    <string name="InfoPlist_NSCameraUsageDescription">Conceder acceso a cámara permíteche tomar fotos e vídeos.</string>
+    <string name="InfoPlist_NSContactsUsageDescription">Permitir o acceso a libreta de enderezos permíteche conversar con contactos do dispositivo.</string>
+    <string name="InfoPlist_NSMicrophoneUsageDescription">Permitindo o acceso ao micrófono poderás gravar audio.</string>
+    <string name="InfoPlist_NSPhotoLibraryUsageDescription">Permitindo o acceso a galería de fotos poderás subir imaxes desde ela.</string>
 </resources>

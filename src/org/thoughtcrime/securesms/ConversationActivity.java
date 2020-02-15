@@ -305,7 +305,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   @Override
   protected void onPause() {
     super.onPause();
-    // save draft on pause
     processComposeControls(ACTION_SAVE_DRAFT);
     MessageNotifierCompat.updateVisibleChat(MessageNotifierCompat.NO_VISIBLE_CHAT_ID);
     if (isFinishing()) overridePendingTransition(R.anim.fade_scale_in, R.anim.slide_to_right);
@@ -333,7 +332,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   protected void onDestroy() {
-    processComposeControls(ACTION_SAVE_DRAFT);
     dcContext.eventCenter.removeObservers(this);
     super.onDestroy();
   }
@@ -449,7 +447,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       }
     }
 
-    if( dcChat.getArchived()==0 ) {
+    if (dcChat.getVisibility()!=DcChat.DC_CHAT_VISIBILITY_ARCHIVED) {
       inflater.inflate(R.menu.conversation_archive, menu);
     }
     else {
@@ -560,10 +558,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void handleArchiveChat() {
-    int doArchive = dcContext.getChat(chatId).getArchived() == 0 ? 1: 0;
-    dcContext.archiveChat(chatId, doArchive);
+    int newVisibility = dcContext.getChat(chatId).getVisibility()==DcChat.DC_CHAT_VISIBILITY_ARCHIVED?
+            DcChat.DC_CHAT_VISIBILITY_NORMAL : DcChat.DC_CHAT_VISIBILITY_ARCHIVED;
+    dcContext.setChatVisibility(chatId, newVisibility);
     Toast.makeText(this, getString(R.string.done), Toast.LENGTH_SHORT).show();
-    if( doArchive == 1 ) {
+    if (newVisibility==DcChat.DC_CHAT_VISIBILITY_ARCHIVED) {
       finish();
     }
   }
@@ -955,7 +954,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
   }
 
-  //////// send message
+  //////// send message or save draft
 
   protected static final int ACTION_SEND_OUT = 1;
   protected static final int ACTION_SAVE_DRAFT = 2;
@@ -973,10 +972,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     DcMsg msg = null;
     Integer recompress = 0;
 
-    composeText.setText("");
+    // for a quick ui feedback, we clear the related controls immediately on sending messages.
+    // for drafts, however, we do not change the controls, the activity may be resumed.
+    if (action==ACTION_SEND_OUT) {
+      composeText.setText("");
+    }
 
     if(slideDeck!=null) {
-      attachmentManager.clear(glideRequests, false);
+
+      if (action==ACTION_SEND_OUT) {
+        attachmentManager.clear(glideRequests, false);
+      }
 
       try {
         List<Attachment> attachments = slideDeck.asAttachments();

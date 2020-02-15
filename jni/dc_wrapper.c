@@ -262,6 +262,15 @@ JNIEXPORT void Java_com_b44t_messenger_DcContext_setStockTranslation(JNIEnv *env
 }
 
 
+JNIEXPORT jboolean Java_com_b44t_messenger_DcContext_setConfigFromQr(JNIEnv *env, jobject obj, jstring qr)
+{
+	CHAR_REF(qr);
+		jboolean ret = dc_set_config_from_qr(get_dc_context(env, obj), qrPtr);
+	CHAR_UNREF(qr);
+	return ret;
+}
+
+
 JNIEXPORT jstring Java_com_b44t_messenger_DcContext_getBlobdir(JNIEnv *env, jobject obj)
 {
 	char* temp = dc_get_blobdir(get_dc_context(env, obj));
@@ -506,9 +515,9 @@ JNIEXPORT void Java_com_b44t_messenger_DcContext_marknoticedContact(JNIEnv *env,
 }
 
 
-JNIEXPORT void Java_com_b44t_messenger_DcContext_archiveChat(JNIEnv *env, jobject obj, jint chat_id, jint archive)
+JNIEXPORT void Java_com_b44t_messenger_DcContext_setChatVisibility(JNIEnv *env, jobject obj, jint chat_id, jint visibility)
 {
-	dc_archive_chat(get_dc_context(env, obj), chat_id, archive);
+	dc_set_chat_visibility(get_dc_context(env, obj), chat_id, visibility);
 }
 
 
@@ -854,19 +863,10 @@ JNIEXPORT void Java_com_b44t_messenger_DcContext_deleteAllLocations(JNIEnv *env,
 }
 
 
-JNIEXPORT jlong Java_com_b44t_messenger_DcContext_getProviderFromDomainCPtr(JNIEnv *env, jobject obj, jstring domain)
-{
-	CHAR_REF(domain);
-		jlong ret = (jlong)dc_provider_new_from_domain(domainPtr);
-	CHAR_UNREF(domain);
-	return ret;
-}
-
-
 JNIEXPORT jlong Java_com_b44t_messenger_DcContext_getProviderFromEmailCPtr(JNIEnv *env, jobject obj, jstring email)
 {
 	CHAR_REF(email);
-		jlong ret = (jlong)dc_provider_new_from_email(emailPtr);
+		jlong ret = (jlong)dc_provider_new_from_email(get_dc_context(env, obj), emailPtr);
 	CHAR_UNREF(email);
 	return ret;
 }
@@ -1058,9 +1058,9 @@ JNIEXPORT jboolean Java_com_b44t_messenger_DcChat_isGroup(JNIEnv *env, jobject o
 }
 
 
-JNIEXPORT jint Java_com_b44t_messenger_DcChat_getArchived(JNIEnv *env, jobject obj)
+JNIEXPORT jint Java_com_b44t_messenger_DcChat_getVisibility(JNIEnv *env, jobject obj)
 {
-	return dc_chat_get_archived(get_dc_chat(env, obj));
+	return dc_chat_get_visibility(get_dc_chat(env, obj));
 }
 
 
@@ -1602,33 +1602,15 @@ JNIEXPORT void Java_com_b44t_messenger_DcProvider_unrefProviderCPtr(JNIEnv *env,
 }
 
 
-JNIEXPORT jstring Java_com_b44t_messenger_DcProvider_getName(JNIEnv *env, jobject obj)
-{
-	char* temp = dc_provider_get_name(get_dc_provider(env, obj));
-		jstring ret = JSTRING_NEW(temp);
-	dc_str_unref(temp);
-	return ret;
-}
-
-
 JNIEXPORT jint Java_com_b44t_messenger_DcProvider_getStatus(JNIEnv *env, jobject obj)
 {
 	return (jint)dc_provider_get_status(get_dc_provider(env, obj));
 }
 
 
-JNIEXPORT jstring Java_com_b44t_messenger_DcProvider_getStatusDate(JNIEnv *env, jobject obj)
+JNIEXPORT jstring Java_com_b44t_messenger_DcProvider_getBeforeLoginHint(JNIEnv *env, jobject obj)
 {
-	char* temp = dc_provider_get_status_date(get_dc_provider(env, obj));
-		jstring ret = JSTRING_NEW(temp);
-	dc_str_unref(temp);
-	return ret;
-}
-
-
-JNIEXPORT jstring Java_com_b44t_messenger_DcProvider_getMarkdown(JNIEnv *env, jobject obj)
-{
-	char* temp = dc_provider_get_markdown(get_dc_provider(env, obj));
+	char* temp = dc_provider_get_before_login_hint(get_dc_provider(env, obj));
 		jstring ret = JSTRING_NEW(temp);
 	dc_str_unref(temp);
 	return ret;

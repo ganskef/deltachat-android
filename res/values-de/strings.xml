@@ -180,9 +180,17 @@
     <string name="title_share_location">Standort mit allen Gruppenmitgliedern teilen</string>
     <string name="device_talk">Systemnachrichten</string>
     <string name="device_talk_subtitle">Lokal erzeugte Nachrichten</string>
-    <string name="device_talk_explain">Nachrichten in diesem Chat werden lokal von der Delta Chat App erzeugt. Der Chat wird von den Entwicklern verwendet, um auf Neuigkeiten und Probleme hinzuweisen.</string>
-    <string name="device_talk_welcome_message">Willkommen – Delta Chat sieht aus und funktioniert wie andere populäre Messenger - aber ohne zentrale Überwachung, ohne Tracking, ohne die Daten von Ihnen, Freunden, Kollegen oder Familienmitgliedern an irgendwelche Firmen zu verkaufen.\n\nTechnisch ist Delta Chat ein E-Mail-Programm mit einer modernen Chat-Oberfläche - E-Mail in neuen Kleidern 👻\n\nMit Delta Chat haben Sie Milliarden potentieller Chatpartner: Verwenden Sie einfach deren E-Mail-Adresse - die Empfänger selbst müssen Delta Chat dazu nicht installieren oder sich irgendwo anmelden. Aber natürlich, wenn Sie mögen, können Sie sie auf 👉 https://get.delta.chat hinweisen</string>
+    <string name="device_talk_explain">Nachrichten in diesem Chat werden lokal von der Delta Chat App erzeugt, um auf Neuigkeiten und Probleme hinzuweisen.</string>
+    <string name="device_talk_welcome_message">Willkommen – Delta Chat sieht aus und funktioniert wie andere populäre Messenger - aber ohne zentrale Überwachung, ohne Tracking, ohne die Daten von Ihnen, Ihren FreundInnen, KollegInnen oder Familienmitgliedern an irgendwelche Firmen zu verkaufen.\n\nTechnisch ist Delta Chat ein E-Mail-Programm mit einer modernen Chat-Oberfläche - E-Mail in neuen Kleidern 👻\n\nMit Delta Chat haben Sie Milliarden potentieller ChatpartnerInnen: Verwenden Sie einfach deren E-Mail-Adresse - die EmpfängerInnen selbst müssen Delta Chat dazu nicht installieren oder sich irgendwo anmelden. Sie können sie aber natürlich gerne auf 👉 https://get.delta.chat hinweisen</string>
     <string name="edit_contact">Kontakt bearbeiten</string>
+    <!-- Translators: "Pin" here is the verb for pinning, making sth. sticky. this is NOT the appreviation for "pin number". -->
+    <string name="pin_chat">Chat anheften</string>
+    <!-- Translators: this is the opposite of "Pin chat", removing the sticky-state from a chat. -->
+    <string name="unpin_chat">Chat loslösen</string>
+    <!-- Translators: this is the verb for pinning, making sth. sticky. this is NOT the appreviation for "pin number". -->
+    <string name="pin">Anheften</string>
+    <!-- Translators: this is the opposite of "Pin", removing the sticky-state from sth. -->
+    <string name="unpin">Loslösen</string>
 
     <string name="mute_for_one_hour">Stumm für 1 Stunde</string>
     <string name="mute_for_two_hours">Stumm für 2 Stunden</string>
@@ -254,7 +262,7 @@
     <string name="chat_record_slide_to_cancel">Schieben um abzubrechen</string>
     <string name="chat_record_explain">Tippen und halten, um eine Sprachnachricht aufzunehmen, loslassen um zu senden. </string>
     <string name="chat_no_chats_yet_title">Posteingang ist leer.\n\"+\" drücken, um einen neuen Chat zu starten.</string>
-    <string name="chat_no_chats_yet_hint">Es kann mit anderen Delta Chat Benutzern und mit jeder E-Mail-Adresse gechattet werden,</string>
+    <string name="chat_no_chats_yet_hint">Es kann mit anderen Delta Chat BenutzerInnen und mit jeder E-Mail-Adresse gechattet werden.</string>
     <string name="chat_all_archived">Alle Chats archiviert.\n\"+\" drücken, um einen neuen Chat zu starten.</string>
     <string name="chat_share_with_title">Teilen mit</string>
     <string name="chat_input_placeholder">Nachricht</string>
@@ -415,7 +423,7 @@ Einige Anbieter platzieren zusätzliche Informationen im Posteingang, die Sie z.
     <string name="pref_read_receipts_explain">Wenn Lesebestätigungen deaktiviert sind, werden auch keine Lesebestätigungen von anderen angezeigt. </string>
     <string name="pref_manage_keys">Schlüssel verwalten</string>
     <string name="pref_use_system_emoji">System-Emoji benutzen</string>
-    <string name="pref_use_system_emoji_explain">Deaktivieung der integrierten Emoji-Unterstützung von Delta Chat.</string>
+    <string name="pref_use_system_emoji_explain">Deaktivierung der integrierten Emoji-Unterstützung von Delta Chat.</string>
     <string name="pref_app_access">App-Zugriff</string>
     <string name="pref_communication">Kommunikation</string>
     <string name="pref_chats">Chats</string>

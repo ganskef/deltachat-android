@@ -7,6 +7,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +33,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.soundcloud.android.crop.Crop;
 
 import org.thoughtcrime.securesms.components.InputAwareLayout;
-import org.thoughtcrime.securesms.components.emoji.EmojiDrawer;
+import org.thoughtcrime.securesms.components.emoji.EmojiKeyboardProvider;
+import org.thoughtcrime.securesms.components.emoji.MediaKeyboard;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.contacts.avatars.ResourceContactPhoto;
 import org.thoughtcrime.securesms.mms.GlideApp;
@@ -46,8 +50,11 @@ import org.thoughtcrime.securesms.util.IntentUtils;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
+import org.thoughtcrime.securesms.util.views.Stub;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.LinkedList;
@@ -56,7 +63,7 @@ import java.util.List;
 import static android.provider.MediaStore.EXTRA_OUTPUT;
 
 @SuppressLint("StaticFieldLeak")
-public class CreateProfileActivity extends BaseActionBarActivity {
+public class CreateProfileActivity extends BaseActionBarActivity implements EmojiKeyboardProvider.EmojiEventListener {
 
   private static final String TAG = CreateProfileActivity.class.getSimpleName();
 
@@ -70,7 +77,7 @@ public class CreateProfileActivity extends BaseActionBarActivity {
   private InputAwareLayout       container;
   private ImageView              avatar;
   private EditText               name;
-  private EmojiDrawer            emojiDrawer;
+  private MediaKeyboard          emojiDrawer;
   private TextInputEditText statusView;
   private View                   reveal;
 
@@ -186,7 +193,17 @@ public class CreateProfileActivity extends BaseActionBarActivity {
             @Override
             protected byte[] doInBackground(Void... params) {
               try {
-                BitmapUtil.ScaleResult result = BitmapUtil.createScaledBytes(CreateProfileActivity.this, Crop.getOutput(data), new ProfileMediaConstraints());
+                try {
+                  Uri imageUri = Crop.getOutput(data);
+                  Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                  ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                  return stream.toByteArray();
+                } catch (Exception any) {
+                  Log.e(TAG, "could not send raw JPG to core. Using scaled JPG.", any);
+                }
+                BitmapUtil.ScaleResult result =
+                    BitmapUtil.createScaledBytes(CreateProfileActivity.this, Crop.getOutput(data), new ProfileMediaConstraints());
                 return result.getBitmap();
               } catch (BitmapDecodingException e) {
                 Log.w(TAG, e);
@@ -239,10 +256,7 @@ public class CreateProfileActivity extends BaseActionBarActivity {
 
     if (fromWelcome) {
       String addr = DcHelper.get(this, "addr");
-      loginSuccessText.setText(String.format(
-              "Login successfull - your email address is %1$s\n\n" +
-              "If you like, you can now enter a name and an avatar image " +
-              "that will be displayed to people you write to.", addr));
+      loginSuccessText.setText(getString(R.string.qraccount_success_enter_name, addr));
       ViewUtil.findById(this, R.id.status_text_layout).setVisibility(View.GONE);
       ViewUtil.findById(this, R.id.information_label).setVisibility(View.GONE);
       passwordAccountSettings.setVisibility(View.GONE);
@@ -262,12 +276,12 @@ public class CreateProfileActivity extends BaseActionBarActivity {
   private void initializeProfileAvatar() {
     String address = DcHelper.get(this, DcHelper.CONFIG_ADDRESS);
 
-    if (AvatarHelper.getSelfAvatarFile(this, address).exists() && AvatarHelper.getSelfAvatarFile(this, address).length() > 0) {
+    if (AvatarHelper.getSelfAvatarFile(this).exists() && AvatarHelper.getSelfAvatarFile(this).length() > 0) {
       new AsyncTask<Void, Void, byte[]>() {
         @Override
         protected byte[] doInBackground(Void... params) {
           try {
-            return Util.readFully(AvatarHelper.getInputStreamFor(CreateProfileActivity.this, address));
+            return Util.readFully(new FileInputStream(AvatarHelper.getSelfAvatarFile(CreateProfileActivity.this)));
           } catch (IOException e) {
             Log.w(TAG, e);
             return null;
@@ -288,24 +302,30 @@ public class CreateProfileActivity extends BaseActionBarActivity {
     }
   }
 
+
+  @Override
+  public void onEmojiSelected(String emoji) {
+    final int start = name.getSelectionStart();
+    final int end   = name.getSelectionEnd();
+
+    name.getText().replace(Math.min(start, end), Math.max(start, end), emoji);
+    name.setSelection(start + emoji.length());
+  }
+
+  @Override
+  public void onKeyEvent(KeyEvent keyEvent) {
+    name.dispatchKeyEvent(keyEvent);
+  }
+
+  private void initializeMediaKeyboardProviders(@NonNull MediaKeyboard mediaKeyboard) {
+    boolean isSystemEmojiPreferred   = Prefs.isSystemEmojiPreferred(this);
+    if (!isSystemEmojiPreferred) {
+      mediaKeyboard.setProviders(0, new EmojiKeyboardProvider(this, this));
+    }
+  }
+
   private void initializeEmojiInput() {
-
-    this.emojiDrawer.setEmojiEventListener(new EmojiDrawer.EmojiEventListener() {
-      @Override
-      public void onKeyEvent(KeyEvent keyEvent) {
-        name.dispatchKeyEvent(keyEvent);
-      }
-
-      @Override
-      public void onEmojiSelected(String emoji) {
-        final int start = name.getSelectionStart();
-        final int end   = name.getSelectionEnd();
-
-        name.getText().replace(Math.min(start, end), Math.max(start, end), emoji);
-        name.setSelection(start + emoji.length());
-      }
-    });
-
+    initializeMediaKeyboardProviders(emojiDrawer);
     this.name.setOnClickListener(v -> container.showSoftkey(name));
   }
 
@@ -377,7 +397,7 @@ public class CreateProfileActivity extends BaseActionBarActivity {
         setStatusText();
 
         try {
-          AvatarHelper.setSelfAvatar(CreateProfileActivity.this, DcHelper.get(context, DcHelper.CONFIG_ADDRESS), avatarBytes);
+          AvatarHelper.setSelfAvatar(CreateProfileActivity.this, avatarBytes);
           Prefs.setProfileAvatarId(CreateProfileActivity.this, new SecureRandom().nextInt());
         } catch (IOException e) {
           Log.w(TAG, e);
@@ -408,4 +428,5 @@ public class CreateProfileActivity extends BaseActionBarActivity {
     String newStatus = statusView.getText().toString().trim();
     DcHelper.set(this, DcHelper.CONFIG_SELF_STATUS, newStatus);
   }
+
 }

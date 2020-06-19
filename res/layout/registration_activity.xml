@@ -69,7 +69,7 @@
                 android:id="@+id/password_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/password"
+                android:hint="@string/existing_password"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -370,6 +370,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:entries="@array/pref_dc_certck_entries"
+            android:entryValues="@array/pref_dc_certck_values"
             app:layout_constraintEnd_toEndOf="@id/guideline_root_end"
             app:layout_constraintStart_toStartOf="@id/guideline_root_start"
             app:layout_constraintTop_toBottomOf="@id/cert_check_label" />

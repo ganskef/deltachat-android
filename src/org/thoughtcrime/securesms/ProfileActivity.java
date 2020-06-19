@@ -1,11 +1,13 @@
 package org.thoughtcrime.securesms;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -33,6 +35,7 @@ import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ProfileActivity extends PassphraseRequiredActionBarActivity
@@ -95,7 +98,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
 
     titleView = (ConversationTitleView) supportActionBar.getCustomView();
     titleView.setOnBackClickedListener(view -> onBackPressed());
-    titleView.setOnAvatarClickListener(view -> onShowAndEditImage());
+    titleView.setOnClickListener(view -> onEnlargeAvatar());
 
     updateToolbar();
 
@@ -115,10 +118,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       if (chatId != 0) {
         inflater.inflate(R.menu.profile_chat, menu);
         if (chatIsGroup) {
-          menu.findItem(R.id.edit_name).setTitle(R.string.menu_edit_group_name);
-        }
-        else {
-          menu.findItem(R.id.edit_group_image).setVisible(false);
+          menu.findItem(R.id.edit_name).setTitle(R.string.menu_group_name_and_image);
         }
       }
 
@@ -140,7 +140,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
 
     item = menu.findItem(R.id.menu_mute_notifications);
     if(item!=null) {
-      item.setTitle(Prefs.isChatMuted(this, chatId)? R.string.menu_unmute : R.string.menu_mute);
+      item.setTitle(Prefs.isChatMuted(dcContext.getChat(chatId))? R.string.menu_unmute : R.string.menu_mute);
     }
 
     super.onPrepareOptionsMenu(menu);
@@ -336,9 +336,6 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       case R.id.edit_name:
         onEditName();
         break;
-      case R.id.edit_group_image:
-        onShowAndEditImage();
-        break;
       case R.id.show_encr_info:
         onEncrInfo();
         break;
@@ -351,22 +348,17 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
   }
 
   public void onNotifyOnOff() {
-    if (Prefs.isChatMuted(this, chatId)) {
+    if (Prefs.isChatMuted(dcContext.getChat(chatId))) {
       setMuted(0);
     }
     else {
-      MuteDialog.show(this, until -> setMuted(until));
+      MuteDialog.show(this, duration -> setMuted(duration));
     }
   }
 
-  private void setMuted(final long until) {
-    if(chatId!=0) {
-      Prefs.setChatMutedUntil(this, chatId, until);
-
-      // normally, sendToObservers() is only used to forward events from the core to the ui.
-      // we do an exception here, as "mute" is not handled by the core,
-      // but various elements listen to similar changes with the DC_EVENT_CHAT_MODIFIED event.
-      dcContext.eventCenter.sendToObservers(DcContext.DC_EVENT_CHAT_MODIFIED, new Integer(chatId), 0);
+  private void setMuted(final long duration) {
+    if (chatId != 0) {
+      Prefs.setChatMuteDuration(dcContext, chatId, duration);
     }
   }
 
@@ -400,7 +392,34 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
             .show();
   }
 
-  public void onShowAndEditImage() {
+  public void onEnlargeAvatar() {
+    String profileImagePath;
+    String title;
+    Uri profileImageUri;
+    if(chatId!=0) {
+      DcChat dcChat = dcContext.getChat(chatId);
+      profileImagePath = dcChat.getProfileImage();
+      title = dcChat.getName();
+    } else {
+      DcContact dcContact = dcContext.getContact(contactId);
+      profileImagePath = dcContact.getProfileImage();
+      title = dcContact.getDisplayName();
+    }
+
+    File file = new File(profileImagePath);
+    if (!file.exists()) return;
+
+    profileImageUri = Uri.fromFile(file);
+    String type = "image/" + profileImagePath.substring(profileImagePath.lastIndexOf(".") +1);
+
+    Intent intent = new Intent(this, MediaPreviewActivity.class);
+    intent.setDataAndType(profileImageUri, type);
+    intent.putExtra(MediaPreviewActivity.ACTIVITY_TITLE_EXTRA, title);
+    intent.putExtra(MediaPreviewActivity.EDIT_AVATAR_CHAT_ID, chatIsGroup ? chatId : 0); // shows edit-button, might be 0 for a contact-profile
+    startActivity(intent);
+  }
+
+  public void onEditName() {
     if (chatIsGroup) {
       Intent intent = new Intent(this, GroupCreateActivity.class);
       intent.putExtra(GroupCreateActivity.EDIT_GROUP_CHAT_ID, chatId);
@@ -408,12 +427,6 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
         intent.putExtra(GroupCreateActivity.GROUP_CREATE_VERIFIED_EXTRA, true);
       }
       startActivity(intent);
-    }
-  }
-
-  public void onEditName() {
-    if (chatIsGroup) {
-      onShowAndEditImage();
     }
     else {
       DcContact dcContact = dcContext.getContact(contactId);

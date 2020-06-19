@@ -251,7 +251,6 @@
     <string name="login_auth_method">Метод авторизації</string>
     <string name="login_info_oauth2_title">Продовжити спрощене налаштування?</string>
     <string name="login_info_oauth2_text">Введена адреса електронної пошти підтримує спрощене налаштування (OAuth2).\n\nНа наступному кроці дозвольте, будь ласка, Delta Chat виступати у якості Вашого додатку для чату за допомогою електронної пошти.\n\nУ Delta Chat немає серверів, Ваші дані залишаються на Вашому пристрої!</string>
-    <string name="login_info_gmail_text">Якщо Ви користуєтеся GMail і у вас увімкнена двофакторна аутентифікація, Вам потрібно створити спеціальний пароль для додатків - App-Password. Якщо ці налаштування недоступні, Вам потрібно активувати параметр Less Secure Apps.</string>
     <string name="login_error_mail">Вкажіть дійсну адресу електронної пошти</string>
     <string name="login_error_server">Вкажіть дійсний сервер / IP-адресу</string>
     <string name="login_error_port">Вкажіть дійсний порт (1–65535)</string>
@@ -272,13 +271,6 @@
     <string name="pref_using_default">Використовувати за замовчуванням: %s</string>
     <string name="pref_profile_info_headline">Ваш профіль</string>
     <string name="pref_profile_photo">Фото профілю</string>
-    <string name="pref_trim_headline">Очищення повідомлень</string>
-    <string name="pref_trim_option">Видалити старі повідомлення</string>
-    <string name="pref_trim_option_explain">Автоматично видаляти старі повідомлення після досягнення зазначеного ліміту</string>
-    <string name="pref_trim_length_limit">Ліміт довжини чату</string>
-    <string name="pref_trim_length_limit_summary">%d повідомлень у чаті</string>
-    <string name="pref_trim_now_button">Очистити всі чати</string>
-    <string name="pref_trim_now_ask">Видалити всі старі повідомлення? Ця дія негайно очистить всі чати до %d останніх повідомлень.</string>
     <string name="pref_blocked_contacts">Заблоковані контакти</string>
     <string name="pref_profile_photo_remove_ask">Видалити фото профілю?</string>
     <string name="pref_help_url">https://delta.chat/uk/help</string>
@@ -515,4 +507,6 @@
     <string name="message_detail_to_desktop"> </string>
     <string name="menu.view.developer.open.log.folder">Відкрити папку журналів</string>
     <string name="menu.view.developer.open.current.log.file">Відкрити поточний файл журналу</string>
-    </resources>
+    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+
+</resources>

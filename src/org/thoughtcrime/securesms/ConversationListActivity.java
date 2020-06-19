@@ -30,10 +30,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.widget.TooltipCompat;
 
 import com.b44t.messenger.DcChat;
+import com.b44t.messenger.DcMsg;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.thoughtcrime.securesms.components.SearchToolbar;
+import org.thoughtcrime.securesms.connect.AccountManager;
+import org.thoughtcrime.securesms.connect.ApplicationDcContext;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.map.MapActivity;
 import org.thoughtcrime.securesms.qr.QrActivity;
@@ -61,6 +64,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   @SuppressWarnings("unused")
   private static final String TAG = ConversationListActivity.class.getSimpleName();
   private static final String OPENPGP4FPR = "openpgp4fpr";
+  public static final String CLEAR_NOTIFICATIONS = "clear_notifications";
 
   private final DynamicTheme    dynamicTheme    = new DynamicNoActionBarTheme();
   private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
@@ -80,7 +84,11 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
 
   @Override
   protected void onCreate(Bundle icicle, boolean ready) {
-    DcHelper.getContext(this).updateDeviceChats();
+    ApplicationDcContext dcContext = DcHelper.getContext(this);
+
+    // add welcome message
+    dcContext.updateDeviceChats();
+
     setContentView(R.layout.conversation_list_activity);
 
     Toolbar toolbar = findViewById(R.id.toolbar);
@@ -90,35 +98,41 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     searchToolbar            = findViewById(R.id.search_toolbar);
     searchAction             = findViewById(R.id.search_action);
     fragmentContainer        = findViewById(R.id.fragment_container);
-    conversationListFragment = initFragment(R.id.fragment_container, new ConversationListFragment(), dynamicLanguage.getCurrentLocale());
+
+    Bundle bundle = new Bundle();
+    conversationListFragment = initFragment(R.id.fragment_container, new ConversationListFragment(), dynamicLanguage.getCurrentLocale(), bundle);
 
     initializeSearchListener();
 
     TooltipCompat.setTooltipText(searchAction, getText(R.string.search_explain));
-    if (isRelayingMessageContent(this)) {
-      title.setText(isForwarding(this) ? R.string.forward_to : R.string.chat_share_with_title);
-      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-      if (isDirectSharing(this)) {
-        openConversation(getDirectSharingChatId(this), -1);
-      }
-    }
-    handleOpenpgp4fpr();
+    refresh();
   }
 
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
     setIntent(intent);
+    refresh();
+    conversationListFragment.onNewIntent();
+    invalidateOptionsMenu();
+  }
+
+  private void refresh() {
     if (isRelayingMessageContent(this)) {
       title.setText(isForwarding(this) ? R.string.forward_to : R.string.chat_share_with_title);
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      if (isDirectSharing(this)) {
+        openConversation(getDirectSharingChatId(this), -1);
+      }
     } else {
       title.setText(R.string.app_name);
       getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
-    conversationListFragment.onNewIntent();
-    invalidateOptionsMenu();
     handleOpenpgp4fpr();
+
+    if (getIntent().getBooleanExtra(CLEAR_NOTIFICATIONS, false)) {
+      DcHelper.getContext(this).notificationCenter.removeAllNotifiations();
+    }
   }
 
   @Override
@@ -212,6 +226,9 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       case R.id.menu_global_map:
         handleShowMap();
         return true;
+      case R.id.menu_switch_account:
+        AccountManager.getInstance().showSwitchAccountMenu(this);
+        return true;
       case android.R.id.home:
         onBackPressed();
         return true;
@@ -246,6 +263,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       intent.putExtra(MapActivity.CHAT_IDS, ALL_CHATS_GLOBAL_MAP);
       startActivity(intent);
   }
+
 
   @Override
   public void onCreateConversation(int chatId) {

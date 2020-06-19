@@ -1,22 +1,21 @@
 package org.thoughtcrime.securesms.preferences;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.Nullable;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import android.text.TextUtils;
 
 import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
 import org.thoughtcrime.securesms.R;
-import org.thoughtcrime.securesms.notifications.MessageNotifierCompat;
+import org.thoughtcrime.securesms.connect.KeepAliveService;
 import org.thoughtcrime.securesms.util.Prefs;
 
 import static android.app.Activity.RESULT_OK;
@@ -33,12 +32,10 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
 
     this.findPreference(Prefs.LED_COLOR_PREF)
         .setOnPreferenceChangeListener(new ListSummaryListener());
-    this.findPreference(Prefs.LED_BLINK_PREF)
-        .setOnPreferenceChangeListener(new ListSummaryListener());
     this.findPreference(Prefs.RINGTONE_PREF)
         .setOnPreferenceChangeListener(new RingtoneSummaryListener());
     this.findPreference(Prefs.NOTIFICATION_PRIVACY_PREF)
-        .setOnPreferenceChangeListener(new NotificationPrivacyListener());
+        .setOnPreferenceChangeListener(new ListSummaryListener());
     this.findPreference(Prefs.NOTIFICATION_PRIORITY_PREF)
         .setOnPreferenceChangeListener(new ListSummaryListener());
 
@@ -59,11 +56,35 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
         });
 
     initializeListSummary((ListPreference) findPreference(Prefs.LED_COLOR_PREF));
-    initializeListSummary((ListPreference) findPreference(Prefs.LED_BLINK_PREF));
     initializeListSummary((ListPreference) findPreference(Prefs.NOTIFICATION_PRIVACY_PREF));
     initializeListSummary((ListPreference) findPreference(Prefs.NOTIFICATION_PRIORITY_PREF));
 
     initializeRingtoneSummary(findPreference(Prefs.RINGTONE_PREF));
+
+
+    CheckBoxPreference reliableService =  this.findPreference("pref_reliable_service");
+    reliableService.setOnPreferenceChangeListener((preference, newValue) -> {
+      Context context = getContext();
+      boolean enabled = (Boolean) newValue; // Prefs.reliableService() still has the old value
+      if (enabled && Prefs.isNotificationsEnabled(context)) {
+          KeepAliveService.startSelf(context);
+      } else {
+        context.stopService(new Intent(context, KeepAliveService.class));
+      }
+      return true;
+    });
+
+    CheckBoxPreference notificationsEnabled = this.findPreference("pref_key_enable_notifications");
+    notificationsEnabled.setOnPreferenceChangeListener((preference, newValue) -> {
+      Context context = getContext();
+      boolean enabled = (Boolean) newValue; // Prefs.isNotificationsEnabled() still has the old value
+      if (enabled && Prefs.reliableService(context)) {
+        KeepAliveService.startSelf(context);
+      } else {
+        context.stopService(new Intent(context, KeepAliveService.class));
+      }
+      return true;
+    });
   }
 
   @Override
@@ -120,26 +141,8 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
   }
 
   public static CharSequence getSummary(Context context) {
-    final int onCapsResId   = R.string.on;
-    final int offCapsResId  = R.string.off;
-
-    return context.getString(Prefs.isNotificationsEnabled(context) ? onCapsResId : offCapsResId);
-  }
-
-  private class NotificationPrivacyListener extends ListSummaryListener {
-    @SuppressLint("StaticFieldLeak")
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object value) {
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          MessageNotifierCompat.onNotificationPrivacyChanged();
-          return null;
-        }
-      }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-      return super.onPreferenceChange(preference, value);
-    }
-
+    boolean notificationsEnabled = Prefs.isNotificationsEnabled(context);
+    String ret = context.getString(notificationsEnabled ? R.string.on : R.string.off);
+    return ret;
   }
 }

@@ -255,7 +255,6 @@
     <string name="login_auth_method">Mètode d\'autorització</string>
     <string name="login_info_oauth2_title">Continua amb la configuració simplificada?</string>
     <string name="login_info_oauth2_text">L’adreça d\'e-mail que heu introduït admet una configuració simplificada. (OAuth2).\n\nEn el pas següent, permeteu que Delta Chat actuï com a xat amb l\'aplicació de correu electrònic..\n\nNo hi ha servidors de Delta Chat, les vostres dades romanen al vostre dispositiu!</string>
-    <string name="login_info_gmail_text">Pels comptes de GMail necessiteu crear una Contrasenya-App si teniu l\'opció 2FA activada. Si aquesta opció no està disponible, us caldrà activar l\'opció Less Secure Apps.</string>
     <string name="login_error_mail">Si us plau poseu una adreça d\'email vàlida</string>
     <string name="login_error_server">Si us plau poseu un servidor / adreça IP vàlida</string>
     <string name="login_error_port">Si us plau poseu un  port vàlid (1-65535)</string>
@@ -280,13 +279,6 @@
     <string name="pref_using_default">Ús per defecte: %s</string>
     <string name="pref_profile_info_headline">Informació del vostre perfil</string>
     <string name="pref_profile_photo">Fotografia de perfil</string>
-    <string name="pref_trim_headline">Retalla missatges</string>
-    <string name="pref_trim_option">Esborra missatges antics</string>
-    <string name="pref_trim_option_explain">Esborra els missatges més antics quan el xat sobrepassi una mida concreta</string>
-    <string name="pref_trim_length_limit">Límit de mida del xat</string>
-    <string name="pref_trim_length_limit_summary">%d missatges per xat</string>
-    <string name="pref_trim_now_button">Retalla tots els xats ara</string>
-    <string name="pref_trim_now_ask">Esborrar ara els missatges antics? Això reduirà el nombre de xats als %d missatges més recents.</string>
     <string name="pref_blocked_contacts">Contactes bloquejats</string>
     <string name="pref_profile_photo_remove_ask">Esborrar la foto de perfil?</string>
     <string name="pref_help_url">https://delta.chat/ca/help</string>
@@ -530,4 +522,6 @@
     <string name="user_location_permission_explanation">Delta Chat necessita permís per accedir a la ubicació per poder-la mostrar i compartir.</string>
 
 
-    </resources>
+    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+
+</resources>

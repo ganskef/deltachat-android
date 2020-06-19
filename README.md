@@ -2,21 +2,20 @@
 
 This branch plugs into and partly replaces the experimental Location Streaming in Delta Chat. It proposes features I love to use, fully compatible to regular Delta Chat clients.
 
-Gratefully Delta Chat allows to share positions without using Google services. I'm traveling a lot and my person of interest would like to see where I am if I'm temporary not available or if she is in doubt about I'm doing well. Since this isn't predictable I would like to share my **location permanently** with here.
+<img alt="Train Locations Map" src="docs/images/2020-01-locations-train.png" width="298" /> 
+<img alt="City Locations Map" src="docs/images/2020-01-locations-city.png" width="298" /> 
 
-Therefore contacts with name ending with ' *' will enable location streaming any time if disabled. TODO: A regular feature should implement a contact property instead of a name extension of course.
+Gratefully Delta Chat allows to share positions without using Google services. I'm traveling a lot and my person of interest would like to see where I am if I'm temporary not available or if she is in doubt about I'm doing well. Since this isn't predictable I would like to share my **location permanently** with here. Contacts with name ending with ' *' will enable location streaming any time if disabled. TODO: A regular feature should implement a contact property instead of a name extension of course.
 
-While I'm not using Google Play Services on my device `NetworkLocationProvider`s aren't available. Permanently using GPS Sensor is draining the battery very fast. **GPSLogger for Android** is a battery efficient GPS logging application. It's better to use its data than resolving it in Delta Chat.
+While I'm not using Google Play Services on my device `NetworkLocationProvider`s aren't available. Permanently using GPS Sensor is draining the battery very fast. [GPSLogger for Android](https://gpslogger.app/) is a **battery efficient GPS** logging application. GPSLogger is started and stopped with an Intent **managed by Delta Chat**. The `LocationBackgroundService` in Delta Chat is disabled if GPSLogger is installed on the device.
 
-GPSLogger can be started and stopped with an Intent triggered by Delta Chat. The LocationBackgroundService in Delta Chat is disabled if GPSLogger is installed on the device.
-
-It makes no sense to monitor GPS and send a bunch of mails if you're connected with an **well known WiFi** access point so it's stopped at home for example. A Point Of Interest (POI) sent to yourself with the name of the router and suffix ' *' is used to define its location. On using such POI it will be recreated if it is older than a day to be shown on the map.
+It makes no sense to monitor GPS and send a bunch of mails if you're connected with an **well known WiFi** access point so it's stopped at home for example. A Point Of Interest (POI) sent to yourself with the name of the router and suffix ' *' is used to define its location. On using such POI it will be recreated if it is older than a day to be shown on the map. TODO: Definition of WiFi Access Points needs a regular feature too.
 
 Additionally if the device is laying on your desktop or the night table in a hotel room GPSLogger is disabled too by **detecting missing movements** of compass heading and location distances.
 
 A lot of hours and distances I'm sitting in a German railway express called ICE. Its mirrored window surface filters GPS signals but the train provides free WiFi and a REST API with very precisely location. Connected with **"WIFIonICE"** the locations will be taken from there. TODO: This should be generic with settings to use other providers.
 
-**Note:** Instead of following the development (master branch) you could use the latest release v0.510.1. Respect the build instructions of the native part are very different since the tool chain is switched between C and Rust. Consider to clone it in a separate repository. To separate the installations on the device the release build is using the original icon without "dev". To move data you have to use a backup.
+**Note:** Instead of registering a Service the extension hooks in the synchronization thread of Delta Chat to simplify scheduling.
 
 
 ## Delta Chat Android Client
@@ -33,7 +32,7 @@ For the core library and other common info, please refer to the
 <img alt="Screenshot Chat List" src="docs/images/2019-01-chatlist.png" width="298" /> <img alt="Screenshot Chat View" src="docs/images/2019-01-chat.png" width="298" />
 
 
-# Build
+# Check Out Repository
 
 When checking out _deltachat-android_, make sure also to check out the
 subproject _deltachat-core-rust_:
@@ -43,8 +42,44 @@ subproject _deltachat-core-rust_:
   or later by `git submodule update --init --recursive`. If you do this in your
   home directory, this results in the folder `~/deltachat-android` which is just fine.
 
-Then, open `ndk-make.sh` in an editor and follow the instructions
-to set up a rust build environment.  This is needed only once.
+# Build Using Dockerfile
+
+If you only want to build an APK, the easiest way is to use
+provided `Dockerfile` with [Docker](https://www.docker.com/) or
+[Podman](https://podman.io/). Podman is a drop-in replacement for Docker
+that does not require root privileges.  It is used in the following
+example.
+
+First, build the image `deltachat-android` by running
+```
+podman build . -t deltachat-android
+```
+
+Then, run the image:
+```
+podman run -it -v $(pwd):/home/app -w /home/app localhost/deltachat-android
+```
+
+Within the container, build the native library first:
+```
+root@6012dcb974fe:/home/app# ./ndk-make.sh
+```
+
+Then, [build an APK](https://developer.android.com/studio/build/building-cmdline):
+```
+root@6012dcb974fe:/home/app# ./gradlew assembleDebug
+```
+
+If you don't want to use Docker or Podman, proceed to the next section.
+
+# Install Build Environment
+
+To setup build environment manually, you can read the `Dockerfile`
+and mimic what it does.
+
+First, you need to setup Android SDK and Android NDK.  Then, open
+`ndk-make.sh` in an editor and follow the instructions to set up a rust
+build environment.  This is needed only once.
 
 After that, call `./ndk-make.sh` in the root directory to build core-rust.
 Afterwards run the project in Android Studio. The project requires API 25.

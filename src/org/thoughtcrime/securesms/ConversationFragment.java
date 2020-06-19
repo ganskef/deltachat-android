@@ -111,6 +111,7 @@ public class ConversationFragment extends Fragment
     private TextView                    noMessageTextView;
     private ApplicationDcContext        dcContext;
 
+    public boolean isPaused;
     private Debouncer markseenDebouncer;
 
     @Override
@@ -209,6 +210,11 @@ public class ConversationFragment extends Fragment
         if (list.getAdapter() != null) {
             list.getAdapter().notifyDataSetChanged();
         }
+
+        if (isPaused) {
+            isPaused = false;
+            markseenDebouncer.publish(() -> manageMessageSeenState());
+        }
     }
 
 
@@ -216,6 +222,7 @@ public class ConversationFragment extends Fragment
     public void onPause() {
         super.onPause();
         setLastSeen(System.currentTimeMillis());
+        isPaused = true;
     }
 
     @Override
@@ -310,6 +317,16 @@ public class ConversationFragment extends Fragment
         }
     }
 
+    public void scrollToTop() {
+        ConversationAdapter adapter = (ConversationAdapter)list.getAdapter();
+        if (adapter.getItemCount()>0) {
+            final int pos = adapter.getItemCount()-1;
+            list.post(() -> {
+                list.getLayoutManager().scrollToPosition(pos);
+            });
+        }
+    }
+
     public void scrollToBottom() {
         if (((LinearLayoutManager) list.getLayoutManager()).findFirstVisibleItemPosition() < SCROLL_ANIMATION_THRESHOLD) {
             list.smoothScrollToPosition(0);
@@ -330,54 +347,37 @@ public class ConversationFragment extends Fragment
         }
     }
 
-    private String getMessageContent(DcMsg msg, DcMsg prev_msg)
-    {
-        String ret = "";
-
-        if (msg.getFromId() != prev_msg.getFromId()) {
-            DcContact contact = dcContext.getContact(msg.getFromId());
-            ret += contact.getDisplayName() + ":\n";
-        }
-
-        if(msg.getType() == DcMsg.DC_MSG_TEXT) {
-            ret += msg.getText();
-        }
-        else {
-            ret += msg.getSummarytext(1000);
-        }
-
-        return ret;
-    }
-
     private void handleCopyMessage(final Set<DcMsg> dcMsgsSet) {
         List<DcMsg> dcMsgsList = new LinkedList<>(dcMsgsSet);
-        Collections.sort(dcMsgsList, new Comparator<DcMsg>() {
-            @Override
-            public int compare(DcMsg lhs, DcMsg rhs) {
-                if      (lhs.getDateReceived() < rhs.getDateReceived())  return -1;
-                else if (lhs.getDateReceived() == rhs.getDateReceived()) return 0;
-                else                                                     return 1;
-            }
-        });
+        Collections.sort(dcMsgsList, (lhs, rhs) -> Long.compare(lhs.getDateReceived(), rhs.getDateReceived()));
 
         StringBuilder result = new StringBuilder();
 
         DcMsg prevMsg = new DcMsg(dcContext, DcMsg.DC_MSG_TEXT);
         for (DcMsg msg : dcMsgsList) {
-            if (result.length()>0) {
+            if (result.length() > 0) {
                 result.append("\n\n");
             }
-            result.append(getMessageContent(msg, prevMsg));
+
+            if (msg.getFromId() != prevMsg.getFromId()) {
+                DcContact contact = dcContext.getContact(msg.getFromId());
+                result.append(contact.getDisplayName()).append(":\n");
+            }
+            if(msg.getType() == DcMsg.DC_MSG_TEXT) {
+                result.append(msg.getText());
+            } else {
+                result.append(msg.getSummarytext(10000000));
+            }
+
             prevMsg = msg;
         }
 
-        if (result.length()>0) {
+        if (result.length() > 0) {
             try {
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboard.setText(result.toString());
                 Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.copied_to_clipboard), Toast.LENGTH_LONG).show();
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -415,17 +415,6 @@ public class ConversationFragment extends Fragment
     }
 
     private void handleResendMessage(final DcMsg message) {
-        // TODO
-    /*
-    final Context context = getActivity().getApplicationContext();
-    new AsyncTask<MessageRecord, Void, Void>() {
-      @Override
-      protected Void doInBackground(MessageRecord... messageRecords) {
-        MessageSender.resend(context, messageRecords[0]);
-        return null;
-      }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message);
-    */
     }
 
     private void handleReplyMessage(final DcMsg message) {
@@ -493,6 +482,10 @@ public class ConversationFragment extends Fragment
         else{
             noMessageTextView.setVisibility(View.GONE);
         }
+
+        if (!isPaused) {
+            markseenDebouncer.publish(() -> manageMessageSeenState());
+        }
     }
 
     private void updateLocationButton() {
@@ -509,6 +502,14 @@ public class ConversationFragment extends Fragment
     private void scrollToLastSeenPosition(final int lastSeenPosition) {
         if (lastSeenPosition > 0) {
             list.post(() -> ((LinearLayoutManager)list.getLayoutManager()).scrollToPositionWithOffset(lastSeenPosition, list.getHeight()));
+        }
+    }
+
+    public void scrollToMsgId(final int msgId) {
+        ConversationAdapter adapter = (ConversationAdapter)list.getAdapter();
+        int position = adapter.msgIdToPosition(msgId);
+        if (position!=-1) {
+            scrollToStartingPosition(position);
         }
     }
 

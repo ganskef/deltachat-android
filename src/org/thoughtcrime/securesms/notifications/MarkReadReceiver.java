@@ -5,26 +5,35 @@ package org.thoughtcrime.securesms.notifications;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 
 import org.thoughtcrime.securesms.connect.ApplicationDcContext;
 import org.thoughtcrime.securesms.connect.DcHelper;
+import org.thoughtcrime.securesms.util.Util;
 
 public class MarkReadReceiver extends BroadcastReceiver {
-
-  private static final String TAG                   = MarkReadReceiver.class.getSimpleName();
-  public static final  String CLEAR_ACTION          = "org.thoughtcrime.securesms.notifications.CLEAR";
-  public static final  String CHAT_IDS_EXTRA        = "chat_ids";
-  public static final  String NOTIFICATION_ID_EXTRA = "notification_id";
+  public static final  String MARK_NOTICED_ACTION   = "org.thoughtcrime.securesms.notifications.MARK_NOTICED";
+  public static final  String CANCEL_ACTION         = "org.thoughtcrime.securesms.notifications.CANCEL";
+  public static final  String CHAT_ID_EXTRA         = "chat_id";
 
   @Override
   public void onReceive(final Context context, Intent intent) {
-    if (!CLEAR_ACTION.equals(intent.getAction()))
+    boolean markNoticed = MARK_NOTICED_ACTION.equals(intent.getAction());
+    if (!markNoticed && !CANCEL_ACTION.equals(intent.getAction())) {
       return;
+    }
 
-      final int[] chatIds         = intent.getIntArrayExtra(CHAT_IDS_EXTRA);
-      MessageNotifierCompat.removeNotifications(chatIds);
-      ApplicationDcContext dcContext = DcHelper.getContext(context);
-      new MarkAsNoticedAsyncTask(chatIds, dcContext, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    final int chatId = intent.getIntExtra(CHAT_ID_EXTRA, 0);
+    if (chatId==0) {
+      return;
+    }
+
+    final ApplicationDcContext dcContext = DcHelper.getContext(context);
+
+    Util.runOnAnyBackgroundThread(() -> {
+      dcContext.notificationCenter.removeNotifications(chatId);
+      if (markNoticed) {
+        dcContext.marknoticedChat(chatId);
+      }
+    });
   }
 }

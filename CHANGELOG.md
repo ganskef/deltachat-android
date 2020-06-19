@@ -1,7 +1,93 @@
 # Delta Chat Android Changelog
 
+## v1.10.0
+2020-06
+
+* with this version, Delta Chat enters a whole new level of speed,
+  messages will be downloaded and sent way faster -
+  technically, this was introduced by using so called "async-processing"
+* avatars can be enlarged
+* new emoji selector - including new and diversified emojis
+* you can now "blur" areas in an image before sending
+* new default wallpaper
+* if a message cannot be delivered to a recipient
+  and the server replies with an error report message,
+  the error is shown beside the message itself in more cases
+* backup now includes the mute-state of chats
+* notifications now use one system-editable channel per chat,
+  this fix various notification bugs
+* android 7 and newer groups notifications
+* multi-account is an officially supported feature now
+* default to "Strict TLS" for some known providers
+* improve reconnection handling
+* improve interaction with conventional email programs
+  by showing better subjects
+* allow calling the app from others apps with a standard email intent
+* fix issues with database locking
+* fix importing addresses
+* lots of other fixes
+
+## v1.8.1
+2020-05-14
+
+* fix a bug that could led to load if the server does not use sent-folder
+* fix bug on sharing
+* improve polling when background-connection is unreliable
+* since 1.6.0, changing group-name removed the group-avatar sometimes, fixed
+
+
+## v1.8.0
+2020-05-11
+
+* by default, the permantent notification is no longer shown;
+  the background fetch realibility depends on the system and the
+  permantent notification can be enabled at "Settings / Notifications" as needed
+* fix a bug that stops receiving messages under some circumstances
+* more bug fixes
+* update translations
+
+
+## v1.6.2
+2020-05-02
+
+* expunge deleted messages more frequently
+* bug fixes
+* update translations
+
+
+## v1.6.0
+2020-04-29
+
+* new options to auto-delete messages from the device or from your server
+  see "Settings / Chats and media"
+* to save traffic and time, smaller and faster Ed25519 keys are used by default
+* in-chat search
+* search inside the integrated help
+* new experimental feature that allows switching the account in use
+* improve interaction with traditional mail clients
+* improved onboarding when the provider returns a link
+* to improve background fetch, show a permantent notification by default
+* the permantent notification can be disabled at "Settins / Notifications"
+* bug fixes
+* add Indonesian and Persian translations, update other translations
+
+
+## v1.3.0
+2020-03-25
+
+* on forwarding, "Saved messages" will be always shown at the top of the list
+* streamline confirmation dialogs on chat creation and on forwarding to "Saved messages"
+* cleanup settings
+* improve interoperability eg. with Cyrus server
+* fix group creation if group was created by non-delta clients
+* fix showing replies from non-delta clients
+* fix crash when using empty groups
+* several other fixes
+* add Sardinian translation, update other translations and help
+
+
 ## v1.2.1
-2020-03-01
+2020-03-04
 
 * on log in, for known providers, detailed information are shown if needed;
 * in these cases, also the log in is faster
@@ -14,13 +100,13 @@
 * streamline onboarding
 * add an option to create an account by scanning a qr code, of course,
   this has to be supported by the used provider
-* lower minimal requirements, Delta Chat now also runs on Android 4.1 Lollipop
+* lower minimal requirements, Delta Chat now also runs on Android 4.1 Jelly Bean
 * fix updating names from incoming mails
 * fix encryption to Ed25519 keys that will be used in one of the next releases
 * several bug fixes, eg. on sending and receivind messages, see
   https://github.com/deltachat/deltachat-core-rust/blob/master/CHANGELOG.md#1250
   for details on that
-* update translations, update local help
+* add Croatian and Esperanto translations, update other translations and help
 
 The changes have been done by Alexander Krotov, Allan Nordhøy, Ampli-fier,
 Angelo Fuchs, Andrei Guliaikin, Asiel Díaz Benítez, Besnik, Björn Petersen,
@@ -394,7 +480,7 @@ Ozancan Karataş, Racer1, sebek, Viktor Pracht, Webratte and others
 * Improved setup for many other providers
 * Decide, which e-mails should appear - "Chats only", "Accepted contacts" or "All"
 * Improve moving chat messages to the DeltaChat folder
-* Optional a stronger image compression
+* Option for a stronger image compression
 * Smaller message sizes in groups
 * Share files from other apps to Delta Chat
 * Share texts from mailto:-links
@@ -449,7 +535,7 @@ Iskatel Istiny, Lech Rowerski, violoncelloCH and others.
 * Show date always atop of the chat
 * Fix redraw problems with hidden system status or navigation bar
 * Reply directly from within notification
-* The system credentials has be be entered before exports
+* The system credentials have to be entered before exports
 * The app can be protected by the system credentials
 * Hide the permanent notification more reliable
 * Improved resending of messages

@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -510,8 +511,10 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
 
         // calling configure() results in
         // receiving multiple DC_EVENT_CONFIGURE_PROGRESS events
-        DcHelper.getContext(this).captureNextError();
-        DcHelper.getContext(this).configure();
+        ApplicationDcContext dcContext = DcHelper.getContext(this);
+        dcContext.stopIo();
+        dcContext.captureNextError();
+        dcContext.configure();
     }
 
     private void setConfig(@IdRes int viewId, String configTarget, boolean doTrim) {
@@ -533,13 +536,21 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
             ApplicationDcContext dcContext = DcHelper.getContext(this);
             long progress = (Long)data1;
             if (progress==0/*error/aborted*/) {
+                dcContext.maybeStartIo(); // start-io is also needed on errors to make previous config work in case of changes
                 dcContext.endCaptureNextError();
                 progressDialog.dismiss();
                 if (dcContext.hasCapturedError()) {
-                    new AlertDialog.Builder(this)
+                    AlertDialog d = new AlertDialog.Builder(this)
                             .setMessage(dcContext.getCapturedError())
                             .setPositiveButton(android.R.string.ok, null)
-                            .show();
+                            .create();
+                    d.show();
+                    try {
+                        //noinspection ConstantConditions
+                        Linkify.addLinks((TextView) d.findViewById(android.R.id.message), Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             else if (progress<1000/*progress in permille*/) {
@@ -547,6 +558,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
                 progressDialog.setMessage(getResources().getString(R.string.one_moment)+String.format(" %d%%", percent));
             }
             else if (progress==1000/*done*/) {
+                dcContext.maybeStartIo();
                 dcContext.endCaptureNextError();
                 progressDialog.dismiss();
                 Intent conversationList = new Intent(getApplicationContext(), ConversationListActivity.class);

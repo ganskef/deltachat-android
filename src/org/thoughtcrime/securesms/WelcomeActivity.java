@@ -16,6 +16,7 @@ import com.b44t.messenger.DcLot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.ApplicationDcContext;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.permissions.Permissions;
@@ -25,6 +26,7 @@ import org.thoughtcrime.securesms.util.views.ProgressDialog;
 import java.io.File;
 
 public class WelcomeActivity extends BaseActionBarActivity implements DcEventCenter.DcEventDelegate {
+    public static final String QR_ACCOUNT_EXTRA = "qr_account_extra";
 
     private boolean manualConfigure = true; // false: configure by QR account creation
     private ProgressDialog progressDialog = null;
@@ -46,6 +48,16 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
         dcContext = DcHelper.getContext(this);
         dcContext.eventCenter.addObserver(DcContext.DC_EVENT_CONFIGURE_PROGRESS, this);
         dcContext.eventCenter.addObserver(DcContext.DC_EVENT_IMEX_PROGRESS, this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        String qrAccount = getIntent().getStringExtra(QR_ACCOUNT_EXTRA);
+        if (qrAccount!=null) {
+            manualConfigure = false;
+            startQrAccountCreation(qrAccount);
+        }
     }
 
     @Override
@@ -146,6 +158,7 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
 
         // calling configure() results in
         // receiving multiple DC_EVENT_CONFIGURE_PROGRESS events
+        dcContext.stopIo();
         dcContext.configure();
     }
 
@@ -191,12 +204,14 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
                 progressUpdate((int)progress);
             }
             else if (progress==1000/*done*/) {
+                dcContext.maybeStartIo();
                 progressSuccess(false);
             }
         }
         else if (manualConfigure && eventId==DcContext.DC_EVENT_CONFIGURE_PROGRESS) {
             long progress = (Long)data1;
             if (progress==1000/*done*/) {
+                dcContext.maybeStartIo();
                 finish(); // remove ourself from the activity stack (finishAffinity is available in API 16, we're targeting API 14)
             }
         }
@@ -228,7 +243,7 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
                 case DcContext.DC_QR_ACCOUNT:
                     String domain = qrParsed.getText1();
                     new AlertDialog.Builder(this)
-                            .setMessage(String.format("Create new e-mail address on \"%s\" and log in there?", domain))
+                            .setMessage(getString(R.string.qraccount_ask_create_and_login, domain))
                             .setPositiveButton(R.string.ok, (dialog, which) -> startQrAccountCreation(qrRaw))
                             .setNegativeButton(R.string.cancel, null)
                             .setCancelable(false)
@@ -237,11 +252,21 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
 
                 default:
                     new AlertDialog.Builder(this)
-                            .setMessage("The scanned QR code cannot be used to set up a new account.")
+                            .setMessage(R.string.qraccount_qr_code_cannot_be_used)
                             .setPositiveButton(R.string.ok, null)
                             .show();
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AccountManager accountManager = AccountManager.getInstance();
+        if (accountManager.canRollbackAccountCreation(this)) {
+            accountManager.rollbackAccountCreation(this);
+        } else {
+            super.onBackPressed();
         }
     }
 }

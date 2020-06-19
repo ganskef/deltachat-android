@@ -15,7 +15,12 @@ import android.util.Log;
 /**
  * Created by cyberta on 06.03.19.
  */
-
+/**
+ * TODO: The service should acquire one location (directly or via DRAFT) then
+ * set an alarm to the next try and quit. <a
+ * href="https://developer.android.com/training/scheduling/alarms#java">Schedule
+ * repeating alarms</a>
+ */
 public class LocationBackgroundService extends Service {
 
     private static final int TIMEOUT = 1000 * 15;
@@ -41,7 +46,7 @@ public class LocationBackgroundService extends Service {
     public void onCreate() {
 
         // XXX so gibt's network on main thread Exception
-        //        new LocalLocation(getApplicationContext()).readLocations();
+        //        new Location__DRAFT(getApplicationContext()).readLocations();
         // disable background service if GPS Logger exists
         if(Location__DRAFT.isGpsLoggerInstalled(getApplicationContext())) {
             Log.i(TAG, "Found GPS Logger, disable Delta Chat location service");

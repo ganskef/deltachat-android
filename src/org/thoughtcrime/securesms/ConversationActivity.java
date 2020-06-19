@@ -34,6 +34,7 @@ import android.os.Vibrator;
 import android.provider.Browser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.WindowCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -54,6 +55,7 @@ import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,7 +80,8 @@ import org.thoughtcrime.securesms.components.SendButton;
 import org.thoughtcrime.securesms.components.camera.QuickAttachmentDrawer;
 import org.thoughtcrime.securesms.components.camera.QuickAttachmentDrawer.AttachmentDrawerListener;
 import org.thoughtcrime.securesms.components.camera.QuickAttachmentDrawer.DrawerState;
-import org.thoughtcrime.securesms.components.emoji.EmojiDrawer;
+import org.thoughtcrime.securesms.components.emoji.EmojiKeyboardProvider;
+import org.thoughtcrime.securesms.components.emoji.MediaKeyboard;
 import org.thoughtcrime.securesms.components.reminder.ReminderView;
 import org.thoughtcrime.securesms.connect.ApplicationDcContext;
 import org.thoughtcrime.securesms.connect.DcHelper;
@@ -91,7 +94,6 @@ import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.mms.MediaConstraints;
 import org.thoughtcrime.securesms.mms.PartAuthority;
 import org.thoughtcrime.securesms.mms.SlideDeck;
-import org.thoughtcrime.securesms.notifications.MessageNotifierCompat;
 import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.providers.PersistentBlobProvider;
 import org.thoughtcrime.securesms.recipients.Recipient;
@@ -140,6 +142,7 @@ import static org.thoughtcrime.securesms.util.RelayUtil.isSharing;
 public class ConversationActivity extends PassphraseRequiredActionBarActivity
     implements ConversationFragment.ConversationFragmentListener,
                AttachmentManager.AttachmentListener,
+               SearchView.OnQueryTextListener,
                DcEventCenter.DcEventDelegate,
                OnKeyboardShownListener,
                AttachmentDrawerListener,
@@ -177,7 +180,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private   AttachmentTypeSelector attachmentTypeSelector;
   private   AttachmentManager      attachmentManager;
   private   AudioRecorder          audioRecorder;
-  private   Stub<EmojiDrawer>      emojiDrawerStub;
+  private   Stub<MediaKeyboard>    emojiDrawerStub;
   protected HidingLinearLayout     quickAttachmentToggle;
   private   QuickAttachmentDrawer  quickAttachmentDrawer;
   private   InputPanel             inputPanel;
@@ -255,6 +258,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
     Log.w(TAG, "onNewIntent()");
     
     if (isFinishing()) {
@@ -299,14 +303,14 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     titleView.setTitle(glideRequests, dcChat);
 
-    MessageNotifierCompat.updateVisibleChat(chatId);
+    dcContext.notificationCenter.updateVisibleChat(chatId);
   }
 
   @Override
   protected void onPause() {
     super.onPause();
     processComposeControls(ACTION_SAVE_DRAFT);
-    MessageNotifierCompat.updateVisibleChat(MessageNotifierCompat.NO_VISIBLE_CHAT_ID);
+    dcContext.notificationCenter.updateVisibleChat(0);
     if (isFinishing()) overridePendingTransition(R.anim.fade_scale_in, R.anim.slide_to_right);
     quickAttachmentDrawer.onPause();
     inputPanel.onPause();
@@ -328,6 +332,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (emojiDrawerStub.resolved() && container.getCurrentInput() == emojiDrawerStub.get()) {
       container.hideAttachedInput(true);
     }
+
+    initializeBackground();
   }
 
   @Override
@@ -428,14 +434,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       return true;
     }
 
-    if (recipient != null && Prefs.isChatMuted(this, chatId)) {
-      inflater.inflate(R.menu.conversation_muted, menu);
-    }
-    else {
-      inflater.inflate(R.menu.conversation_unmuted, menu);
-    }
-
     inflater.inflate(R.menu.conversation, menu);
+
+    if(Prefs.isChatMuted(dcChat)) {
+      menu.findItem(R.id.menu_mute_notifications).setTitle(R.string.menu_unmute);
+    }
 
     if (!Prefs.isLocationStreamingEnabled(this)) {
       menu.findItem(R.id.menu_show_map).setVisible(false);
@@ -456,6 +459,43 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     inflater.inflate(R.menu.conversation_delete, menu);
 
+    try {
+      MenuItem searchItem = menu.findItem(R.id.menu_search_chat);
+      searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+        @Override
+        public boolean onMenuItemActionExpand(final MenuItem item) {
+          searchExpand(menu, item);
+          return true;
+        }
+
+        @Override
+        public boolean onMenuItemActionCollapse(final MenuItem item) {
+          searchCollapse(menu, item);
+          return true;
+        }
+      });
+      SearchView searchView = (SearchView) searchItem.getActionView();
+      searchView.setOnQueryTextListener(this);
+      searchView.setQueryHint(getString(R.string.search));
+      searchView.setIconifiedByDefault(true);
+
+      // hide the [X] beside the search field - this is too much noise, search can be aborted eg. by "back"
+      ImageView closeBtn = searchView.findViewById(R.id.search_close_btn);
+      if (closeBtn!=null) {
+        closeBtn.setEnabled(false);
+        closeBtn.setImageDrawable(null);
+      }
+    } catch (Exception e) {
+      Log.e(TAG, "cannot set up in-chat-search: ", e);
+    }
+
+    if (!dcChat.canSend()) {
+      MenuItem attachItem =  menu.findItem(R.id.menu_add_attachment);
+      if (attachItem!=null) {
+        attachItem.setVisible(false);
+      }
+    }
+
     super.onPrepareOptionsMenu(menu);
     return true;
   }
@@ -469,9 +509,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       case R.id.menu_archive_chat:          handleArchiveChat();               return true;
       case R.id.menu_delete_chat:           handleDeleteChat();                return true;
       case R.id.menu_mute_notifications:    handleMuteNotifications();         return true;
-      case R.id.menu_unmute_notifications:  handleUnmuteNotifications();       return true;
       case R.id.menu_profile:               handleProfile();                   return true;
       case R.id.menu_show_map:              handleShowMap();                   return true;
+      case R.id.menu_search_up:             handleMenuSearchNext(false);       return true;
+      case R.id.menu_search_down:           handleMenuSearchNext(true);        return true;
       case android.R.id.home:               handleReturnToConversationList();  return true;
     }
 
@@ -510,9 +551,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     if (isRelayingMessageContent(this)) {
       if (isSharing(this)) {
-        dcContext.setDraft(dcChat.getId(), null);
         attachmentManager.cleanup();
-        composeText.setText("");
       }
       finish();
       return;
@@ -525,10 +564,16 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void handleMuteNotifications() {
-    MuteDialog.show(this, until -> {
-      Prefs.setChatMutedUntil(this, chatId, until);
-      titleView.setTitle(glideRequests, dcChat); // update title-mute-icon
-    });
+    if(!Prefs.isChatMuted(dcChat)) {
+      MuteDialog.show(this, duration -> {
+        Prefs.setChatMuteDuration(dcContext, chatId, duration);
+        titleView.setTitle(glideRequests, dcChat);
+      });
+    } else {
+      // unmute
+      Prefs.setChatMuteDuration(dcContext, chatId, 0);
+      titleView.setTitle(glideRequests, dcChat);
+    }
   }
 
   private void handleProfile() {
@@ -539,11 +584,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       startActivity(intent);
       overridePendingTransition(0, 0);
     }
-  }
-
-  private void handleUnmuteNotifications() {
-    Prefs.setChatMutedUntil(this, chatId, 0);
-    titleView.setTitle(glideRequests, dcChat); // update title-mute-icon
   }
 
   private void handleLeaveGroup() {
@@ -603,22 +643,27 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleForwarding() {
     DcChat dcChat = dcContext.getChat(chatId);
-    String name = dcChat.getName();
-    if( !dcChat.isGroup() ) {
-      int[] contactIds = dcContext.getChatContacts(chatId);
-      if( contactIds.length==1 || contactIds.length==2 ) {
-        name = dcContext.getContact(contactIds[0]).getNameNAddr();
+    if (dcChat.isSelfTalk()) {
+      new RelayingTask(this, chatId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    } else {
+      String name = dcChat.getName();
+      if (!dcChat.isGroup()) {
+        int[] contactIds = dcContext.getChatContacts(chatId);
+        if (contactIds.length == 1 || contactIds.length == 2) {
+          name = dcContext.getContact(contactIds[0]).getNameNAddr();
+        }
       }
+      new AlertDialog.Builder(this)
+              .setMessage(getString(R.string.ask_forward, name))
+              .setPositiveButton(R.string.ok, (dialogInterface, i) -> new RelayingTask(this, chatId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
+              .setNegativeButton(R.string.cancel, (dialogInterface, i) -> finish())
+              .show();
     }
-    new AlertDialog.Builder(this)
-            .setMessage(getString(R.string.ask_forward, name))
-            .setPositiveButton(R.string.ok, (dialogInterface, i) -> new RelayingTask(this, chatId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-            .setNegativeButton(R.string.cancel, (dialogInterface, i) -> finish())
-            .show();
   }
 
   private void handleSharing() {
     ArrayList<Uri> uriList =  RelayUtil.getSharedUris(this);
+    RelayUtil.resetRelayingMessageContent(this);
     if (uriList == null) return;
     if (uriList.size() > 1) {
       String message = String.format(getString(R.string.share_multiple_attachments), uriList.size());
@@ -798,6 +843,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       quickCameraToggle.setEnabled(false);
     }
 
+    initializeBackground();
+  }
+
+  private void initializeBackground() {
     String backgroundImagePath = Prefs.getBackgroundImagePath(this);
     if(!backgroundImagePath.isEmpty()) {
       Drawable image = Drawable.createFromPath(backgroundImagePath);
@@ -1182,7 +1231,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     if (refreshFragment) {
       fragment.reload(recipient, chatId);
-      MessageNotifierCompat.updateVisibleChat(chatId);
+      dcContext.notificationCenter.updateVisibleChat(chatId);
     }
 
     fragment.scrollToBottom();
@@ -1328,8 +1377,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   @Override
   public void onEmojiToggle() {
     if (!emojiDrawerStub.resolved()) {
-      inputPanel.setEmojiDrawer(emojiDrawerStub.get());
-      emojiDrawerStub.get().setEmojiEventListener(inputPanel);
+      initializeMediaKeyboardProviders(emojiDrawerStub.get(), false);
+      inputPanel.setMediaKeyboard(emojiDrawerStub.get());
     }
 
     if (container.getCurrentInput() == emojiDrawerStub.get()) {
@@ -1352,6 +1401,13 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
   }
 
+
+  private void initializeMediaKeyboardProviders(@NonNull MediaKeyboard mediaKeyboard, boolean stickersAvailable) {
+    boolean isSystemEmojiPreferred   = Prefs.isSystemEmojiPreferred(this);
+    if (!isSystemEmojiPreferred) {
+      mediaKeyboard.setProviders(0, new EmojiKeyboardProvider(this, inputPanel));
+    }
+  }
 
   // Listeners
 
@@ -1401,7 +1457,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       }
       else {
         processComposeControls(ACTION_SEND_OUT);
-        MessageNotifierCompat.playSendSound();
+        dcContext.notificationCenter.maybePlaySendSound(dcChat);
       }
     }
 
@@ -1494,5 +1550,101 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       initializeSecurity(isSecureText, isDefaultSms);
       invalidateOptionsMenu();
     }
+  }
+
+
+  // in-chat search
+
+  private int beforeSearchComposeVisibility = View.VISIBLE;
+  private int beforeSearchAttachVisibility = View.GONE;
+
+  private Menu  searchMenu = null;
+  private int[] searchResult = {};
+  private int   searchResultPosition = -1;
+
+  private Toast lastToast = null;
+
+  private void updateResultCounter(int curr, int total) {
+    if (searchMenu!=null) {
+      MenuItem item = searchMenu.findItem(R.id.menu_search_counter);
+      if (curr!=-1) {
+        item.setTitle(String.format("%d/%d", total==0? 0 : curr+1, total));
+        item.setVisible(true);
+      } else {
+        item.setVisible(false);
+      }
+    }
+  }
+
+  private void searchExpand(final Menu menu, final MenuItem searchItem) {
+    searchMenu = menu;
+
+    beforeSearchComposeVisibility = composePanel.getVisibility();
+    composePanel.setVisibility(View.GONE);
+
+    beforeSearchAttachVisibility = attachmentManager.getVisibility();
+    attachmentManager.setVisibility(View.GONE);
+
+    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, false);
+  }
+
+  private void searchCollapse(final Menu menu, final MenuItem searchItem) {
+    composePanel.setVisibility(beforeSearchComposeVisibility);
+    attachmentManager.setVisibility(beforeSearchAttachVisibility);
+
+    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, true);
+  }
+
+  private void handleMenuSearchNext(boolean searchNext) {
+    if(searchResult.length>0) {
+      searchResultPosition += searchNext? 1 : -1;
+      if(searchResultPosition<0) searchResultPosition = searchResult.length-1;
+      if(searchResultPosition>=searchResult.length) searchResultPosition = 0;
+      fragment.scrollToMsgId(searchResult[searchResultPosition]);
+      updateResultCounter(searchResultPosition, searchResult.length);
+    } else {
+      // no search, scroll to first/last message
+      if(searchNext) {
+        fragment.scrollToBottom();
+      } else {
+        fragment.scrollToTop();
+      }
+    }
+  }
+
+  @Override
+  public boolean onQueryTextSubmit(String query) {
+    return true; // action handled by listener
+  }
+
+  @Override
+  public boolean onQueryTextChange(String query) {
+    if (lastToast!=null) {
+      lastToast.cancel();
+      lastToast = null;
+    }
+
+    String normQuery = query.trim();
+    searchResult = dcContext.searchMsgs(chatId, normQuery);
+
+    if(searchResult.length>0) {
+      searchResultPosition = 0;
+      fragment.scrollToMsgId(searchResult[searchResultPosition]);
+      updateResultCounter(0, searchResult.length);
+    } else {
+      searchResultPosition = -1;
+      if (normQuery.isEmpty()) {
+        updateResultCounter(-1, 0); // hide
+      } else {
+        String msg = getString(R.string.search_no_result_for_x, normQuery);
+        if (lastToast != null) {
+          lastToast.cancel();
+        }
+        lastToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        lastToast.show();
+        updateResultCounter(0, 0); // show as "0/0"
+      }
+    }
+    return true; // action handled by listener
   }
 }

@@ -291,7 +291,6 @@
     <string name="login_auth_method">Tilladelse metode</string>
     <string name="login_info_oauth2_title">Fortsætte med forenklet opsætning?</string>
     <string name="login_info_oauth2_text">Indtastet e-post adresse understøtter simple opsætning (OAuth2).\n\nI næste trin tillad at Delta Chat agerer som samtale med e-post program.\n\nDer er ingen Delta Chat servere, data forbliver på enhed!</string>
-    <string name="login_info_gmail_text">For GMail konti skal der oprettes en App-Password hvis 2FA er aktiveret. Hvis denne opsætning ikke er tilgængelig skal Less Secure Apps aktiveres.</string>
     <string name="login_error_mail">Indtast gyldig e-post adresse</string>
     <string name="login_error_server">Indtast gyldig server / IP adresse</string>
     <string name="login_error_port">Indtast gyldig port (1–65535)</string>
@@ -316,13 +315,6 @@
     <string name="pref_using_default">Bruger standard: %s</string>
     <string name="pref_profile_info_headline">Profil information</string>
     <string name="pref_profile_photo">Profil billede</string>
-    <string name="pref_trim_headline">Trimme besked</string>
-    <string name="pref_trim_option">Slette gamle beskeder</string>
-    <string name="pref_trim_option_explain">Automatisk slette ældre beskeder når samtale overskrider en angivet længde. </string>
-    <string name="pref_trim_length_limit">Samtale længde grænse</string>
-    <string name="pref_trim_length_limit_summary">%d beskeder pr. samtale</string>
-    <string name="pref_trim_now_button">Trimme alle samtaler</string>
-    <string name="pref_trim_now_ask">Slette alle ældre beskeder? Dette vil trimme alle samtaler til %d mest nylige beskeder.</string>
     <string name="pref_blocked_contacts">Blokerede kontakter</string>
     <string name="pref_profile_photo_remove_ask">Fjerne profil billede?</string>
     <string name="pref_help_url">https://delta.chat/en/help</string>
@@ -574,4 +566,6 @@
     <string name="user_location_permission_explanation">Delta Chat behøver placering tilladelse for at vise og dele placering.</string>
 
 
-    </resources>
+    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+
+</resources>

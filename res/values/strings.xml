@@ -50,6 +50,7 @@
     <string name="email_address">Email address</string>
     <string name="bad_email_address">Bad email address.</string>
     <string name="password">Password</string>
+    <string name="existing_password">Existing password</string>
     <string name="now">Now</string>
     <!-- Translators: used as a headline in sections with actions that cannot be undone. could also be "Caution" or "Cave" or so. -->
     <string name="danger">Danger</string>
@@ -333,8 +334,6 @@
     <string name="login_auth_method">Authorization method</string>
     <string name="login_info_oauth2_title">Continue with simplified setup?</string>
     <string name="login_info_oauth2_text">The entered email address supports a simplified setup (OAuth 2.0).\n\nIn the next step, please allow Delta Chat to act as your Chat over Email app.\n\nThere are no Delta Chat servers, your data stays on your device.</string>
-    <string name="login_manually">Login manually</string>
-    <string name="login_info_gmail_text">For Gmail Accounts you need to create an App-Password if you have \"2-Step Verification\" enabled. If this setting is not available, you need to enable \"Less secure apps\".</string>
     <string name="login_certificate_checks">Certificate checks</string>
     <string name="login_error_mail">Please enter a valid email address</string>
     <string name="login_error_server">Please enter a valid server / IP address</string>
@@ -346,15 +345,18 @@
     <!-- Translators: %1$s will be replaced by the email address -->
     <string name="login_error_cannot_login">Cannot login as \"%1$s\". Please check if the email address and the password are correct.</string>
     <!-- Translators: %1$s will be replaced by the server name (eg. imap.somewhere.org) and %2$s will be replaced by the human-readable response from the server. this response may be a single word or some sentences and may or may not be localized. -->
-    <string name="login_error_server_response">Response from %1$s: %2$s\n\nSome providers place additional information in your inbox; you can check them it eg. in the web frontend. Consult your provider or friends if you run into problems.</string>
+    <string name="login_error_server_response">Response from %1$s: %2$s\n\nSome providers place additional information in your inbox; you can check them eg. in the web frontend. Consult your provider or friends if you run into problems.</string>
 
     <!-- TLS certificate checks -->
     <string name="accept_invalid_hostnames">Accept invalid hostnames</string>
     <string name="accept_invalid_certificates">Accept invalid certificates</string>
 
     <string name="used_settings">Used settings:</string>
+    <string name="switch_account">Switch account</string>
+    <string name="add_account">Add account</string>
     <string name="delete_account">Delete account</string>
     <string name="delete_account_ask">Are you sure you want to delete your account data?</string>
+    <string name="switching_account">Switching account…</string>
 
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
@@ -368,13 +370,6 @@
     <string name="pref_using_default">Using default: %s</string>
     <string name="pref_profile_info_headline">Your profile info</string>
     <string name="pref_profile_photo">Profile picture</string>
-    <string name="pref_trim_headline">Message trimming</string>
-    <string name="pref_trim_option">Delete old messages</string>
-    <string name="pref_trim_option_explain">Automatically delete older messages once a chat exceeds a specified length</string>
-    <string name="pref_trim_length_limit">Chat length limit</string>
-    <string name="pref_trim_length_limit_summary">%d messages per chat</string>
-    <string name="pref_trim_now_button">Trim all chats now</string>
-    <string name="pref_trim_now_ask">Delete all old messages now? This will immediately trim all chats to the %d most recent messages.</string>
     <string name="pref_blocked_contacts">Blocked contacts</string>
     <string name="pref_profile_photo_remove_ask">Remove profile photo?</string>
     <string name="pref_help_url">https://delta.chat/help</string>
@@ -473,6 +468,27 @@
     <string name="pref_background_default_color">Default color</string>
     <string name="pref_background_custom_image">Custom image</string>
     <string name="pref_background_custom_color">Custom color</string>
+    <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
+    <string name="pref_reliable_service">Reliable background connection</string>
+    <string name="pref_reliable_service_explain">Requires a permanent notification</string>
+
+
+    <!-- automatically delete message -->
+    <string name="autodel_title">Auto-delete messages</string>
+    <string name="autodel_title_short">Auto-delete</string>
+    <string name="autodel_device_title">Delete messages from device</string>
+    <string name="autodel_server_title">Delete messages from server</string>
+    <!-- %1$d will be replaced by the number of messages, you can assume plural/lots here. %2$s will be replaced by a timespan option. -->
+    <string name="autodel_device_ask">Do you want to delete %1$d messages now and all newly fetched messages \"%2$s\" in the future?\n\n• This includes all media\n\n• Messages will be deleted whether they were seen or not\n\n• \"Saved messages\" will be skipped from local deletion</string>
+    <!-- %1$d will be replaced by the number of messages, you can assume plural/lots here. %2$s will be replaced by a timespan option. -->
+    <string name="autodel_server_ask">Do you want to delete %1$d messages now and all newly fetched messages \"%2$s\" in the future?\n\n• This includes all media\n\n• This will also delete emails affected by the \"Show classic emails\" option\n\n• \"Saved messages\" will be deleted from the server as well</string>
+    <string name="autodel_confirm">I understand, delete all these messages</string>
+    <string name="autodel_at_once">At once</string>
+    <string name="autodel_after_1_hour">After 1 hour</string>
+    <string name="autodel_after_1_day">After 1 day</string>
+    <string name="autodel_after_1_week">After 1 week</string>
+    <string name="autodel_after_4_weeks">After 4 weeks</string>
+    <string name="autodel_after_1_year">After 1 year</string>
 
     <!-- autocrypt -->
     <string name="autocrypt">Autocrypt</string>
@@ -540,6 +556,11 @@
     <string name="qrshow_join_contact_hint">Scan this to set up a contact with %1$s.</string>
     <string name="qrshow_join_contact_no_connection_hint">QR code setup requires an internet connection. Please connect to a network before proceeding.</string>
     <string name="qrshow_join_contact_no_connection_toast">No internet connection, can\'t perform QR code setup.</string>
+    <string name="qraccount_ask_create_and_login">Create new e-mail address on \"%1$s\" and log in there?</string>
+    <string name="qraccount_ask_create_and_login_another">Create new e-mail address on \"%1$s\" and log in there?\n\nYour existing account will not be deleted. Use the \"Switch account\" item to switch between your accounts.</string>
+    <string name="qraccount_success_enter_name">Login successful—your email address is %1$s\n\nIf you like, you can now enter a name and an avatar image that will be displayed to people you write to.</string>
+    <string name="qraccount_qr_code_cannot_be_used">The scanned QR code cannot be used to set up a new account.</string>
+    <string name="qraccount_use_on_new_install">The scanned QR code is for setting up a new account. You can scan the QR code when setting up a new Delta Chat installation.</string>
     <string name="contact_verified">%1$s verified.</string>
     <string name="contact_not_verified">Cannot verify %1$s.</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
@@ -578,6 +599,9 @@
     <string name="perm_enable_bg_reminder_title">Tap here to receive messages while Delta Chat is in the background.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat uses few resources and takes care not to drain your battery.</string>
     <string name="perm_enable_bg_already_done">You already allowed Delta Chat to receive messages in the background.\n\nIf messages still do not arrive in background, please also check your system settings.</string>
+
+    <!-- ImageEditorHud -->
+    <string name="ImageEditorHud_draw_anywhere_to_blur">Draw anywhere to blur</string>
 
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Encrypted message</string>
@@ -651,7 +675,7 @@
     <string name="user_location_permission_explanation">Delta Chat needs the location permission in order to show and share your location.</string>
 
 
-    <!-- accessibility -->
+    <!-- accessibility, the general idea is to use the normal strings for accessibility hints wherever possible -->
     <string name="a11y_delivery_status_error">Delivery status: Error</string>
     <string name="a11y_encryption_padlock">Encryption padlock</string>
     <string name="a11y_delivery_status_sending">Delivery status: Sending</string>
@@ -668,4 +692,8 @@
     <string name="InfoPlist_NSContactsUsageDescription">Delta Chat uses your contacts to show a list of email addresses you can write to. Delta Chat has no server, your contacts are not sent anywhere.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Delta Chat uses your microphone to record and send voice messages and videos with sound.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Delta Chat will let you choose which photos from your library to send.</string>
+
+
+    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+
 </resources>

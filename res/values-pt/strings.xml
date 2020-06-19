@@ -231,7 +231,6 @@
     <string name="login_auth_method">Método de autorização</string>
     <string name="login_info_oauth2_title">Usar configuração simplificada?</string>
     <string name="login_info_oauth2_text">Seu servidor de e-mail aceita o método de configuração simplificada (OAuth2).\n\n No próximo passo, por favor, permita que o Delta Chat seja seu aplicativo de e-mail.\n\nNão há servidor do Delta Chat. Seus dados ficam no seu aparelho!</string>
-    <string name="login_info_gmail_text">Para contas do GMail, precisa criar uma senha do aplicativo se tiver 2FA activado. Se essa configuração não estiver disponível, precisará de activar os aplicativos menos seguros.</string>
     <string name="login_error_mail">Por favor insira um endereço de e-mail válido</string>
     <string name="login_error_server">Por favor insira um servidor ou endereço IP válido</string>
     <string name="login_error_port">Por favor, insira um porto válido (1-65535)</string>
@@ -252,13 +251,6 @@
     <string name="pref_using_default">Utilizando padrão: %s</string>
     <string name="pref_profile_info_headline">O seu perfil</string>
     <string name="pref_profile_photo">Foto do perfil</string>
-    <string name="pref_trim_headline">Aparar mensagens</string>
-    <string name="pref_trim_option">Apagar mensagens antigas</string>
-    <string name="pref_trim_option_explain">Apagar automaticamente as mensagens mais antigas quando a chat ultrapassar um determinado período</string>
-    <string name="pref_trim_length_limit">Limite de dimensão da chat</string>
-    <string name="pref_trim_length_limit_summary">%d mensagens por chat</string>
-    <string name="pref_trim_now_button">Aparar todas as chats</string>
-    <string name="pref_trim_now_ask">Apagar todas as mensagens antigas agora? Isso reduzirá imediatamente todas as chats às %d mensagens mais recentes.</string>
     <string name="pref_blocked_contacts">Bloquear contactos</string>
     <string name="pref_profile_photo_remove_ask">Remover a foto do perfil</string>
     <string name="pref_help_url">https://delta.chat/en/help</string>
@@ -493,4 +485,6 @@
     <string name="message_detail_to_desktop">para</string>
     <string name="menu.view.developer.open.log.folder">Abrir pasta de Log</string>
     <string name="menu.view.developer.open.current.log.file">Abrir o aqrquio do log actual</string>
-    </resources>
+    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+
+</resources>

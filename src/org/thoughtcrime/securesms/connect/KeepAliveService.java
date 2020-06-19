@@ -10,32 +10,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.PowerManager;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import org.thoughtcrime.securesms.ConversationListActivity;
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.notifications.NotificationCenter;
+import org.thoughtcrime.securesms.util.Prefs;
 
 public class KeepAliveService extends Service {
 
     static KeepAliveService s_this = null;
 
+    public static void maybeStartSelf(Context context) {
+        // note, that unfortunately, the check for isIgnoringBatteryOptimizations() is not sufficient,
+        // this checks only stock-android settings, several os have additional "optimizers" that ignore this setting.
+        // therefore, the most reliable way to not get killed is a permanent-foreground-notification.
+        if (Prefs.isNotificationsEnabled(context) && Prefs.reliableService(context))  {
+            startSelf(context);
+        }
+    }
+
     public static void startSelf(Context context)
     {
         try {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PowerManager powerManager = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
-                if(powerManager.isIgnoringBatteryOptimizations(context.getPackageName())) {
-                    return; // fine, the user has disabled the battery optimisations for us
-                }
-            }
-            else {
-                return; // android <= lollipop does not have a doze mode
-            }
-
-            // if we're here, we're on a system with doze mode and battery optimisations enabled.
-            // add foreground notification to stay alive.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // the started service has to call startForeground() within 5 seconds,
                 // see https://developer.android.com/about/versions/oreo/android-8.0-changes
@@ -60,7 +58,7 @@ public class KeepAliveService extends Service {
         // set self as foreground
         try {
             stopForeground(true);
-            startForeground(FG_NOTIFICATION_ID, createNotification());
+            startForeground(NotificationCenter.ID_PERMANTENT, createNotification());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -96,7 +94,6 @@ public class KeepAliveService extends Service {
      * Delta Chat won't get new messages reliable
      **********************************************************************************************/
 
-    public static final int FG_NOTIFICATION_ID = 4142;
     private Notification createNotification()
     {
         Intent intent = new Intent(this, ConversationListActivity.class);
@@ -115,18 +112,17 @@ public class KeepAliveService extends Service {
         builder.setSmallIcon(R.drawable.notification_permanent);
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
             createFgNotificationChannel(this);
-            builder.setChannelId(FG_CHANNEL_ID);
+            builder.setChannelId(NotificationCenter.CH_PERMANENT);
         }
         return builder.build();
     }
 
     private static boolean ch_created = false;
-    private static final String FG_CHANNEL_ID = "dc_foreground_notification_ch";
     @TargetApi(Build.VERSION_CODES.O)
     static private void createFgNotificationChannel(Context context) {
         if(!ch_created) {
             ch_created = true;
-            NotificationChannel channel = new NotificationChannel(FG_CHANNEL_ID,
+            NotificationChannel channel = new NotificationChannel(NotificationCenter.CH_PERMANENT,
                 "Receive messages in background.", NotificationManager.IMPORTANCE_MIN); // IMPORTANCE_DEFAULT will play a sound
             channel.setDescription("Ensure reliable message receiving.");
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);

@@ -265,7 +265,8 @@
 
     <activity android:name=".LocalHelpActivity"
               android:theme="@style/TextSecure.LightTheme"
-              android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
+              android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize">
+    </activity>
 
     <activity android:name=".map.MapActivity" />
 
@@ -284,7 +285,8 @@
               android:enabled="true"
               android:exported="false">
         <intent-filter>
-            <action android:name="org.thoughtcrime.securesms.notifications.CLEAR"/>
+            <action android:name="org.thoughtcrime.securesms.notifications.MARK_NOTICED"/>
+            <action android:name="org.thoughtcrime.securesms.notifications.CANCEL"/>
         </intent-filter>
     </receiver>
 

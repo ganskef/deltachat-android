@@ -50,6 +50,7 @@
     <string name="email_address">Adresë email</string>
     <string name="bad_email_address">Adresë email e keqe.</string>
     <string name="password">Fjalëkalim</string>
+    <string name="existing_password">Fjalëkalimi ekzistues</string>
     <string name="now">Tani</string>
     <!-- Translators: used as a headline in sections with actions that cannot be undone. could also be "Caution" or "Cave" or so. -->
     <string name="danger">Rrezik</string>
@@ -333,8 +334,6 @@
     <string name="login_auth_method">Metodë autorizimi</string>
     <string name="login_info_oauth2_title">Të vazhdohet me rregullimin e thjeshtuar?</string>
     <string name="login_info_oauth2_text">Adresa email e dhënë mbulon një ujdisje të thjeshtuar (OAuth2).\n\nNë hapin pasues, ju lutemi, lejojeni Delta Chat-in të veprojë si aplikacioni juaj për Fjalosje Përmes Email-i.\n\nS\’ka shërbyes Delta Chat, të dhënat tuaja rrinë në pajisjen tuaj!</string>
-    <string name="login_manually">Hyrje dorazi</string>
-    <string name="login_info_gmail_text">Për llogari GMail lypset të krijoni një App-Password, nëse keni të aktivizuar mirëfilltësimin dyfaktorësh. Nëse ky rregullim s\’gjendet, lypset të aktivizoni Aplikacione Më Pak të Sigurta.</string>
     <string name="login_certificate_checks">Kontrolle dëshmish</string>
     <string name="login_error_mail">Ju lutemi, jepni një adresë email të vlefshme</string>
     <string name="login_error_server">Ju lutemi, jepni një shërbyes / adresë IP të vlefshme</string>
@@ -353,8 +352,11 @@
     <string name="accept_invalid_certificates">Prano dëshmi të pavlefshme</string>
 
     <string name="used_settings">Rregullime të përdorura</string>
+    <string name="switch_account">Ndërroni llogari</string>
+    <string name="add_account">Shtoni llogari</string>
     <string name="delete_account">Fshije llogarinë</string>
     <string name="delete_account_ask">Jeni i sigurt se doni të fshihen të dhënat e llogarisë tuaj?</string>
+    <string name="switching_account">Po ndërrohet llogari…</string>
 
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
@@ -368,13 +370,6 @@
     <string name="pref_using_default">Po përdoret parazgjedhje: %s</string>
     <string name="pref_profile_info_headline">Të dhëna tuajat të profilit</string>
     <string name="pref_profile_photo">Foto profili</string>
-    <string name="pref_trim_headline">Qethje mesazhi</string>
-    <string name="pref_trim_option">Fshiji mesazhet e vjetër</string>
-    <string name="pref_trim_option_explain">Fshiji automatikisht mesazhet më të vjetër, pasi një fjalosje tejkalon një gjatësi të caktuar</string>
-    <string name="pref_trim_length_limit">Kufi gjatësie fjalosjeje</string>
-    <string name="pref_trim_length_limit_summary">%d mesazhe për fjalosje</string>
-    <string name="pref_trim_now_button">Qethi krejt fjalosjet tani</string>
-    <string name="pref_trim_now_ask">Të fshihen krejt mesazhet e vjetër tani? Kjo do të sjellë qethjen e menjëhershme të krejt fjalosjeve duke lënë %d mesazhet më të rinj.</string>
     <string name="pref_blocked_contacts">Kontakte të bllokuar</string>
     <string name="pref_profile_photo_remove_ask">Të hiqet fotoja e profilit?</string>
     <string name="pref_help_url">https://delta.chat/en/help</string>
@@ -472,6 +467,27 @@
     <string name="pref_background_default_color">Ngjyrë parazgjedhje</string>
     <string name="pref_background_custom_image">Figurë vetjake</string>
     <string name="pref_background_custom_color">Ngjyrë vetjake</string>
+    <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
+    <string name="pref_reliable_service">Lidhje e qëndrueshme në prapaskenë</string>
+    <string name="pref_reliable_service_explain">Lyp një njoftim permanent</string>
+
+
+    <!-- automatically delete message -->
+    <string name="autodel_title">Vetëfshi mesazhe</string>
+    <string name="autodel_title_short">Vetëfshi</string>
+    <string name="autodel_device_title">Fshini mesazhe prej pajisjes</string>
+    <string name="autodel_server_title">Fshini mesazhe prej shërbyesi</string>
+    <!-- %1$d will be replaced by the number of messages, you can assume plural/lots here. %2$s will be replaced by a timespan option. -->
+    <string name="autodel_device_ask">Doni të fshihen %1$d mesazhe tani dhe krejt mesazhet e prurë rishtazi \"%2$s\" në të ardhmen?\n\n• Kjo përfshin krejt mediat\n\n• Mesazhi do të fshihet, qoftë kur e kanë parë, qoftë kur s’e kanë parë\n\n• \"Mesazhe të ruajtur\" do të anashkalohen nga fshirja vendore</string>
+    <!-- %1$d will be replaced by the number of messages, you can assume plural/lots here. %2$s will be replaced by a timespan option. -->
+    <string name="autodel_server_ask">Doni të fshihen %1$d mesazhe tani dhe krejt mesazhet e prurë rishtazi \"%2$s\" në të ardhmen?\n\n• Kjo përfshin krejt mediat\n\n• Kjo do të fshijë gjithashtu email-e nën mundësinë \"Shfaq email-e klasikë\"\n\n• \"Mesazhet e ruajtur\" do të fshihen gjithashtu nga shërbyesi</string>
+    <string name="autodel_confirm">E kuptoj, fshiji krejt këto mesazhe</string>
+    <string name="autodel_at_once">Menjëherë</string>
+    <string name="autodel_after_1_hour">Pas 1 ore</string>
+    <string name="autodel_after_1_day">Pas 1 dite</string>
+    <string name="autodel_after_1_week">Pas 1 jave</string>
+    <string name="autodel_after_4_weeks">Pas 4 javësh</string>
+    <string name="autodel_after_1_year">Pas 1 viti</string>
 
     <!-- autocrypt -->
     <string name="autocrypt">Autocrypt</string>
@@ -539,6 +555,11 @@
     <string name="qrshow_join_contact_hint">Skanojeni këtë që të rregullohet një kontakt %1$s</string>
     <string name="qrshow_join_contact_no_connection_hint">Ujdisja e kodit QR lyp lidhje në internet. Ju lutemi, përpara se të ecni më tej, lidhuni me një rrjet.</string>
     <string name="qrshow_join_contact_no_connection_toast">S\’ka lidhje në internet, s\’bëhet dot ujdisja e kodit QR.</string>
+    <string name="qraccount_ask_create_and_login">Të krijohet adresë email e re te \"%1$s\" dhe të bëhet hyrja atje?</string>
+    <string name="qraccount_ask_create_and_login_another">Të krijohet adresë e re email në \"%1$s\" dhe të bëhet hyrja atje?\n\nLlogaria juaj ekzistuese s’do të fshihet. Që të kaloni nga një llogari në tjetrën, përdorni zërin \"Ndërroni llogari\".</string>
+    <string name="qraccount_success_enter_name">Hyrje e suksesshme—adresa juaj email është %1$s\n\nNëse doni, tani mund të jepni një emër dhe një figurë avatari që do t’u shfaqet personave që ju shkruajnë.</string>
+    <string name="qraccount_qr_code_cannot_be_used">Kodi QR i skanuar s’mund të përdoret për të ujdisur një llogari të re.</string>
+    <string name="qraccount_use_on_new_install">Kodi QR i skanuar është për ujdisje të një llogarie të re. Kodin QR mund ta skanoni kur ujdisni një instalim të ri të Delta Chat-it.</string>
     <string name="contact_verified">%1$s u verifikua.</string>
     <string name="contact_not_verified">S\’verifikohet dot %1$s</string>
     <!-- translators: "setup" is the "encryption setup" here, as in "Autocrypt Setup Message" -->
@@ -577,6 +598,9 @@
     <string name="perm_enable_bg_reminder_title">Prekeni këtu që të merrni mesazhe, teksa Delta Chat rri në prapaskenë.</string>
     <string name="perm_enable_bg_reminder_text">Delta Chat-i përdor burime minimale dhe kujdeset të mos thajë baterinë.</string>
     <string name="perm_enable_bg_already_done">E keni lejuar tashmë Delta Chat-in të marrë mesazhe në prapaskenë.\n\nNëse mesazhet prapë nuk mbërrijnë në prapaskenë, ju lutemi, kontrolloni edhe rregullimet e sistemit tuaj.</string>
+
+    <!-- ImageEditorHud -->
+    <string name="ImageEditorHud_draw_anywhere_to_blur">Që të turbullohet, vizatoni kudo qoftë</string>
 
     <!-- dc_str_* resources -->
     <string name="encrypted_message">Mesazh i fshehtëzuar</string>
@@ -650,7 +674,7 @@
     <string name="user_location_permission_explanation">Që të mund të shfaqë dhe ndajë me të tjerët vendndodhjen tuaj, Delta Chat lyp lejen vendore.</string>
 
 
-    <!-- accessibility -->
+    <!-- accessibility, the general idea is to use the normal strings for accessibility hints wherever possible -->
     <string name="a11y_delivery_status_error">Gjendje dërgimi: Gabim</string>
     <string name="a11y_encryption_padlock">Dry fshehtëzimi</string>
     <string name="a11y_delivery_status_sending">Gjendje dërgimi: Po dërgohet</string>
@@ -667,4 +691,8 @@
     <string name="InfoPlist_NSContactsUsageDescription">Lejimi i përdorimi të librit tuaj të adresave kamerës ju bën të mundur të bisedoni me kontakte prej pajisjes tuaj.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Lejimi i përdorimi të mikrofonit ju bën të mundur të bëni incizoni audio.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Lejimi i përdorimi të fototekës tuaj ju bën të mundur të ngarkoni figura prej saj.</string>
+
+
+    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+
 </resources>

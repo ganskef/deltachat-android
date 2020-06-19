@@ -12,8 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.b44t.messenger.DcChat;
+import com.b44t.messenger.DcContext;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.preferences.widgets.NotificationPrivacyPreference;
 
 import java.util.ArrayList;
@@ -39,9 +42,7 @@ public class Prefs {
   private static final String CHAT_VIBRATE                     = "pref_chat_vibrate_"; // followed by chat-id
   private static final String NOTIFICATION_PREF                = "pref_key_enable_notifications";
   public  static final String LED_COLOR_PREF                   = "pref_led_color";
-  public  static final String LED_BLINK_PREF                   = "pref_led_blink";
-  private static final String LED_BLINK_PREF_CUSTOM            = "pref_led_blink_custom";
-  private static final String CHAT_MUTED_UNTIL                 = "pref_chat_muted_until_"; // followed by chat-id
+  public  static final String CHAT_MUTED_UNTIL                 = "pref_chat_muted_until_"; // followed by chat-id
   private static final String CHAT_RINGTONE                    = "pref_chat_ringtone_"; // followed by chat-id
   public  static final String SCREEN_LOCK_TIMEOUT_INTERVAL_PREF = "pref_timeout_interval";
   public  static final String SCREEN_LOCK_TIMEOUT_PREF         = "pref_timeout_passphrase";
@@ -173,12 +174,7 @@ public class Prefs {
   }
 
   public static boolean isHardCompressionEnabled(Context context) {
-    try {
-      return getStringPreference(context, "pref_compression", "0").equals("1");
-    }
-    catch(Exception e) {
-      return false;
-    }
+    return DcHelper.getContext(context).getConfigInt(DcHelper.CONFIG_MEDIA_QUALITY) == DcContext.DC_MEDIA_QUALITY_WORSE;
   }
 
   public static boolean isLocationStreamingEnabled(Context context) {
@@ -224,6 +220,15 @@ public class Prefs {
     return result==null? null : Uri.parse(result);
   }
 
+  public static boolean reliableService(Context context) {
+    try {
+      return getBooleanPreference(context, "pref_reliable_service", false);
+    }
+    catch(Exception e) {
+      return false;
+    }
+  }
+
   // vibrate
 
   public static boolean isNotificationVibrateEnabled(Context context) {
@@ -249,26 +254,14 @@ public class Prefs {
     return getStringPreference(context, LED_COLOR_PREF, "blue");
   }
 
-  public static String getNotificationLedPattern(Context context) {
-    return getStringPreference(context, LED_BLINK_PREF, "500,2000");
-  }
-
-  public static String getNotificationLedPatternCustom(Context context) {
-    return getStringPreference(context, LED_BLINK_PREF_CUSTOM, "500,2000");
-  }
-
   // mute
 
-  public static void setChatMutedUntil(Context context, int chatId, long until) {
-    setLongPreference(context, CHAT_MUTED_UNTIL+chatId, until);
+  public static void setChatMuteDuration(DcContext context, int chatId, long duration) {
+    context.setChatMuteDuration(chatId, duration);
   }
 
-  public static long getChatMutedUntil(Context context, int chatId) {
-    return getLongPreference(context, CHAT_MUTED_UNTIL+chatId, 0);
-  }
-
-  public static boolean isChatMuted(Context context, int chatId) {
-    return System.currentTimeMillis() <= getChatMutedUntil(context, chatId);
+  public static boolean isChatMuted(DcChat chat) {
+    return chat.isMuted();
   }
 
   // map
@@ -336,7 +329,7 @@ public class Prefs {
     PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(key, value).apply();
   }
 
-  private static long getLongPreference(Context context, String key, long defaultValue) {
+  public static long getLongPreference(Context context, String key, long defaultValue) {
     return PreferenceManager.getDefaultSharedPreferences(context).getLong(key, defaultValue);
   }
 

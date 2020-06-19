@@ -7,16 +7,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.b44t.messenger.DcContext;
 
 import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
+import org.thoughtcrime.securesms.BlockedAndShareContactsActivity;
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.permissions.Permissions;
-import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.ScreenLockUtil;
 import org.thoughtcrime.securesms.util.Util;
 
@@ -27,19 +32,23 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
   private static final String TAG = ChatsPreferenceFragment.class.getSimpleName();
 
 
-  ListPreference showEmails;
+  private ListPreference showEmails;
+  private ListPreference mediaQuality;
+  private CheckBoxPreference readReceiptsCheckbox;
 
-//  CheckBoxPreference trimEnabledCheckbox;
+  private ListPreference autoDelDevice;
+  private ListPreference autoDelServer;
 
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
 
-    findPreference(Prefs.MESSAGE_BODY_TEXT_SIZE_PREF)
-            .setOnPreferenceChangeListener(new ListSummaryListener());
-
-    findPreference("pref_compression")
-            .setOnPreferenceChangeListener(new ListSummaryListener());
+    mediaQuality = (ListPreference) this.findPreference("pref_compression");
+    mediaQuality.setOnPreferenceChangeListener((preference, newValue) -> {
+      updateListSummary(preference, newValue);
+      dcContext.setConfigInt(DcHelper.CONFIG_MEDIA_QUALITY, Util.objectToInt(newValue));
+      return true;
+    });
 
     showEmails = (ListPreference) this.findPreference("pref_show_emails");
     showEmails.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -48,19 +57,19 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
       return true;
     });
 
+    readReceiptsCheckbox = (CheckBoxPreference) this.findPreference("pref_read_receipts");
+    readReceiptsCheckbox.setOnPreferenceChangeListener(new ReadReceiptToggleListener());
+
+    this.findPreference("preference_category_blocked").setOnPreferenceClickListener(new BlockedContactsClickListener());
+
     Preference backup = this.findPreference("pref_backup");
     backup.setOnPreferenceClickListener(new BackupListener());
 
-//    trimEnabledCheckbox = (CheckBoxPreference) findPreference("pref_trim_threads");
-//    trimEnabledCheckbox.setOnPreferenceChangeListener(new TrimEnabledListener());
-//
-//    findPreference("pref_trim_length")
-//        .setOnPreferenceChangeListener(new TrimLengthValidationListener());
-//    findPreference("pref_trim_now")
-//        .setOnPreferenceClickListener(new TrimNowClickListener());
+    autoDelDevice = findPreference("autodel_device");
+    autoDelDevice.setOnPreferenceChangeListener(new AutodelChangeListener("delete_device_after"));
 
-    initializeListSummary((ListPreference) findPreference(Prefs.MESSAGE_BODY_TEXT_SIZE_PREF));
-
+    autoDelServer = findPreference("autodel_server");
+    autoDelServer.setOnPreferenceChangeListener(new AutodelChangeListener("delete_server_after"));
   }
 
   @Override
@@ -73,13 +82,27 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     super.onResume();
     ((ApplicationPreferencesActivity)getActivity()).getSupportActionBar().setTitle(R.string.pref_chats_and_media);
 
-    initializeListSummary((ListPreference) findPreference("pref_compression"));
-
     String value = Integer.toString(dcContext.getConfigInt("show_emails"));
     showEmails.setValue(value);
     updateListSummary(showEmails, value);
 
-//    trimEnabledCheckbox.setChecked(0!=dcContext.getConfigInt("trim_enabled", DcContext.DC_PREF_DEFAULT_TRIM_ENABLED));
+    value = Integer.toString(dcContext.getConfigInt(DcHelper.CONFIG_MEDIA_QUALITY));
+    mediaQuality.setValue(value);
+    updateListSummary(mediaQuality, value);
+
+    readReceiptsCheckbox.setChecked(0 != dcContext.getConfigInt("mdns_enabled"));
+
+    initAutodelFromCore();
+  }
+
+  private void initAutodelFromCore() {
+    String value = Integer.toString(dcContext.getConfigInt("delete_server_after"));
+    autoDelServer.setValue(value);
+    updateListSummary(autoDelServer, value);
+
+    value = Integer.toString(dcContext.getConfigInt("delete_device_after"));
+    autoDelDevice.setValue(value);
+    updateListSummary(autoDelDevice, value);
   }
 
   @Override
@@ -97,66 +120,77 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     }
   }
 
-//  private class TrimEnabledListener implements Preference.OnPreferenceChangeListener {
-//    @Override
-//    public boolean onPreferenceChange(final Preference preference, Object newValue) {
-//      boolean enabled = (Boolean) newValue;
-//      dcContext.setConfigInt("trim_enabled", enabled? 1 : 0);
-//      Toast.makeText(getActivity(), "Not yet implemented.", Toast.LENGTH_LONG).show();
-//      return true;
-//    }
-//  }
-//
-//  private class TrimLengthValidationListener implements Preference.OnPreferenceChangeListener {
-//
-//    public TrimLengthValidationListener() {
-//      EditTextPreference preference = (EditTextPreference)findPreference("pref_trim_length");
-//      onPreferenceChange(preference, dcContext.getConfig("trim_length", ""+DcContext.DC_PREF_DEFAULT_TRIM_LENGTH));
-//    }
-//
-//    @Override
-//    public boolean onPreferenceChange(Preference preference, Object newValue) {
-//      if (newValue == null || ((String)newValue).trim().length() == 0) {
-//        return false;
-//      }
-//
-//      int value;
-//      try {
-//        value = Integer.parseInt((String)newValue);
-//      } catch (NumberFormatException nfe) {
-//        Log.w(TAG, nfe);
-//        return false;
-//      }
-//
-//      if (value < 1) {
-//        return false;
-//      }
-//
-//      dcContext.setConfigInt("trim_length", value);
-//      preference.setSummary(getResources().getString(R.string.pref_trim_length_limit_summary, value));
-//      return true;
-//    }
-//  }
-//
-//  private class TrimNowClickListener implements Preference.OnPreferenceClickListener {
-//    @Override
-//    public boolean onPreferenceClick(Preference preference) {
-//      final int threadLengthLimit = dcContext.getConfigInt("trim_length", DcContext.DC_PREF_DEFAULT_TRIM_LENGTH);
-//      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//      builder.setMessage(getResources().getString(R.string.pref_trim_now_ask,
-//          threadLengthLimit));
-//      builder.setPositiveButton(R.string.ok,
-//          (dialog, which) -> Toast.makeText(getActivity(), "Not yet implemented.", Toast.LENGTH_LONG).show());
-//
-//      builder.setNegativeButton(android.R.string.cancel, null);
-//      builder.show();
-//
-//      return true;
-//    }
-//  }
-
   public static CharSequence getSummary(Context context) {
-    return null;
+    DcContext dcContext = DcHelper.getContext(context);
+    final String onRes = context.getString(R.string.on);
+    final String offRes = context.getString(R.string.off);
+    String readReceiptState = dcContext.getConfigInt("mdns_enabled")!=0? onRes : offRes;
+    String autodelState = (dcContext.getConfigInt("delete_device_after")!=0 || dcContext.getConfigInt("delete_server_after")!=0)? onRes : offRes;
+    return context.getString(R.string.pref_read_receipts) + " " + readReceiptState +
+            ", " + context.getString(R.string.autodel_title_short) + " " + autodelState;
+  }
+
+  private class BlockedContactsClickListener implements Preference.OnPreferenceClickListener {
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+      Intent intent = new Intent(getActivity(), BlockedAndShareContactsActivity.class);
+      intent.putExtra(BlockedAndShareContactsActivity.SHOW_ONLY_BLOCKED_EXTRA, true);
+      startActivity(intent);
+      return true;
+    }
+  }
+
+  private class ReadReceiptToggleListener implements Preference.OnPreferenceChangeListener {
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+      boolean enabled = (boolean) newValue;
+      dcContext.setConfigInt("mdns_enabled", enabled ? 1 : 0);
+      return true;
+    }
+  }
+
+  private class AutodelChangeListener implements Preference.OnPreferenceChangeListener {
+    private String coreKey;
+
+    AutodelChangeListener(String coreKey) {
+      this.coreKey = coreKey;
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+      int timeout = Util.objectToInt(newValue);
+      if (timeout>0) {
+        Context context = preference.getContext();
+        boolean fromServer = coreKey.equals("delete_server_after");
+        int delCount = DcHelper.getContext(context).estimateDeletionCount(fromServer, timeout);
+
+        View gl = View.inflate(getActivity(), R.layout.autodel_confirm, null);
+        CheckBox confirmCheckbox = gl.findViewById(R.id.i_understand);
+        String msg = String.format(context.getString(fromServer?
+                R.string.autodel_server_ask : R.string.autodel_device_ask),
+                delCount, getSelectedSummary(preference, newValue));
+
+        new AlertDialog.Builder(context)
+                .setTitle(preference.getTitle())
+                .setMessage(msg)
+                .setView(gl)
+                .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                  if (confirmCheckbox.isChecked()) {
+                    dcContext.setConfigInt(coreKey, timeout);
+                    initAutodelFromCore();
+                  } else {
+                    onPreferenceChange(preference, newValue);
+                  }
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> initAutodelFromCore())
+                .setCancelable(false)
+                .show();
+      } else {
+        updateListSummary(preference, newValue);
+        dcContext.setConfigInt(coreKey, timeout);
+      }
+      return true;
+    }
   }
 
   /***********************************************************************************************

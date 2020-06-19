@@ -13,6 +13,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDexApplication;
 
@@ -21,10 +23,13 @@ import com.b44t.messenger.DcEventCenter;
 
 import org.thoughtcrime.securesms.connect.ApplicationDcContext;
 import org.thoughtcrime.securesms.connect.FetchWorker;
+import org.thoughtcrime.securesms.connect.ForegroundDetector;
+import org.thoughtcrime.securesms.connect.KeepAliveService;
+import org.thoughtcrime.securesms.connect.NetworkStateReceiver;
 import org.thoughtcrime.securesms.crypto.PRNGFixes;
 import org.thoughtcrime.securesms.geolocation.DcLocationManager;
 import org.thoughtcrime.securesms.jobmanager.JobManager;
-import org.thoughtcrime.securesms.notifications.MessageNotifierCompat;
+import org.thoughtcrime.securesms.notifications.InChatSounds;
 import org.thoughtcrime.securesms.util.AndroidSignalProtocolLogger;
 import org.thoughtcrime.securesms.util.DynamicLanguage;
 import org.thoughtcrime.securesms.util.ScreenLockUtil;
@@ -55,15 +60,23 @@ public class ApplicationContext extends MultiDexApplication implements DefaultLi
     // }
     // LeakCanary.install(this);
 
+    Log.i("DeltaChat", "++++++++++++++++++ ApplicationContext.onCreate() ++++++++++++++++++");
+
     System.loadLibrary("native-utils");
     dcContext = new ApplicationDcContext(this);
+
+    new ForegroundDetector(ApplicationContext.getInstance(this));
+
+    BroadcastReceiver networkStateReceiver = new NetworkStateReceiver();
+    registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+
+    KeepAliveService.maybeStartSelf(this);
 
     initializeRandomNumberFix();
     initializeLogging();
     initializeJobManager();
-    initializeIncomingMessageNotifier();
     ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-    MessageNotifierCompat.init(this);
+    InChatSounds.getInstance(this);
 
     dcLocationManager = new DcLocationManager(this);
     try {
@@ -128,23 +141,6 @@ public class ApplicationContext extends MultiDexApplication implements DefaultLi
 
   private void initializeLogging() {
     SignalProtocolLoggerProvider.setProvider(new AndroidSignalProtocolLogger());
-  }
-
-  @SuppressLint("StaticFieldLeak")
-  private void initializeIncomingMessageNotifier() {
-
-    DcEventCenter dcEventCenter = dcContext.eventCenter;
-    dcEventCenter.addObserver(DcContext.DC_EVENT_INCOMING_MSG, new DcEventCenter.DcEventDelegate() {
-      @Override
-      public void handleEvent(int eventId, Object data1, Object data2) {
-        MessageNotifierCompat.updateNotification(((Long) data1).intValue(), ((Long) data2).intValue());
-      }
-
-      @Override
-      public boolean runOnMain() {
-        return false;
-      }
-    });
   }
 
   private void initializeJobManager() {

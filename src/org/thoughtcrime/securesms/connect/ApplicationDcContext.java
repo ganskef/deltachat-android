@@ -1,19 +1,19 @@
 package org.thoughtcrime.securesms.connect;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.PowerManager;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
+
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -21,21 +21,25 @@ import android.widget.Toast;
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
+import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcEventCenter;
+import com.b44t.messenger.DcEventEmitter;
 import com.b44t.messenger.DcLot;
 import com.b44t.messenger.DcMsg;
 
-import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.BuildConfig;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.database.model.ThreadRecord;
 import org.thoughtcrime.securesms.geolocation.Location__DRAFT;
+import org.thoughtcrime.securesms.notifications.NotificationCenter;
 import org.thoughtcrime.securesms.recipients.Recipient;
+import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.Util;
 
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 public class ApplicationDcContext extends DcContext {
 
@@ -49,55 +53,77 @@ public class ApplicationDcContext extends DcContext {
   public static final int RECIPIENT_TYPE_CONTACT = 1;
 
   public Context context;
-  public volatile boolean isScreenOn = false;
+  public NotificationCenter notificationCenter;
+
+  private Location__DRAFT localLocation;
 
   public ApplicationDcContext(Context context) {
-    super("Android "+BuildConfig.VERSION_NAME);
+    super("Android "+BuildConfig.VERSION_NAME, AccountManager.getInstance().getSelectedAccount(context).getAbsolutePath());
     this.context = context;
     this.localLocation = new Location__DRAFT(context);
 
-    File dbfile = new File(context.getFilesDir(), "messenger.db");
-    open(dbfile.getAbsolutePath());
-
+    // migration, can be removed after some versions (added 5/2020)
+    // (this will convert only for one account, but that is fine, multi-account is experimental anyway)
     try {
-      PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-
-      imapWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "imapWakeLock");
-      imapWakeLock.setReferenceCounted(false); // if the idle-thread is killed for any reasons, it is better not to rely on reference counting
-
-      mvboxWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "mvboxWakeLock");
-      mvboxWakeLock.setReferenceCounted(false); // if the idle-thread is killed for any reasons, it is better not to rely on reference counting
-
-      sentboxWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "sentboxWakeLock");
-      sentboxWakeLock.setReferenceCounted(false); // if the idle-thread is killed for any reasons, it is better not to rely on reference counting
-
-      smtpWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "smtpWakeLock");
-      smtpWakeLock.setReferenceCounted(false); // if the idle-thread is killed for any reasons, it is better not to rely on reference counting
-
-    } catch (Exception e) {
-      Log.e(TAG, "Cannot create wakeLocks");
+      SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+      if(sharedPreferences.contains("pref_compression")) {
+        if (sharedPreferences.getString("pref_compression", "0").equals("1")) {
+          setConfigInt(DcHelper.CONFIG_MEDIA_QUALITY, DC_MEDIA_QUALITY_WORSE);
+        }
+        sharedPreferences.edit().remove("pref_compression").apply();
+      }
     }
+    catch(Exception e) {
+      Log.e(TAG, "cannot migrate pref_compression");
+    }
+    // /migration
 
-    new ForegroundDetector(ApplicationContext.getInstance(context));
-    startThreads(0);
-
-    BroadcastReceiver networkStateReceiver = new NetworkStateReceiver();
-    context.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
-
-    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-    filter.addAction(Intent.ACTION_SCREEN_OFF);
-    BroadcastReceiver screenReceiver = new ScreenReceiver();
-    context.registerReceiver(screenReceiver, filter);
-
+    // migration, can be removed after some versions (added 5/2020)
     try {
-      PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-      isScreenOn = pm.isScreenOn();
-    } catch (Exception e) {
-
+      SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+      Set<String> keys = sharedPreferences.getAll().keySet();
+      for (String key : keys) {
+        if (key.startsWith(Prefs.CHAT_MUTED_UNTIL)) {
+          int id = Integer.parseInt(key.substring(Prefs.CHAT_MUTED_UNTIL.length()));
+          long mutedUntil = Prefs.getLongPreference(context, key, 0);
+          long remainingSeconds = (mutedUntil - System.currentTimeMillis()) / 1000;
+          if (remainingSeconds > 0) {
+            setChatMuteDuration(id, remainingSeconds);
+            Log.i(TAG, "Migrating sharedPref mutedUntil "+mutedUntil+" to duration "+remainingSeconds);
+          } else {
+            Log.i(TAG, "Not migrating sharedPref mutedUntil "+mutedUntil+" to duration "+remainingSeconds+"because it's negative");
+          }
+          sharedPreferences.edit().remove(key).apply();
+        }
+      }
     }
+    catch(Exception e) {
+      Log.e(TAG, "cannot migrate mutedUntil");
+      e.printStackTrace();
+    }
+    // /migration
 
-    if (!isScreenOn) {
-      KeepAliveService.startSelf(context);
+    new Thread(() -> {
+      DcEventEmitter emitter = getEventEmitter();
+      while (true) {
+        DcEvent event = emitter.getNextEvent();
+        if (event==null) {
+          break;
+        }
+        handleEvent(event);
+      }
+      Log.i(TAG, "shutting down event handler");
+    }, "eventThread").start();
+
+    notificationCenter = new NotificationCenter(this);
+    maybeStartIo();
+  }
+
+  public void maybeStartIo() {
+    Log.i("DeltaChat", "++++++++++++++++++ ApplicationDcContext.maybeStartIo() ++++++++++++++++++");
+    localLocation.updateLocation();
+    if (isConfigured()!=0) {
+      startIo();
     }
   }
 
@@ -285,138 +311,8 @@ public class ApplicationDcContext extends DcContext {
 
     return new ThreadRecord(context, body, recipient, date,
         unreadCount, chatId,
-        chat.getVisibility(), verified, chat.isSendingLocations(), summary);
+        chat.getVisibility(), verified, chat.isSendingLocations(), chat.isMuted(), summary);
   }
-
-
-  /***********************************************************************************************
-   * Working Threads
-   **********************************************************************************************/
-
-  private final Object threadsCritical = new Object();
-  private final Object incLoopsCritical= new Object();
-
-  public Thread imapThread = null;
-  private PowerManager.WakeLock imapWakeLock = null;
-  private int inboxLoops = 0;
-
-  public Thread mvboxThread = null;
-  private PowerManager.WakeLock mvboxWakeLock = null;
-  private int mvboxLoops = 0;
-
-  public Thread sentboxThread = null;
-  private PowerManager.WakeLock sentboxWakeLock = null;
-
-  public Thread smtpThread = null;
-  private PowerManager.WakeLock smtpWakeLock = null;
-  private int smtpLoops = 0;
-
-  private Location__DRAFT localLocation;
-
-  public final static int INTERRUPT_IDLE = 0x01; // interrupt idle if the thread is already running
-
-  public void startThreads(int flags) {
-    synchronized (threadsCritical) {
-
-      if (imapThread == null || !imapThread.isAlive()) {
-
-        imapThread = new Thread(() -> {
-          Log.i(TAG, "###################### IMAP-Thread started. ######################");
-          while (true) {
-            localLocation.updateLocation();
-            imapWakeLock.acquire();
-            performImapJobs();
-            performImapFetch();
-            imapWakeLock.release();
-            synchronized (incLoopsCritical) {
-              inboxLoops++;
-            }
-            performImapIdle();
-          }
-        }, "imapThread");
-        imapThread.setPriority(Thread.NORM_PRIORITY);
-        imapThread.start();
-      } else {
-        if ((flags & INTERRUPT_IDLE) != 0) {
-          interruptImapIdle();
-        }
-      }
-
-
-      if (mvboxThread == null || !mvboxThread.isAlive()) {
-
-        mvboxThread = new Thread(() -> {
-          Log.i(TAG, "###################### MVBOX-Thread started. ######################");
-          while (true) {
-            mvboxWakeLock.acquire();
-            performMvboxJobs();
-            performMvboxFetch();
-            mvboxWakeLock.release();
-            synchronized (incLoopsCritical) {
-              mvboxLoops++;
-            }
-            performMvboxIdle();
-          }
-        }, "mvboxThread");
-        mvboxThread.setPriority(Thread.NORM_PRIORITY);
-        mvboxThread.start();
-      } else {
-        if ((flags & INTERRUPT_IDLE) != 0) {
-          interruptMvboxIdle();
-        }
-      }
-
-
-      if (sentboxThread == null || !sentboxThread.isAlive()) {
-
-        sentboxThread = new Thread(() -> {
-          Log.i(TAG, "###################### SENTBOX-Thread started. ######################");
-          while (true) {
-            sentboxWakeLock.acquire();
-            performSentboxJobs();
-            performSentboxFetch();
-            sentboxWakeLock.release();
-            performSentboxIdle();
-          }
-        }, "sentboxThread");
-        sentboxThread.setPriority(Thread.NORM_PRIORITY-1);
-        sentboxThread.start();
-      } else {
-        if ((flags & INTERRUPT_IDLE) != 0) {
-          interruptSentboxIdle();
-        }
-      }
-
-      if (smtpThread == null || !smtpThread.isAlive()) {
-        smtpThread = new Thread(() -> {
-          Log.i(TAG, "###################### SMTP-Thread started. ######################");
-          while (true) {
-            smtpWakeLock.acquire();
-            performSmtpJobs();
-            smtpWakeLock.release();
-            synchronized (incLoopsCritical) {
-              smtpLoops++;
-            }
-            performSmtpIdle();
-          }
-        }, "smtpThread");
-        smtpThread.setPriority(Thread.MAX_PRIORITY);
-        smtpThread.start();
-      }
-    }
-  }
-
-  public void waitForThreadsExecutedOnce() {
-    while(true) {
-      synchronized (incLoopsCritical) {
-        if(inboxLoops>0 && mvboxLoops>0 && smtpLoops>0) {
-          break;
-        }
-      }
-      Util.sleep(500);
-    }
-  }
-
 
   /***********************************************************************************************
    * Tools
@@ -502,34 +398,41 @@ public class ApplicationDcContext extends DcContext {
     });
   }
 
-  @Override
-  public long handleEvent(final int event, long data1, long data2) {
-    switch (event) {
+  public long handleEvent(DcEvent event) {
+    int id = event.getId();
+    switch (id) {
       case DC_EVENT_INFO:
-        Log.i(TAG, dataToString(data2));
+        Log.i(TAG, event.getData2Str());
         break;
 
       case DC_EVENT_WARNING:
-        Log.w(TAG, dataToString(data2));
+        Log.w(TAG, event.getData2Str());
         break;
 
       case DC_EVENT_ERROR:
-        handleError(event, true, dataToString(data2));
+        handleError(id, true, event.getData2Str());
         break;
 
       case DC_EVENT_ERROR_NETWORK:
-        handleError(event, data1 != 0, dataToString(data2));
+        handleError(id, event.getData1Int() != 0, event.getData2Str());
         break;
 
       case DC_EVENT_ERROR_SELF_NOT_IN_GROUP:
-        handleError(event, true, dataToString(data2));
+        handleError(id, true, event.getData2Str());
+        break;
+
+      case DC_EVENT_INCOMING_MSG:
+        notificationCenter.addNotification(event.getData1Int(), event.getData2Int());
+        if (eventCenter != null) {
+          eventCenter.sendToObservers(id, (long)event.getData1Int(), (long)event.getData2Int());
+        }
         break;
 
       default: {
-        final Object data1obj = data1IsString(event) ? dataToString(data1) : data1;
-        final Object data2obj = data2IsString(event) ? dataToString(data2) : data2;
+        final Object data1obj = (long)event.getData1Int();
+        final Object data2obj = data2IsString(id) ? event.getData2Str() : (long)event.getData2Int();
         if (eventCenter != null) {
-          eventCenter.sendToObservers(event, data1obj, data2obj);
+          eventCenter.sendToObservers(id, data1obj, data2obj);
         }
       }
       break;

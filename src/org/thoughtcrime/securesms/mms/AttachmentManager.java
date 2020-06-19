@@ -60,6 +60,7 @@ import org.thoughtcrime.securesms.util.concurrent.SettableFuture;
 import org.thoughtcrime.securesms.util.guava.Optional;
 import org.thoughtcrime.securesms.util.views.Stub;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -352,6 +353,14 @@ public class AttachmentManager {
           height = dimens.second;
         }
 
+        if (fileName == null) {
+          try {
+            fileName = new File(uri.getPath()).getName();
+          } catch(Exception e) {
+            Log.w(TAG, "Could not get file name from uri: " + e.toString());
+          }
+        }
+
         Log.w(TAG, "local slide with size " + mediaSize + " took " + (System.currentTimeMillis() - start) + "ms");
         return mediaType.createSlide(context, uri, fileName, mimeType, mediaSize, width, height);
       }
@@ -591,5 +600,19 @@ public class AttachmentManager {
       return DOCUMENT;
     }
 
+  }
+
+  public int getVisibility() {
+    try {
+      return attachmentViewStub.get().getVisibility();
+    } catch(Exception e) {
+      return View.GONE;
+    }
+  }
+
+  public void setVisibility(int vis) {
+    try {
+      attachmentViewStub.get().setVisibility(vis);
+    } catch(Exception e) {}
   }
 }

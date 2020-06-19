@@ -126,7 +126,7 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
 
     String title;
     if(isEdit()) {
-      title = getString(R.string.menu_edit_group);
+      title = getString(R.string.menu_group_name_and_image);
     }
     else if(verified) {
       title = getString(R.string.menu_new_verified_group);
@@ -303,7 +303,9 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
         dcContext.addContactToChat(groupChatId, contactId);
       }
     }
-    AvatarHelper.setGroupAvatar(this, groupChatId, avatarBmp);
+    if (avatarBmp!=null) {
+      AvatarHelper.setGroupAvatar(this, groupChatId, avatarBmp);
+    }
   }
 
   private void groupCreateDone() {
@@ -332,7 +334,9 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
     dcContext.setChatName(groupChatId, groupName);
     updateGroupParticipants();
 
-    AvatarHelper.setGroupAvatar(this, groupChatId, avatarBmp);
+    if (avatarBmp!=null) {
+      AvatarHelper.setGroupAvatar(this, groupChatId, avatarBmp);
+    }
   }
 
   private void groupUpdateDone() {

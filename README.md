@@ -1,6 +1,6 @@
 ## Location DRAFT
 
-This branch modifies the experimental location streaming feature of [Delta Chat](https://delta.chat/). It is fully compatible to regular Delta Chat clients.
+This branch modifies the experimental location streaming feature of [Delta Chat](https://delta.chat/). It depends on [GPSLogger](https://github.com/mendhak/gpslogger/) but is fully compatible to regular Delta Chat clients.
 
 Enable On-demand location streaming in Settings > Advanced and rename the contact to "NAME *" to make it permanently.
 

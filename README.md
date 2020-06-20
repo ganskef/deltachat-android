@@ -1,8 +1,10 @@
 ## Location DRAFT
 
-This branch plugs into and partly replaces the experimental Location Streaming in Delta Chat. It proposes features I love to use, fully compatible to regular Delta Chat clients.
+This branch modifies the experimental location streaming feature of [Delta Chat](https://delta.chat/). It is fully compatible to regular Delta Chat clients.
 
-<img alt="Train Locations Map" src="docs/images/2020-01-locations-train.png" width="298" /> <img alt="City Locations Map" src="docs/images/2020-01-locations-city.png" width="298" />
+Enable On-demand location streaming in Settings > Advanced and rename the contact to "NAME *" to make it permanently.
+
+<img alt="Enable Locations" src="docs/images/2020-06-locations-setting.png" width="298" /> <img alt="Train Locations Map" src="docs/images/2020-01-locations-train.png" width="298" /> <img alt="City Locations Map" src="docs/images/2020-01-locations-city.png" width="298" />
 
 Gratefully Delta Chat allows to share positions without using Google services. I'm traveling a lot and my person of interest would like to see where I am if I'm temporary not available or if she is in doubt about I'm doing well. Since this isn't predictable I would like to share my **location permanently** with here. Contacts with name ending with ' *' will enable location streaming any time if disabled. TODO: A regular feature should implement a contact property instead of a name extension of course.
 

@@ -6,6 +6,7 @@
     <string name="cancel">Vazgeç</string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
+    <string name="select">Seç</string>
     <string name="on">Açık</string>
     <string name="off">Kapalı</string>
     <string name="def">Varsayılan</string>
@@ -14,6 +15,8 @@
     <string name="automatic">Otomatik</string>
     <string name="strict">Katı</string>
     <string name="open">Aç</string>
+    <string name="join">Katıl</string>
+    <string name="rejoin">Yeniden katıl</string>
     <string name="delete">Sil</string>
     <string name="info">Bilgi</string>
     <string name="update">Güncelleştir</string>
@@ -25,6 +28,8 @@
     <string name="archive">Arşivle</string>
     <string name="unarchive">Arşivleme</string>
     <string name="mute">Sessize al</string>
+    <string name="ephemeral_messages">Kaybolan iletiler</string>
+    <string name="ephemeral_messages_hint">Bu ayarlar, Delta Chat\'i kullanan tüm katılımcılara uygulanır. Ancak onlar, iletileri kopyalayabilir, kaydedebilir ve iletebilir ya da diğer e-posta istemcilerinde kullanabilir.</string>
     <string name="save">Kaydet</string>
     <string name="chat">Sohbet</string>
     <string name="media">Ortam</string>
@@ -104,7 +109,9 @@
     <string name="camera">Kamera</string>
     <string name="location">Konum</string>
     <string name="gallery">Galeri</string>
+    <string name="images_and_videos">Görseller ve videolar</string>
     <string name="file">Dosya</string>
+    <string name="files">Dosyalar</string>
     <string name="unknown">Bilinmeyen</string>
 
     <string name="green">Yeşil</string>
@@ -208,6 +215,21 @@
 
     <string name="file_saved_to">Dosya \"%1$s\" üzerine kaydedildi.</string>
 
+    <string name="videochat">Video sohbeti</string>
+    <string name="videochat_invite_user_to_videochat">%1$s bir video sohbetine davet edilsin mi?</string>
+    <string name="videochat_invite_user_hint">Bu, her iki uçta da uyumlu bir uygulama ya da uyumlu bir tarayıcı gerektirir.</string>
+    <string name="videochat_contact_invited_hint">%1$s video sohbetine davet etti.</string>
+    <string name="videochat_you_invited_hint">Video sohbetine davet ettiniz.</string>
+    <string name="videochat_will_open_in_your_browser">Bu video sohbeti tarayıcınızda açılacak.</string>
+    <string name="videochat_tap_to_join">Katılmak için dokunun</string>
+    <string name="videochat_tap_to_open">Açmak için dokunun</string>
+    <string name="videochat_instance">Video sohbeti örneği</string>
+    <string name="videochat_instance_placeholder">Video sohbeti örneğiniz</string>
+    <string name="videochat_instance_explain">Bir video sohbeti örneği tanımlanırsa, her bire bir sohbetten video sohbeti başlatabilirsiniz. Video sohbetleri, her iki uçta da uyumlu bir uygulama ya da uyumlu bir tarayıcı gerektirir.\n\nÖrnekler: https://meet.jit.si/$ROOM ya da basicwebrtc:https://your-server</string>
+    <string name="videochat_instance_from_qr">\"%1$s\" diğerlerini video sohbetine davet etmek için kullanılsın mı?\n\nBir kez ayarlandığında, her bire bir sohbetten video sohbeti başlatabilirsiniz. Varsa bu, video sohbetleri için önceki ayarla değiştirilir.</string>
+    <string name="videochat_invitation">Video sohbeti daveti</string>
+    <string name="videochat_invitation_body">Bir video sohbetine davet edildiniz, katılmak için %1$s öğesini tıklayın.</string>
+
     <!-- get confirmations -->
     <string name="ask_leave_group">Bu gruptan ayrılmak istediğinizden emin misiniz?</string>
     <plurals name="ask_delete_chat">
@@ -219,6 +241,7 @@
         <item quantity="other">%d ileti buradan ve sunucudan silinsin mi?</item>
     </plurals>
     <string name="ask_forward">İletiler %1$s alıcısına iletilsin mi?</string>
+    <string name="ask_forward_multiple">İletiler %1$d sohbete iletilsin mi?</string>
     <string name="ask_export_attachment">İlişik dışa aktarılsın mı? İlişikleri dışa aktarmak, aygıtınızdaki diğer uygulamaların onlara erişmesine izin verir.\n\nSürdürülsün mü?</string>
     <string name="ask_block_contact">Bu kişi engellensin mi? Artık bu kişiden gelen iletileri almayacaksınız.</string>
     <string name="ask_unblock_contact">Bu kişi engellenmesin mi? Bir kez daha bu kişiden gelen iletileri alabileceksiniz.</string>
@@ -332,6 +355,8 @@
     <string name="login_smtp_port">SMTP bağlantı noktası</string>
     <string name="login_smtp_security">SMTP güvenliği</string>
     <string name="login_auth_method">Yetkilendirme yöntemi</string>
+    <!-- Translators: %1$s will be replaced by an email address -->
+    <string name="login_oauth2_checking_addr">%1$s denetleniyor</string>
     <string name="login_info_oauth2_title">Basitleştirilen ayarlamayla sürdürülsün mü?</string>
     <string name="login_info_oauth2_text">Girilen e-posta adresi basitleştirilen bir ayarlamayı (OAuth 2.0) destekliyor.\n\nSonraki adımda, lütfen Delta Chat\'in E-posta ile Sohbet uygulamanız olarak davranmasına izin verin.\n\nDelta Chat sunucuları yoktur; verileriniz aygıtınızda kalır.</string>
     <string name="login_certificate_checks">Sertifika denetimleri</string>
@@ -361,7 +386,9 @@
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
     <string name="forward_to">İlet…</string>
-    <string name="share_multiple_attachments">%1$d dosyayı seçilen sohbete göndermek istiyor musunuz?\n\nDosyalar, değiştirilmeden özgün boyutlarında gönderilir; örn. görseller ve videolar yeniden kodlanmaz.</string>
+    <string name="share_multiple_attachments">%1$d dosya seçilen sohbete gönderilsin mi?\n\nDosyalar, değiştirilmeden özgün boyutlarında gönderilir; örn. görseller ve videolar yeniden kodlanmaz.</string>
+    <string name="share_multiple_attachments_multiple_chats">%1$d dosya %2$d sohbete gönderilsin mi?\n\nDosyalar, değiştirilmeden özgün boyutlarında gönderilir; örn. görseller ve videolar yeniden kodlanmaz.</string>
+    <string name="share_text_multiple_chats">Bu metin %1$d sohbete gönderilsin mi?\n\n\"%2$s\"</string>
     <string name="share_abort">Eksik izinlerden dolayı paylaşımdan vazgeçildi.</string>
 
 
@@ -471,9 +498,11 @@
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="pref_reliable_service">Güvenilir arka plan bağlantısı</string>
     <string name="pref_reliable_service_explain">Kalıcı bir bildirim gerektirir</string>
+    <string name="ephemeral_dialog_title">Okunan iletileri sil</string>
 
 
     <!-- automatically delete message -->
+    <string name="delete_old_messages">Eski iletileri sil</string>
     <string name="autodel_title">İletileri otomatik sil</string>
     <string name="autodel_title_short">Otomatik sil</string>
     <string name="autodel_device_title">İletileri aygıttan sil</string>
@@ -484,6 +513,8 @@
     <string name="autodel_server_ask">%1$d iletiyi şimdi ve gelecekte yeni getirilen tüm iletileri \"%2$s\" silmek istiyor musunuz?\n\n• Bu, tüm ortamları kapsar\n\n• Bu, \"Klasik e-postaları göster\" seçeneği tarafından etkilenen e-postaları da silecek\n\n• \"Kaydedilen iletiler\" sunucudan da silinecek</string>
     <string name="autodel_confirm">Anladım, tüm bu iletileri sil</string>
     <string name="autodel_at_once">Bir kerede</string>
+    <string name="after_30_seconds">30 saniye sonra</string>
+    <string name="after_1_minute">1 dakika sonra</string>
     <string name="autodel_after_1_hour">1 saat sonra</string>
     <string name="autodel_after_1_day">1 gün sonra</string>
     <string name="autodel_after_1_week">1 hafta sonra</string>
@@ -522,6 +553,17 @@
     <string name="systemmsg_action_by_me">Benim tarafımdan %1$s.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%2$s tarafından %1$s.</string>
+    <string name="systemmsg_unknown_sender_for_chat">Bu sohbet için bilinmeyen gönderen. Daha fazla ayrıntı için \'bilgi\'ye bakın.</string>
+    <string name="systemmsg_subject_for_new_contact">Şundan ileti: %1$s</string>
+    <string name="systemmsg_failed_sending_to">%1$s alıcısına ileti gönderme başarısız.</string>
+
+    <string name="systemmsg_ephemeral_timer_disabled">Kaybolan iletiler zamanlayıcısı etkisizleştirildi.</string>
+    <string name="systemmsg_ephemeral_timer_enabled">Kaybolan iletiler zamanlayıcısı %1$s s\'ye ayarlandı.</string>
+    <string name="systemmsg_ephemeral_timer_minute">Kaybolan iletiler zamanlayıcısı 1 dakikaya ayarlandı.</string>
+    <string name="systemmsg_ephemeral_timer_hour">Kaybolan iletiler zamanlayıcısı 1 saate ayarlandı.</string>
+    <string name="systemmsg_ephemeral_timer_day">Kaybolan iletiler zamanlayıcısı 1 güne ayarlandı.</string>
+    <string name="systemmsg_ephemeral_timer_week">Kaybolan iletiler zamanlayıcısı 1 haftaya ayarlandı.</string>
+    <string name="systemmsg_ephemeral_timer_four_weeks">Kaybolan iletiler zamanlayıcısı 4 haftaya ayarlandı.</string>
 
 
     <!-- screen lock -->
@@ -692,8 +734,10 @@
     <string name="InfoPlist_NSContactsUsageDescription">Delta Chat, yazabileceğiniz e-posta adreslerinin bir listesini göstermek için kişilerinizi kullanır. Delta Chat\'in sunucusu yoktur; kişileriniz herhangi bir yere gönderilmez.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Delta Chat, sesli iletiler ve sesli videolar kaydetmek ve göndermek için mikrofonunuzu kullanır.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Delta Chat, göndermek için kitaplığınızdan fotoğraflar seçmenizi sağlayacak.</string>
+    <string name="InfoPlist_NSPhotoLibraryAddUsageDescription">Delta Chat, görselleri fotoğraf kitaplığınıza kaydetmek istiyor.</string>
 
 
     <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+    <string name="update_1_10_android">Bir bakışta yeni Delta Chat 1.10: Daha hızlı, çoklu hesap, bulanık görseller, yeni emojiler, yeniden çalışılmış bildirimler, daha iyi hata raporlama ama en önemlisi:\n\nProfildeki bir avatarı tıklayın ve onu genişletin 🚀</string>
 
 </resources>

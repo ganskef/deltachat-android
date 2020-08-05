@@ -13,6 +13,7 @@
     <string name="none">Не задано</string>
     <string name="open">Відкрити</string>
     <string name="delete">Видалити</string>
+    <string name="ephemeral_messages">Зникнення повідомлень</string>
     <string name="not_now">Не зараз</string>
     <string name="never">Ніколи</string>
     <string name="one_moment">Зачекайте, будь ласка...</string>
@@ -380,8 +381,6 @@
     <string name="systemmsg_action_by_me">%1$s мною.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s користувачем %2$s.</string>
-
-
     <!-- screen lock -->
     <string name="screenlock_title">Блокування екрану</string>
     <string name="screenlock_explain">Блокування доступу за допомогою блокування екрану Android або відбитків пальців; щоб уникнути появи попереднього вмісту, будь ласка, увімкнить «Безпека екрану».</string>
@@ -507,6 +506,4 @@
     <string name="message_detail_to_desktop"> </string>
     <string name="menu.view.developer.open.log.folder">Відкрити папку журналів</string>
     <string name="menu.view.developer.open.current.log.file">Відкрити поточний файл журналу</string>
-    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
-
-</resources>
+    </resources>

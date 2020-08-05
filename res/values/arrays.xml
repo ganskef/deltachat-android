@@ -127,7 +127,17 @@
       <item>@string/custom</item>
   </string-array>
 
-  <string-array name="mute_durations">
+    <string-array name="ephemeral_message_durations">
+        <item>@string/off</item>
+        <item>@string/after_30_seconds</item>
+        <item>@string/after_1_minute</item>
+        <item>@string/autodel_after_1_hour</item>
+        <item>@string/autodel_after_1_day</item>
+        <item>@string/autodel_after_1_week</item>
+        <item>@string/autodel_after_4_weeks</item>
+    </string-array>
+
+    <string-array name="mute_durations">
       <item>@string/mute_for_one_hour</item>
       <item>@string/mute_for_two_hours</item>
       <item>@string/mute_for_one_day</item>
@@ -136,7 +146,7 @@
   </string-array>
 
   <string-array name="autodel_device_durations">
-      <item>@string/off</item>
+      <item>@string/never</item>
       <item>@string/autodel_after_1_hour</item>
       <item>@string/autodel_after_1_day</item>
       <item>@string/autodel_after_1_week</item>
@@ -154,7 +164,7 @@
   </string-array>
 
   <string-array name="autodel_server_durations">
-      <item>@string/off</item>
+      <item>@string/never</item>
       <item>@string/autodel_at_once</item>
       <item>@string/autodel_after_1_hour</item>
       <item>@string/autodel_after_1_day</item>

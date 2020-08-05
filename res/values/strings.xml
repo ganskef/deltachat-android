@@ -6,6 +6,7 @@
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="select">Select</string>
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="def">Default</string>
@@ -14,6 +15,8 @@
     <string name="automatic">Automatic</string>
     <string name="strict">Strict</string>
     <string name="open">Open</string>
+    <string name="join">Join</string>
+    <string name="rejoin">Rejoin</string>
     <string name="delete">Delete</string>
     <string name="info">Info</string>
     <string name="update">Update</string>
@@ -25,6 +28,8 @@
     <string name="archive">Archive</string>
     <string name="unarchive">Unarchive</string>
     <string name="mute">Mute</string>
+    <string name="ephemeral_messages">Disappearing messages</string>
+    <string name="ephemeral_messages_hint">These settings apply to all participants using Delta Chat. However, they may copy, save and forward messages or use other e-mail clients.</string>
     <string name="save">Save</string>
     <string name="chat">Chat</string>
     <string name="media">Media</string>
@@ -104,7 +109,9 @@
     <string name="camera">Camera</string>
     <string name="location">Location</string>
     <string name="gallery">Gallery</string>
+    <string name="images_and_videos">Images and videos</string>
     <string name="file">File</string>
+    <string name="files">Files</string>
     <string name="unknown">Unknown</string>
 
     <string name="green">Green</string>
@@ -208,6 +215,21 @@
 
     <string name="file_saved_to">File saved to \"%1$s\".</string>
 
+    <string name="videochat">Video chat</string>
+    <string name="videochat_invite_user_to_videochat">Invite %1$s to a video chat?</string>
+    <string name="videochat_invite_user_hint">This requires a compatible app or a compatible browser on both ends.</string>
+    <string name="videochat_contact_invited_hint">%1$s invited to a video chat.</string>
+    <string name="videochat_you_invited_hint">You invited to a video chat.</string>
+    <string name="videochat_will_open_in_your_browser">This video chat will open in your browser.</string>
+    <string name="videochat_tap_to_join">Tap to join</string>
+    <string name="videochat_tap_to_open">Tap to open</string>
+    <string name="videochat_instance">Video chat instance</string>
+    <string name="videochat_instance_placeholder">Your video chat instance</string>
+    <string name="videochat_instance_explain">If a video chat instance is defined, you can start a video chat from each one-to-one chat. Video chats require a compatible app or a compatible browser on both ends.\n\nExamples: https://meet.jit.si/$ROOM or basicwebrtc:https://your-server</string>
+    <string name="videochat_instance_from_qr">Use \"%1$s\" to invite others to video chats?\n\nOnce set, you can start a video chat from each one-to-one chat. This will replace the previous setting for video chats, if any.</string>
+    <string name="videochat_invitation">Video chat invitation</string>
+    <string name="videochat_invitation_body">You are invited to a video chat, click %1$s to join.</string>
+
     <!-- get confirmations -->
     <string name="ask_leave_group">Are you sure you want to leave this group?</string>
     <plurals name="ask_delete_chat">
@@ -219,6 +241,7 @@
         <item quantity="other">Delete %d messages here and on the server?</item>
     </plurals>
     <string name="ask_forward">Forward messages to %1$s?</string>
+    <string name="ask_forward_multiple">Forward messages to %1$d chats?</string>
     <string name="ask_export_attachment">Export attachment? Exporting attachments will allow any other apps on your device to access them.\n\nContinue?</string>
     <string name="ask_block_contact">Block this contact? You will no longer receive messages from this contact.</string>
     <string name="ask_unblock_contact">Unblock this contact? You will once again be able to receive messages from this contact.</string>
@@ -363,7 +386,9 @@
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
     <string name="forward_to">Forward to…</string>
-    <string name="share_multiple_attachments">Do you want to send %1$d files to the selected chat?\n\nThe files are sent unmodified in their original size, eg. images and videos are not recoded.</string>
+    <string name="share_multiple_attachments">Send %1$d files to the selected chat?\n\nThe files are sent unmodified in their original size, eg. images and videos are not recoded.</string>
+    <string name="share_multiple_attachments_multiple_chats">Send %1$d file(s) to %2$d chats?\n\nThe files are sent unmodified in their original size, eg. images and videos are not recoded.</string>
+    <string name="share_text_multiple_chats">Send this text to %1$d chats?\n\n\"%2$s\"</string>
     <string name="share_abort">Sharing aborted due to missing permissions.</string>
 
 
@@ -473,9 +498,11 @@
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="pref_reliable_service">Reliable background connection</string>
     <string name="pref_reliable_service_explain">Requires a permanent notification</string>
+    <string name="ephemeral_dialog_title">Delete read messages</string>
 
 
     <!-- automatically delete message -->
+    <string name="delete_old_messages">Delete old messages</string>
     <string name="autodel_title">Auto-delete messages</string>
     <string name="autodel_title_short">Auto-delete</string>
     <string name="autodel_device_title">Delete messages from device</string>
@@ -486,6 +513,8 @@
     <string name="autodel_server_ask">Do you want to delete %1$d messages now and all newly fetched messages \"%2$s\" in the future?\n\n• This includes all media\n\n• This will also delete emails affected by the \"Show classic emails\" option\n\n• \"Saved messages\" will be deleted from the server as well</string>
     <string name="autodel_confirm">I understand, delete all these messages</string>
     <string name="autodel_at_once">At once</string>
+    <string name="after_30_seconds">After 30 seconds</string>
+    <string name="after_1_minute">After 1 minute</string>
     <string name="autodel_after_1_hour">After 1 hour</string>
     <string name="autodel_after_1_day">After 1 day</string>
     <string name="autodel_after_1_week">After 1 week</string>
@@ -524,6 +553,17 @@
     <string name="systemmsg_action_by_me">%1$s by me.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s by %2$s.</string>
+    <string name="systemmsg_unknown_sender_for_chat">Unknown sender for this chat. See \'info\' for more details.</string>
+    <string name="systemmsg_subject_for_new_contact">Message from %1$s</string>
+    <string name="systemmsg_failed_sending_to">Failed to send message to %1$s.</string>
+
+    <string name="systemmsg_ephemeral_timer_disabled">Disappearing messages timer disabled.</string>
+    <string name="systemmsg_ephemeral_timer_enabled">Disappearing messages timer set to %1$s s.</string>
+    <string name="systemmsg_ephemeral_timer_minute">Disappearing messages timer set to 1 minute.</string>
+    <string name="systemmsg_ephemeral_timer_hour">Disappearing messages timer set to 1 hour.</string>
+    <string name="systemmsg_ephemeral_timer_day">Disappearing messages timer set to 1 day.</string>
+    <string name="systemmsg_ephemeral_timer_week">Disappearing messages timer set to 1 week.</string>
+    <string name="systemmsg_ephemeral_timer_four_weeks">Disappearing messages timer set to 4 weeks.</string>
 
 
     <!-- screen lock -->
@@ -694,8 +734,10 @@
     <string name="InfoPlist_NSContactsUsageDescription">Delta Chat uses your contacts to show a list of email addresses you can write to. Delta Chat has no server, your contacts are not sent anywhere.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Delta Chat uses your microphone to record and send voice messages and videos with sound.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Delta Chat will let you choose which photos from your library to send.</string>
+    <string name="InfoPlist_NSPhotoLibraryAddUsageDescription">Delta Chat wants to save images to your photo library.</string>
 
 
     <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+    <string name="update_1_10_android">New Delta Chat 1.10 features at a glance: faster, multi-account, blur images, new emojis, reworked notifications, better error-reporting but most importantly:\n\nClick an avatar in profile and enlarge it 🚀</string>
 
 </resources>

@@ -25,6 +25,7 @@
     <string name="archive">Arkiver</string>
     <string name="unarchive">Fjern fra arkiv</string>
     <string name="mute">Demp</string>
+    <string name="ephemeral_messages">Forsvinnende meldinger</string>
     <string name="save">Lagre</string>
     <string name="chat">Sludring</string>
     <string name="media">Media</string>
@@ -339,8 +340,6 @@
     <string name="systemmsg_action_by_me">%1$s av meg.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s av %2$s.</string>
-
-
     <!-- screen lock -->
     <string name="screenlock_title">Skjermlås</string>
     <string name="screenlock_explain">Lås Signal tilgang med Android-skjermlås eller fingeravtrykk</string>
@@ -406,6 +405,4 @@
     <string name="none_blocked_desktop">Ingen blokkerte kontakter enda</string>
     <string name="me_desktop">Meg</string>
     <string name="message_detail_from_desktop">Fra</string>
-    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
-
-</resources>
+    </resources>

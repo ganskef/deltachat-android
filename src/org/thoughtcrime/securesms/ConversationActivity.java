@@ -18,7 +18,6 @@ package org.thoughtcrime.securesms;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -32,13 +31,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.Browser;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.view.WindowCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -60,6 +52,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
+
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
@@ -76,6 +76,7 @@ import org.thoughtcrime.securesms.components.HidingLinearLayout;
 import org.thoughtcrime.securesms.components.InputAwareLayout;
 import org.thoughtcrime.securesms.components.InputPanel;
 import org.thoughtcrime.securesms.components.KeyboardAwareLinearLayout.OnKeyboardShownListener;
+import org.thoughtcrime.securesms.components.ScaleStableImageView;
 import org.thoughtcrime.securesms.components.SendButton;
 import org.thoughtcrime.securesms.components.camera.QuickAttachmentDrawer;
 import org.thoughtcrime.securesms.components.camera.QuickAttachmentDrawer.AttachmentDrawerListener;
@@ -98,12 +99,12 @@ import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.providers.PersistentBlobProvider;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.scribbles.ScribbleActivity;
-import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.DynamicLanguage;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.MediaUtil;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.RelayUtil;
+import org.thoughtcrime.securesms.util.SendRelayedMessageUtil;
 import org.thoughtcrime.securesms.util.ServiceUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
@@ -112,12 +113,12 @@ import org.thoughtcrime.securesms.util.concurrent.ListenableFuture;
 import org.thoughtcrime.securesms.util.concurrent.SettableFuture;
 import org.thoughtcrime.securesms.util.views.Stub;
 import org.thoughtcrime.securesms.video.recode.VideoRecoder;
+import org.thoughtcrime.securesms.videochat.VideochatUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,8 +126,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static org.thoughtcrime.securesms.TransportOption.Type;
-import static org.thoughtcrime.securesms.util.RelayUtil.getForwardedMessageIDs;
-import static org.thoughtcrime.securesms.util.RelayUtil.getSharedUris;
+import static org.thoughtcrime.securesms.util.RelayUtil.getSharedText;
 import static org.thoughtcrime.securesms.util.RelayUtil.isForwarding;
 import static org.thoughtcrime.securesms.util.RelayUtil.isRelayingMessageContent;
 import static org.thoughtcrime.securesms.util.RelayUtil.isSharing;
@@ -176,6 +176,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private   InputAwareLayout            container;
   private   View                        composePanel;
   protected Stub<ReminderView>          reminderView;
+  private   ScaleStableImageView        backgroundView;
 
   private   AttachmentTypeSelector attachmentTypeSelector;
   private   AttachmentManager      attachmentManager;
@@ -194,6 +195,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private boolean    isDefaultSms             = true;
   private boolean    isSecurityInitialized    = false;
   private boolean    isShareDraftInitialized  = false;
+
+  private boolean successfulForwardingAttempt = false;
 
 
   private final DynamicTheme       dynamicTheme    = new DynamicTheme();
@@ -247,6 +250,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     });
 
     dcContext.eventCenter.addObserver(DcContext.DC_EVENT_CHAT_MODIFIED, this);
+    dcContext.eventCenter.addObserver(DcContext.DC_EVENT_CHAT_EPHEMERAL_TIMER_MODIFIED, this);
     dcContext.eventCenter.addObserver(DcContext.DC_EVENT_CONTACTS_CHANGED, this);
 
     if (isForwarding(this)) {
@@ -444,6 +448,14 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       menu.findItem(R.id.menu_show_map).setVisible(false);
     }
 
+    if (Prefs.isEphemeralMessagesEnabled(this) || dcContext.getChatEphemeralTimer(chatId) != 0) {
+      menu.findItem(R.id.menu_ephemeral_messages).setVisible(true);
+    }
+
+    if (!dcContext.isWebrtcConfigOk() || !dcChat.canVideochat()) {
+      menu.findItem(R.id.menu_videochat_invite).setVisible(false);
+    }
+
     if (isGroupConversation()) {
       if (isActiveGroup()) {
         inflater.inflate(R.menu.conversation_push_group_options, menu);
@@ -514,6 +526,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       case R.id.menu_search_up:             handleMenuSearchNext(false);       return true;
       case R.id.menu_search_down:           handleMenuSearchNext(true);        return true;
       case android.R.id.home:               handleReturnToConversationList();  return true;
+      case R.id.menu_ephemeral_messages:    handleEphemeralMessages();         return true;
+      case R.id.menu_videochat_invite:      handleVideochatInvite();           return true;
     }
 
     return false;
@@ -541,6 +555,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   //////// Event Handlers
 
+  private void handleEphemeralMessages() {
+      int preselected = dcContext.getChatEphemeralTimer(chatId);
+      EphemeralMessagesDialog.show(this, preselected, duration -> {
+        dcContext.setChatEphemeralTimer(chatId, (int) duration);
+      });
+  }
+
+  private void handleVideochatInvite() {
+    new VideochatUtil().invite(this, chatId);
+  }
+
   private void handleShowMap() {
     Intent intent = new Intent(this, MapActivity.class);
     intent.putExtra(MapActivity.CHAT_ID, chatId);
@@ -549,9 +574,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleReturnToConversationList() {
 
-    if (isRelayingMessageContent(this)) {
+    if (isRelayingMessageContent(this) || successfulForwardingAttempt) {
       if (isSharing(this)) {
-        attachmentManager.cleanup();
+        // we're allowing only 1 try to share, going back to the conversation list will
+        // close the conversation list in activtyForResult() as well, so that the user
+        // comes back to the extenal app's share menu
+        setResult(RESULT_OK);
       }
       finish();
       return;
@@ -644,7 +672,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void handleForwarding() {
     DcChat dcChat = dcContext.getChat(chatId);
     if (dcChat.isSelfTalk()) {
-      new RelayingTask(this, chatId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+      SendRelayedMessageUtil.immediatelyRelay(this, chatId);
     } else {
       String name = dcChat.getName();
       if (!dcChat.isGroup()) {
@@ -655,7 +683,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       }
       new AlertDialog.Builder(this)
               .setMessage(getString(R.string.ask_forward, name))
-              .setPositiveButton(R.string.ok, (dialogInterface, i) -> new RelayingTask(this, chatId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
+              .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                SendRelayedMessageUtil.immediatelyRelay(this, chatId);
+                successfulForwardingAttempt = true;
+              })
               .setNegativeButton(R.string.cancel, (dialogInterface, i) -> finish())
               .show();
     }
@@ -663,35 +694,37 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleSharing() {
     ArrayList<Uri> uriList =  RelayUtil.getSharedUris(this);
-    RelayUtil.resetRelayingMessageContent(this);
-    if (uriList == null) return;
     if (uriList.size() > 1) {
       String message = String.format(getString(R.string.share_multiple_attachments), uriList.size());
       new AlertDialog.Builder(this)
               .setMessage(message)
               .setCancelable(false)
-              .setNegativeButton(android.R.string.cancel, ((dialog, which) -> {
-                finish();
-              }))
-              .setPositiveButton(R.string.menu_send, (dialog, which) -> new RelayingTask(this, chatId).execute())
+              .setNegativeButton(android.R.string.cancel, ((dialog, which) -> finish()))
+              .setPositiveButton(R.string.menu_send, (dialog, which) -> SendRelayedMessageUtil.immediatelyRelay(this, chatId))
               .show();
     } else {
-        if (uriList.size() == 1) {
-          DcMsg message = createMessage(this, uriList.get(0));
-          dcContext.setDraft(chatId, message);
+      if (uriList.isEmpty()) {
+        dcContext.setDraft(chatId, SendRelayedMessageUtil.createMessage(this, null, getSharedText(this)));
+      } else {
+        dcContext.setDraft(chatId, SendRelayedMessageUtil.createMessage(this, uriList.get(0), getSharedText(this)));
+      }
+      initializeDraft().addListener(new AssertedSuccessListener<Boolean>() {
+        @Override
+        public void onSuccess(Boolean result) {
+          isShareDraftInitialized = true;
         }
-        initializeDraft().addListener(new AssertedSuccessListener<Boolean>() {
-          @Override
-          public void onSuccess(Boolean result) {
-            isShareDraftInitialized = true;
-          }
-        });
+      });
     }
   }
 
   ///// Initializers
 
+  /**
+   * Drafts can be initialized by click on a mailto: link or from the database
+   * @return
+   */
   private ListenableFuture<Boolean> initializeDraft() {
+
     final SettableFuture<Boolean> result = new SettableFuture<>();
 
     final String    draftText      = getIntent().getStringExtra(TEXT_EXTRA);
@@ -802,10 +835,13 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     quickAttachmentDrawer = ViewUtil.findById(this, R.id.quick_attachment_drawer);
     quickAttachmentToggle = ViewUtil.findById(this, R.id.quick_attachment_toggle);
     inputPanel            = ViewUtil.findById(this, R.id.bottom_panel);
+    backgroundView        = ViewUtil.findById(this, R.id.conversation_background);
 
     ImageButton quickCameraToggle = ViewUtil.findById(this, R.id.quick_camera_toggle);
 
     container.addOnKeyboardShownListener(this);
+    container.addOnKeyboardHiddenListener(backgroundView);
+    container.addOnKeyboardShownListener(backgroundView);
     inputPanel.setListener(this);
     inputPanel.setMediaListener(this);
 
@@ -848,16 +884,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void initializeBackground() {
     String backgroundImagePath = Prefs.getBackgroundImagePath(this);
+    Drawable background;
     if(!backgroundImagePath.isEmpty()) {
-      Drawable image = Drawable.createFromPath(backgroundImagePath);
-      getWindow().setBackgroundDrawable(image);
+      background = Drawable.createFromPath(backgroundImagePath);
     }
-    else if(dynamicTheme.isDarkTheme(this)) {
-      getWindow().setBackgroundDrawableResource(R.drawable.background_hd_dark);
+    else if(DynamicTheme.isDarkTheme(this)) {
+      background = getResources().getDrawable(R.drawable.background_hd_dark);
     }
     else {
-      getWindow().setBackgroundDrawableResource(R.drawable.background_hd);
+      background = getResources().getDrawable(R.drawable.background_hd);
     }
+    backgroundView.setImageDrawable(background);
   }
 
   protected void initializeActionBar() {
@@ -1037,14 +1074,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
         List<Attachment> attachments = slideDeck.asAttachments();
         for (Attachment attachment : attachments) {
           String contentType = attachment.getContentType();
-          if (MediaUtil.isImageType(contentType)) {
-            msg = new DcMsg(dcContext, DcMsg.DC_MSG_IMAGE);
+          if (MediaUtil.isImageType(contentType) && slideDeck.getDocumentSlide()==null) {
+            msg = new DcMsg(dcContext,
+                    MediaUtil.isGif(contentType) ? DcMsg.DC_MSG_GIF : DcMsg.DC_MSG_IMAGE);
             msg.setDimension(attachment.getWidth(), attachment.getHeight());
-
-            // recompress jpeg-files unless sent as documents
-            if (MediaUtil.isJpegType(contentType) && slideDeck.getDocumentSlide()==null) {
-              recompress = DcMsg.DC_MSG_IMAGE;
-            }
           }
           else if (MediaUtil.isAudioType(contentType)) {
             msg = new DcMsg(dcContext,
@@ -1083,13 +1116,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           if(msg!=null)
           {
             boolean doSend = true;
-            if(recompress!=0) {
-              if(recompress==DcMsg.DC_MSG_IMAGE) {
-                BitmapUtil.recodeImageMsg(ConversationActivity.this, msg);
-              }
-              else if(recompress==DcMsg.DC_MSG_VIDEO) {
-                doSend = VideoRecoder.prepareVideo(ConversationActivity.this, dcChat.getId(), msg);
-              }
+            if (recompress==DcMsg.DC_MSG_VIDEO) {
+              doSend = VideoRecoder.prepareVideo(ConversationActivity.this, dcChat.getId(), msg);
             }
 
             if (doSend) {
@@ -1112,110 +1140,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, msg, recompress);
 
     return future;
-  }
-
-  private static class RelayingTask extends AsyncTask<Void, Void, Void> {
-
-    WeakReference<Activity> activityRef;
-    int chatId;
-
-    RelayingTask(Activity activity, int chatId) {
-      activityRef = new WeakReference<>(activity);
-      this.chatId = chatId;
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
-      Activity activity = activityRef.get();
-      if (activity == null) {
-        return null;
-      }
-
-      activity.setResult(RESULT_OK);
-      if (isForwarding(activity)) {
-        handleForwarding(activity);
-      } else if (isSharing(activity)) {
-        handleSharing(activity);
-      }
-      return null;
-    }
-
-
-    private void handleForwarding(Activity activity) {
-      DcContext dcContext = DcHelper.getContext(activity);
-      dcContext.forwardMsgs(getForwardedMessageIDs(activity), chatId);
-    }
-
-    private void handleSharing(Activity activity) {
-      DcContext dcContext = DcHelper.getContext(activity);
-      ArrayList<Uri> uris = getSharedUris(activity);
-      try {
-        for(Uri uri : uris) {
-          DcMsg message = createMessage(activityRef.get(), uri);
-          dcContext.sendMsg(chatId, message);
-          cleanup(activity, uri);
-        }
-      } catch (NullPointerException npe) {
-        Log.w(TAG, "Activity destroyed before background task finished. " +
-                "Cancelling message relaying. " +
-                npe.getMessage());
-      }
-    }
-
-    private void cleanup(Context context, final @Nullable Uri uri) {
-      if (uri != null && PersistentBlobProvider.isAuthority(context, uri)) {
-        Log.w(TAG, "cleaning up " + uri);
-        PersistentBlobProvider.getInstance(context).delete(context, uri);
-      }
-    }
-
-  }
-
-  private static DcMsg createMessage(Context context, Uri uri) throws NullPointerException {
-    DcContext dcContext = DcHelper.getContext(context);
-    DcMsg message;
-    String mimeType = MediaUtil.getMimeType(context, uri);
-    if (MediaUtil.isImageType(mimeType)) {
-      message = new DcMsg(dcContext, DcMsg.DC_MSG_IMAGE);
-    }
-    else if (MediaUtil.isAudioType(mimeType)) {
-      message = new DcMsg(dcContext,DcMsg.DC_MSG_AUDIO);
-    }
-    else if (MediaUtil.isVideoType(mimeType)) {
-      message = new DcMsg(dcContext, DcMsg.DC_MSG_VIDEO);
-    }
-    else {
-      message = new DcMsg(dcContext, DcMsg.DC_MSG_FILE);
-    }
-    message.setFile(getRealPathFromUri(context, uri), mimeType);
-    return message;
-  }
-
-  private static String getRealPathFromUri(Context context, Uri uri) throws NullPointerException {
-    ApplicationDcContext dcContext = DcHelper.getContext(context);
-    try {
-      String filename = uri.getPathSegments().get(2); // Get real file name from Uri
-      String ext = "";
-      int i = filename.lastIndexOf(".");
-      if(i>=0) {
-        ext = filename.substring(i);
-        filename = filename.substring(0, i);
-      }
-      String path = dcContext.getBlobdirFile(filename, ext);
-
-      // copy content to this file
-      if(path != null) {
-        InputStream inputStream = PartAuthority.getAttachmentStream(context, uri);
-        OutputStream outputStream = new FileOutputStream(path);
-        Util.copy(inputStream, outputStream);
-      }
-
-      return path;
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      return null;
-    }
   }
 
 
@@ -1544,7 +1468,9 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   public void handleEvent(int eventId, Object data1, Object data2) {
-    if (eventId == DcContext.DC_EVENT_CHAT_MODIFIED || eventId == DcContext.DC_EVENT_CONTACTS_CHANGED) {
+    if (eventId == DcContext.DC_EVENT_CHAT_MODIFIED
+     || eventId == DcContext.DC_EVENT_CHAT_EPHEMERAL_TIMER_MODIFIED
+     || eventId == DcContext.DC_EVENT_CONTACTS_CHANGED) {
       dcChat = dcContext.getChat(chatId);
       titleView.setTitle(glideRequests, dcChat);
       initializeSecurity(isSecureText, isDefaultSms);
@@ -1585,14 +1511,15 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     beforeSearchAttachVisibility = attachmentManager.getVisibility();
     attachmentManager.setVisibility(View.GONE);
 
-    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, false);
+    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, true);
   }
 
   private void searchCollapse(final Menu menu, final MenuItem searchItem) {
     composePanel.setVisibility(beforeSearchComposeVisibility);
     attachmentManager.setVisibility(beforeSearchAttachVisibility);
 
-    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, true);
+    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, false);
+    invalidateOptionsMenu();
   }
 
   private void handleMenuSearchNext(boolean searchNext) {

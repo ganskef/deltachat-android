@@ -117,18 +117,12 @@ static jintArray dc_array2jintArray_n_unref(JNIEnv *env, dc_array_t* ca)
 
 	if (ca) {
 		if (icnt) {
-			const uint32_t* ca_data = dc_array_get_raw(ca);
-			if (sizeof(uint32_t)==sizeof(jint)) {
-				(*env)->SetIntArrayRegion(env, ret, 0, icnt, (jint*)ca_data);
+			jint* temp = calloc(icnt, sizeof(jint));
+			for (i = 0; i < icnt; i++) {
+				temp[i] = (jint)dc_array_get_id(ca, i);
 			}
-			else {
-				jint* temp = calloc(icnt, sizeof(jint));
-					for (i = 0; i < icnt; i++) {
-						temp[i] = (jint)ca_data[i];
-					}
-					(*env)->SetIntArrayRegion(env, ret, 0, icnt, temp);
-				free(temp);
-			}
+			(*env)->SetIntArrayRegion(env, ret, 0, icnt, temp);
+			free(temp);
 		}
 		dc_array_unref(ca);
 	}
@@ -560,6 +554,12 @@ JNIEXPORT jint Java_com_b44t_messenger_DcContext_sendTextMsg(JNIEnv *env, jobjec
 		jint msg_id = dc_send_text_msg(get_dc_context(env, obj), chat_id, textPtr);
 	CHAR_UNREF(text);
 	return msg_id;
+}
+
+
+JNIEXPORT jint Java_com_b44t_messenger_DcContext_sendVideochatInvitation(JNIEnv *env, jobject obj, jint chat_id)
+{
+	return (jint)dc_send_videochat_invitation(get_dc_context(env, obj), chat_id);
 }
 
 
@@ -1141,6 +1141,16 @@ JNIEXPORT jintArray Java_com_b44t_messenger_DcContext_getChatContacts(JNIEnv *en
 	return dc_array2jintArray_n_unref(env, ca);
 }
 
+JNIEXPORT jint Java_com_b44t_messenger_DcContext_getChatEphemeralTimer(JNIEnv *env, jobject obj, jint chat_id)
+{
+	return dc_get_chat_ephemeral_timer(get_dc_context(env, obj), chat_id);
+}
+
+JNIEXPORT jboolean Java_com_b44t_messenger_DcContext_setChatEphemeralTimer(JNIEnv *env, jobject obj, jint chat_id, jint timer)
+{
+	return dc_set_chat_ephemeral_timer(get_dc_context(env, obj), chat_id, timer);
+}
+
 JNIEXPORT jboolean Java_com_b44t_messenger_DcContext_setChatMuteDuration(JNIEnv *env, jobject obj, jint chat_id, jlong duration)
 {
     return dc_set_chat_mute_duration(get_dc_context(env, obj), chat_id, duration);
@@ -1352,6 +1362,21 @@ JNIEXPORT jstring Java_com_b44t_messenger_DcMsg_getSetupCodeBegin(JNIEnv *env, j
 		jstring ret =  JSTRING_NEW(temp);
 	dc_str_unref(temp);
 	return ret;
+}
+
+
+JNIEXPORT jstring Java_com_b44t_messenger_DcMsg_getVideochatUrl(JNIEnv *env, jobject obj)
+{
+	char* temp = dc_msg_get_videochat_url(get_dc_msg(env, obj));
+		jstring ret =  JSTRING_NEW(temp);
+	dc_str_unref(temp);
+	return ret;
+}
+
+
+JNIEXPORT jint Java_com_b44t_messenger_DcMsg_getVideochatType(JNIEnv *env, jobject obj)
+{
+	return (jint)dc_msg_get_videochat_type(get_dc_msg(env, obj));
 }
 
 

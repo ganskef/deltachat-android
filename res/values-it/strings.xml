@@ -6,6 +6,7 @@
     <string name="cancel">Annulla</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="select">Selezionare</string>
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="def">Predefinito</string>
@@ -14,6 +15,8 @@
     <string name="automatic">Automatico</string>
     <string name="strict">Stringente</string>
     <string name="open">Apri</string>
+    <string name="join">Partecipa</string>
+    <string name="rejoin">Ripartecipa</string>
     <string name="delete">Elimina</string>
     <string name="info">Info</string>
     <string name="update">Aggiorna</string>
@@ -25,6 +28,8 @@
     <string name="archive">Archivia</string>
     <string name="unarchive">Ripristina</string>
     <string name="mute">Silenzia</string>
+    <string name="ephemeral_messages">Messaggi che scompaiono</string>
+    <string name="ephemeral_messages_hint">Queste impostazioni si applicano a tutti i partecipanti che utilizzano Delta Chat. Tuttavia, possono copiare, salvare e inoltrare messaggi o utilizzare altri client e-mail.</string>
     <string name="save">Salva</string>
     <string name="chat">Chat</string>
     <string name="media">Media</string>
@@ -104,7 +109,9 @@
     <string name="camera">Camera</string>
     <string name="location">Posizione</string>
     <string name="gallery">Galleria</string>
+    <string name="images_and_videos">Immagini e video</string>
     <string name="file">File</string>
+    <string name="files">File</string>
     <string name="unknown">Sconosciuto</string>
 
     <string name="green">Verde</string>
@@ -208,6 +215,21 @@
 
     <string name="file_saved_to">File salvato su \"%1$s\".</string>
 
+    <string name="videochat">Chat video</string>
+    <string name="videochat_invite_user_to_videochat">Invito %1$s a una chat video?</string>
+    <string name="videochat_invite_user_hint">Questo richiede un\'app compatibile o un browser compatibile da entrambe le parti.</string>
+    <string name="videochat_contact_invited_hint">%1$s ti ha invitato a una chat video.</string>
+    <string name="videochat_you_invited_hint">Hai invitato a una chat video.</string>
+    <string name="videochat_will_open_in_your_browser">Questa video chat si aprirà nel tuo browser.</string>
+    <string name="videochat_tap_to_join">Tocca per partecipare</string>
+    <string name="videochat_tap_to_open">Tocca per aprire</string>
+    <string name="videochat_instance">Istanza chat video</string>
+    <string name="videochat_instance_placeholder">La tua istanza chat video</string>
+    <string name="videochat_instance_explain">Se viene definita un\'istanza chat video, è possibile avviare una chat video da ciascuna chat uno a uno. Le chat video richiedono un\'app compatibile o un browser compatibile da entrambe le parti.\n\nEsempi: https://meet.jit.si/$ROOM o basicwebrtc: https://your-server</string>
+    <string name="videochat_instance_from_qr">Utilizzare \"%1$s\" per invitare altri alla chat video?\n\nUna volta impostato, è possibile avviare una chat video da ogni chat uno a uno. Ciò sostituirà l\'eventuale impostazione precedente per le chat video.</string>
+    <string name="videochat_invitation">Invito alla chat video</string>
+    <string name="videochat_invitation_body">Sei invitato a una chat video, fai clic %1$s per partecipare.</string>
+
     <!-- get confirmations -->
     <string name="ask_leave_group">Sei sicuro di voler abbandonare il gruppo?</string>
     <plurals name="ask_delete_chat">
@@ -219,6 +241,7 @@
         <item quantity="other">Eliminare %d messaggi qui e sul sever?</item>
     </plurals>
     <string name="ask_forward">Inoltrare messaggi a %1$s?</string>
+    <string name="ask_forward_multiple">Inoltra messaggi a %1$d chat?</string>
     <string name="ask_export_attachment">Esportare allegato? Questo permetterà ad ogni altra app sul tuo dispositivo di accedervi.\n\nContinuare?</string>
     <string name="ask_block_contact">Bloccare il contatto? Non riceverai più messaggi da questo contatto.</string>
     <string name="ask_unblock_contact">Sbloccare il contatto? Potrai nuovamente ricevere messaggi da questo contatto.</string>
@@ -258,7 +281,7 @@
         <item quantity="one">%d nuovo messaggio</item>
         <item quantity="other">%d nuovi messaggi</item>
     </plurals>
-    <string name="chat_no_messages_hint">Invia un messaggio a %1$s:\n\n• Non è necessario che anche %2$s usi Delta Chat.\n\n• L\'invio del primo messaggio può richiedere qualche istante ed non essere crittografato. </string>
+    <string name="chat_no_messages_hint">Invia un messaggio a %1$s:\n\n• Non è necessario che anche %2$s usi Delta Chat.\n\n• L\'invio del primo messaggio può richiedere qualche istante e non essere crittografato. </string>
     <string name="chat_new_group_hint">Invia il primo messaggio per permettere agli altri di rispondere nel gruppo\n\n• Non è necessario che tutti i membri usino Delta Chat.\n\n• L\'invio del primo messaggio può richiedere qualche istante.</string>
     <string name="chat_record_slide_to_cancel">Scorri per annullare</string>
     <string name="chat_record_explain">Tocca e mantieni per registrare un messaggio vocale, rilascia per inviare </string>
@@ -332,6 +355,8 @@
     <string name="login_smtp_port">Porta SMTP</string>
     <string name="login_smtp_security">Sicurezza SMTP</string>
     <string name="login_auth_method">Metodo di autorizzazione</string>
+    <!-- Translators: %1$s will be replaced by an email address -->
+    <string name="login_oauth2_checking_addr">Verifica %1$s</string>
     <string name="login_info_oauth2_title">Usare il setup semplificato?</string>
     <string name="login_info_oauth2_text">L\'indirizzo email inserito supporta l\'autenticazione semplificata (OAuth2.0).\n\nContinuando, puoi autorizzare Delta Chat ad operare come app di messaggistica via e-mail.\n\nNon esistono server di Delta Chat, i tuoi dati restano nel tuo dispositivo!</string>
     <string name="login_certificate_checks">Controlli certificato</string>
@@ -361,7 +386,9 @@
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
     <string name="forward_to">Inotra a...</string>
-    <string name="share_multiple_attachments">Vuoi inviare %1$d file alla chat selezionata?\n\nI file vengono inviati senza modifiche e della dimensione originale. Immagini e video non vengono ricodificati.</string>
+    <string name="share_multiple_attachments">Invia %1$d file alla chat selezionata?\n\nI file vengono inviati non modificati nella loro dimensione originale, ad es. immagini e video non vengono ricodificati.</string>
+    <string name="share_multiple_attachments_multiple_chats">Invia %1$d file(s) a %2$d chat?\n\nI file vengono inviati non modificati nella loro dimensione originale, ad es. immagini e video non vengono ricodificati.</string>
+    <string name="share_text_multiple_chats">Invia questo testo alle %1$d chat?\n\n\"%2$s\"</string>
     <string name="share_abort">Condivisione annullata per permessi mancanti.</string>
 
 
@@ -430,7 +457,7 @@
     <string name="pref_other">Altro</string>
     <string name="pref_backup">Backup</string>
     <string name="pref_backup_explain">Backup chat su memoria esterna</string>
-    <string name="pref_backup_export_explain">Un backup ti aiuta a impostare una nuova installazione su questo o un altro dispositivo.\n\nIl backup conterrà tutti i messaggi, i contatti, le chat e le impostazioni Autocrypt. Tienilo al sicuro o eliminalo il prima possibile. </string>
+    <string name="pref_backup_export_explain">Un backup ti aiuta ad impostare una nuova installazione su questo o un altro dispositivo.\n\nIl backup conterrà tutti i messaggi, i contatti, le chat e le impostazioni Autocrypt. Tienilo al sicuro o eliminalo il prima possibile. </string>
     <string name="pref_backup_export_start_button">Avvia backup</string>
     <string name="pref_backup_written_to_x">Backup scritto con successo in %1$s</string>
     <string name="pref_managekeys_menu_title">Gestisci chiavi</string>
@@ -471,9 +498,11 @@
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="pref_reliable_service">Connessione in background affidabile</string>
     <string name="pref_reliable_service_explain">Richiede una notifica permanente</string>
+    <string name="ephemeral_dialog_title">Elimina i messaggi letti</string>
 
 
     <!-- automatically delete message -->
+    <string name="delete_old_messages">Elimina i vecchi messaggi</string>
     <string name="autodel_title">Auto eliminazione dei messaggi</string>
     <string name="autodel_title_short">Auto-eliminazione</string>
     <string name="autodel_device_title">Elimina messaggi dal dispositivo</string>
@@ -484,6 +513,8 @@
     <string name="autodel_server_ask">Vuoi eliminare %1$d messaggi ora e tutti i messaggi arrivati \"%2$s\" nel futuro?\n\n• Questo include tutti i media\n\n• Verranno eliminate anche le email legate all\'opzione \"Mostra email classiche\"\n\n• Anche i \"Messaggi salvati\" verranno eliminati dal server.</string>
     <string name="autodel_confirm">Ho capito, elimina tutti i messaggi</string>
     <string name="autodel_at_once">Una volta</string>
+    <string name="after_30_seconds">Dopo 30 secondi</string>
+    <string name="after_1_minute">Dopo 1 minuto</string>
     <string name="autodel_after_1_hour">Dopo 1 ora</string>
     <string name="autodel_after_1_day">Dopo 1 giorno</string>
     <string name="autodel_after_1_week">Dopo 1 settimana</string>
@@ -522,6 +553,17 @@
     <string name="systemmsg_action_by_me">%1$s da me.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s da %2$s.</string>
+    <string name="systemmsg_unknown_sender_for_chat">Mittente sconosciuto per questa chat. Vedi \'info\' per maggiori dettagli.</string>
+    <string name="systemmsg_subject_for_new_contact">Messaggio da %1$s</string>
+    <string name="systemmsg_failed_sending_to">Impossibile inviare il messaggio a %1$s.</string>
+
+    <string name="systemmsg_ephemeral_timer_disabled">Timer scomparsa messaggi disabilitato.</string>
+    <string name="systemmsg_ephemeral_timer_enabled">Il timer per la scomparsa dei messaggi è impostato su %1$s s.</string>
+    <string name="systemmsg_ephemeral_timer_minute">Il timer per la scomparsa dei messaggi è impostato su 1 minuto.</string>
+    <string name="systemmsg_ephemeral_timer_hour">Il timer per la scomparsa dei messaggi è impostato su 1 ora.</string>
+    <string name="systemmsg_ephemeral_timer_day">Il timer per la scomparsa dei messaggi è impostato su 1 giorno.</string>
+    <string name="systemmsg_ephemeral_timer_week">Il timer per la scomparsa dei messaggi è impostato su 1 settimana.</string>
+    <string name="systemmsg_ephemeral_timer_four_weeks">Il timer per la scomparsa dei messaggi è impostato su 4 settimane.</string>
 
 
     <!-- screen lock -->
@@ -692,8 +734,10 @@
     <string name="InfoPlist_NSContactsUsageDescription">Autorizzare l\'accesso alla rubrica ti permette di chattare con i contatti nel tuo dispositivo.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Autorizzare l\'accesso al microfono ti permette di registrare audio.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Autorizzare l\'accesso alla galleria ti permette di caricare foto da essa.</string>
+    <string name="InfoPlist_NSPhotoLibraryAddUsageDescription">Delta Chat vuole salvare le immagini nella tua libreria di foto.</string>
 
 
     <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+    <string name="update_1_10_android">Nuove funzionalità di Delta Chat 1.10 a colpo d\'occhio: più veloce, multi-account, immagini sfocate, nuove emoji, notifiche rielaborate, migliore segnalazione degli errori, ma soprattutto:\n\nFai clic su un avatar nel profilo e ingrandiscilo 🚀</string>
 
 </resources>

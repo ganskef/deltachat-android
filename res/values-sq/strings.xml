@@ -6,6 +6,7 @@
     <string name="cancel">Anuloje</string>
     <string name="yes">Po</string>
     <string name="no">Jo</string>
+    <string name="select">Përzgjidhni</string>
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="def">Parazgjedhje</string>
@@ -14,6 +15,8 @@
     <string name="automatic">Automatike</string>
     <string name="strict">Strikt</string>
     <string name="open">Hap</string>
+    <string name="join">Hyni</string>
+    <string name="rejoin">Rihyni</string>
     <string name="delete">Fshije</string>
     <string name="info">Të dhëna</string>
     <string name="update">Përditësoje</string>
@@ -25,6 +28,8 @@
     <string name="archive">Arkivoje</string>
     <string name="unarchive">Çarkivoje</string>
     <string name="mute">Heshtoje</string>
+    <string name="ephemeral_messages">Mesazhe që zhduken</string>
+    <string name="ephemeral_messages_hint">Këto rregullime zbatohen mbi krejt pjesëmarrësit që përdorin Delta Chat-in. Sidoqoftë, ata mund të kopjojnë, ruajnë dhe përcjellin mesazhe ose të përdorin klientë të tjerë email-i.</string>
     <string name="save">Ruaje</string>
     <string name="chat">Fjalosje</string>
     <string name="media">Media</string>
@@ -104,7 +109,9 @@
     <string name="camera">Kamerë</string>
     <string name="location">Vendndodhje</string>
     <string name="gallery">Galeri</string>
+    <string name="images_and_videos">Figura dhe video</string>
     <string name="file">Kartelë</string>
+    <string name="files">Kartela</string>
     <string name="unknown">E panjohur</string>
 
     <string name="green">E gjelbër</string>
@@ -208,6 +215,21 @@
 
     <string name="file_saved_to">Kartela u ruajt te \"%1$s\".</string>
 
+    <string name="videochat">Fjalosje me video</string>
+    <string name="videochat_invite_user_to_videochat">Të ftohet %1$s te një thirrje me video?</string>
+    <string name="videochat_invite_user_hint">Kjo lyp në të dy anët një aplikacion të përputhshëm ose një shfletues të përputhshëm</string>
+    <string name="videochat_contact_invited_hint">%1$s ftoi te një fjalosje me video.</string>
+    <string name="videochat_you_invited_hint">Ftuat te një fjalosje me video.</string>
+    <string name="videochat_will_open_in_your_browser">Kjo fjalosje me video do të hapet në shfletuesin tuaj.</string>
+    <string name="videochat_tap_to_join">Prekeni që të hyni</string>
+    <string name="videochat_tap_to_open">Prekeni që të hapet</string>
+    <string name="videochat_instance">Instancë fjalosjeje me video</string>
+    <string name="videochat_instance_placeholder">Instanca juaj e fjalosjes me video</string>
+    <string name="videochat_instance_explain">Nëse është përkufizuar një instancë fjalosjeje me video, mund të nisni një fjalosje me video prej secilës anë të fjalosjes tek-për-tek. Fjalosjet me video kanë të domosdoshëm në të dy skajet një aplikacion të përputhshëm ose një shfletues të përputhshëm.\n\nShembuj: https://meet.jit.si/$ROOM ose basicwebrtc:https://your-server</string>
+    <string name="videochat_instance_from_qr">Të përdoret \"%1$s\" për të ftuar të tjerë në fjalosje me video?\n\nPasi të ujdiset kjo, mund të filloni një fjalosje me video që prej një fjalosjeje tek-për-tek. Kështu do të zëvendësohet rregullimi i mëparshëm për fjalosje video, në pastë.</string>
+    <string name="videochat_invitation">Ftesë për fjalosje me video</string>
+    <string name="videochat_invitation_body">Jeni ftuar në një fjalosje video, klikoni mbi %1$s që të hyni në të.</string>
+
     <!-- get confirmations -->
     <string name="ask_leave_group">Jeni i sigurt se doni ta braktisni këtë grup?</string>
     <plurals name="ask_delete_chat">
@@ -219,6 +241,7 @@
         <item quantity="other">Të fshihen %d mesazhe këtu dhe te shërbyesi?</item>
     </plurals>
     <string name="ask_forward">Të përcillen mesazhet te %1$s?</string>
+    <string name="ask_forward_multiple">Të përcillen mesazhet te %1$d fjalosje?</string>
     <string name="ask_export_attachment">Të eksportohet bashkëngjitja? Eksportimi i bashkëngjitjeve do t\’i lejojë çfarëdo aplikacioni tjetër në pajisjen tuaj t\’i përdorë ato.\n\nTë vazhdohet?</string>
     <string name="ask_block_contact">Të bllokohet ky kontakt? S\’do të merrni më mesazhe prej këtij kontakti.</string>
     <string name="ask_unblock_contact">Të zhbllokohet ky kontakt? Do të jeni sërish në gjendje të merrni mesazhe prej këtij kontakti.</string>
@@ -332,6 +355,8 @@
     <string name="login_smtp_port">Portë SMTP</string>
     <string name="login_smtp_security">Siguri SMTP</string>
     <string name="login_auth_method">Metodë autorizimi</string>
+    <!-- Translators: %1$s will be replaced by an email address -->
+    <string name="login_oauth2_checking_addr">Po kontrollohet %1$s</string>
     <string name="login_info_oauth2_title">Të vazhdohet me rregullimin e thjeshtuar?</string>
     <string name="login_info_oauth2_text">Adresa email e dhënë mbulon një ujdisje të thjeshtuar (OAuth2).\n\nNë hapin pasues, ju lutemi, lejojeni Delta Chat-in të veprojë si aplikacioni juaj për Fjalosje Përmes Email-i.\n\nS\’ka shërbyes Delta Chat, të dhënat tuaja rrinë në pajisjen tuaj!</string>
     <string name="login_certificate_checks">Kontrolle dëshmish</string>
@@ -361,7 +386,9 @@
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
     <string name="forward_to">Përcilljani …</string>
-    <string name="share_multiple_attachments">Doni të dërgohen %1$d kartela te fjalosja e përzgjedhur?\n\nKartelat dërgohen të pandryshuara, në madhësinë e tyre origjinale, p.sh., figura dhe video nuk rikodohen.</string>
+    <string name="share_multiple_attachments">Të dërgohen %1$d kartela te fjalosja e përzgjedhur?\n\nKartelat dërgohen të pandryshuara, në madhësinë e tyre origjinale, p.sh., figurat dhe videot nuk rikodohen.</string>
+    <string name="share_multiple_attachments_multiple_chats">Doni të dërgohet %1$d kartelë(a) te 2 %2$d fjalosje?\n\nKartelat dërgohen të pandryshuara, në madhësinë e tyre origjinale, p.sh., figura dhe video nuk rikodohen.</string>
+    <string name="share_text_multiple_chats">Të dërgohet ky tekst te %1$d fjalosje?\n\n\"%2$s\"</string>
     <string name="share_abort">Ndarja me të tjerë dështoi ngaqë mungojnë leje.</string>
 
 
@@ -470,9 +497,11 @@
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="pref_reliable_service">Lidhje e qëndrueshme në prapaskenë</string>
     <string name="pref_reliable_service_explain">Lyp një njoftim permanent</string>
+    <string name="ephemeral_dialog_title">Fshiji mesazhet e lexuar</string>
 
 
     <!-- automatically delete message -->
+    <string name="delete_old_messages">Fshiji mesazhet e vjetër</string>
     <string name="autodel_title">Vetëfshi mesazhe</string>
     <string name="autodel_title_short">Vetëfshi</string>
     <string name="autodel_device_title">Fshini mesazhe prej pajisjes</string>
@@ -483,6 +512,8 @@
     <string name="autodel_server_ask">Doni të fshihen %1$d mesazhe tani dhe krejt mesazhet e prurë rishtazi \"%2$s\" në të ardhmen?\n\n• Kjo përfshin krejt mediat\n\n• Kjo do të fshijë gjithashtu email-e nën mundësinë \"Shfaq email-e klasikë\"\n\n• \"Mesazhet e ruajtur\" do të fshihen gjithashtu nga shërbyesi</string>
     <string name="autodel_confirm">E kuptoj, fshiji krejt këto mesazhe</string>
     <string name="autodel_at_once">Menjëherë</string>
+    <string name="after_30_seconds">Pas 30 sekondash</string>
+    <string name="after_1_minute">Pas 1 minute</string>
     <string name="autodel_after_1_hour">Pas 1 ore</string>
     <string name="autodel_after_1_day">Pas 1 dite</string>
     <string name="autodel_after_1_week">Pas 1 jave</string>
@@ -521,6 +552,17 @@
     <string name="systemmsg_action_by_me">%1$s nga unë.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s nga %2$s.</string>
+    <string name="systemmsg_unknown_sender_for_chat">Dërgues i panjohur për këtë fjalosje. Për më tepër hollësi, shihni \'info\'.</string>
+    <string name="systemmsg_subject_for_new_contact">Mesazh nga %1$s</string>
+    <string name="systemmsg_failed_sending_to">S’u arrit të dërgohej mesazh te %1$s.</string>
+
+    <string name="systemmsg_ephemeral_timer_disabled">Kohëmatësi për mesazhe që zhduken është i çaktivizuar.</string>
+    <string name="systemmsg_ephemeral_timer_enabled">Kohëmatësi i zhdukjes së mesazheve është vënë në %1$s s.</string>
+    <string name="systemmsg_ephemeral_timer_minute">Kohëmatësi për mesazhe që zhduken është vënë në 1 minutë.</string>
+    <string name="systemmsg_ephemeral_timer_hour">Kohëmatësi për mesazhe që zhduken është vënë në 1 orë.</string>
+    <string name="systemmsg_ephemeral_timer_day">Kohëmatësi për mesazhe që zhduken është vënë në 1 ditë.</string>
+    <string name="systemmsg_ephemeral_timer_week">Kohëmatësi për mesazhe që zhduken është vënë në 1 javë.</string>
+    <string name="systemmsg_ephemeral_timer_four_weeks">Kohëmatësi për mesazhe që zhduken është vënë në 4 javë.</string>
 
 
     <!-- screen lock -->
@@ -691,8 +733,10 @@
     <string name="InfoPlist_NSContactsUsageDescription">Lejimi i përdorimi të librit tuaj të adresave kamerës ju bën të mundur të bisedoni me kontakte prej pajisjes tuaj.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Lejimi i përdorimi të mikrofonit ju bën të mundur të bëni incizoni audio.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Lejimi i përdorimi të fototekës tuaj ju bën të mundur të ngarkoni figura prej saj.</string>
+    <string name="InfoPlist_NSPhotoLibraryAddUsageDescription">Delta Chat dëshiron të ruajë figura në fototekën tuaj.</string>
 
 
     <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+    <string name="update_1_10_android">Veçori të reja në Delta Chat 1.10, me një vështrim: më i shpejtë, llogari të shumëfishta, turbullim figurash, emotikone të rinj, njoftime të ripunuara, njoftim më i mirë të metash, por më e rëndësishmja:\n\nKlikoni mbi një avatar profili dhe zmadhojeni 🚀</string>
 
 </resources>

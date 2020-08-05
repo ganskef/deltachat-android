@@ -25,6 +25,7 @@
     <string name="archive">Архивирај ћаскање</string>
     <string name="unarchive">Деархивирај ћаскање</string>
     <string name="mute">Искључи обавештења</string>
+    <string name="ephemeral_messages">Нестајуће поруке</string>
     <string name="save">Сачувај</string>
     <string name="chat">Ћаскање</string>
     <string name="media">Медији</string>
@@ -327,8 +328,6 @@
     <string name="systemmsg_action_by_me">%1$s од мене.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s од стране %2$s.</string>
-
-
     <!-- screen lock -->
     <string name="screenlock_title">Закључавање екрана</string>
     <string name="screenlock_explain">Ограничите приступ Сигналу помоћу Андроид екрана за закључавање или отиском прста</string>
@@ -382,6 +381,4 @@
     <string name="name_desktop">Име</string>
     <string name="export_backup_desktop">Извези резервну копију</string>
     <string name="me_desktop">Ја</string>
-    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
-
-</resources>
+    </resources>

@@ -25,6 +25,7 @@
     <string name="archive">아카이브</string>
     <string name="unarchive">보관 취소</string>
     <string name="mute">알림 음소거</string>
+    <string name="ephemeral_messages">사라지는 메시지</string>
     <string name="save">저장</string>
     <string name="chat">잡담</string>
     <string name="media">매체</string>
@@ -248,6 +249,4 @@
     <string name="none_blocked_desktop">차단한 친구가 없습니다</string>
     <string name="me_desktop">나</string>
     <string name="message_detail_from_desktop">보낸 사람</string>
-    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
-
-</resources>
+    </resources>

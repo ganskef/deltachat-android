@@ -6,6 +6,7 @@
     <string name="cancel">Annuleren</string>
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
+    <string name="select">Selecteren</string>
     <string name="on">Aan</string>
     <string name="off">Uit</string>
     <string name="def">Standaard</string>
@@ -14,6 +15,8 @@
     <string name="automatic">Automatisch</string>
     <string name="strict">Strikt</string>
     <string name="open">Openen</string>
+    <string name="join">Deelnemen</string>
+    <string name="rejoin">Opnieuw deelnemen</string>
     <string name="delete">Verwijderen</string>
     <string name="info">Informatie</string>
     <string name="update">Bijwerken</string>
@@ -25,6 +28,8 @@
     <string name="archive">Archiveren</string>
     <string name="unarchive">De-archiveren</string>
     <string name="mute">Dempen</string>
+    <string name="ephemeral_messages">Verdwijnende berichten</string>
+    <string name="ephemeral_messages_hint">Deze instellingen zijn van toepassing op alle deelnemers die Delta Chat gebruiken. Ze kunnen echter wél berichten kopiëren, opslaan of doorsturen middels andere e-mailapps.</string>
     <string name="save">Opslaan</string>
     <string name="chat">Gesprek</string>
     <string name="media">Media</string>
@@ -104,7 +109,9 @@
     <string name="camera">Camera</string>
     <string name="location">Locatie</string>
     <string name="gallery">Galerij</string>
+    <string name="images_and_videos">Afbeeldingen en video\'s</string>
     <string name="file">Bestand</string>
+    <string name="files">Bestanden</string>
     <string name="unknown">Onbekend</string>
 
     <string name="green">Groen</string>
@@ -208,6 +215,21 @@
 
     <string name="file_saved_to">Het bestand is opgeslagen in \'%1$s\'.</string>
 
+    <string name="videochat">Videogesprek</string>
+    <string name="videochat_invite_user_to_videochat">Wil je %1$s uitnodigen voor een videogesprek?</string>
+    <string name="videochat_invite_user_hint">Hiervoor hebben jullie beiden een compatibele app of webbrowser nodig.</string>
+    <string name="videochat_contact_invited_hint">%1$s is uitgenodigd voor een videogesprek.</string>
+    <string name="videochat_you_invited_hint">Je bent uitgenodigd voor een videogesprek.</string>
+    <string name="videochat_will_open_in_your_browser">Het videogesprek wordt geopend in je webbrowser.</string>
+    <string name="videochat_tap_to_join">Druk om deel te nemen</string>
+    <string name="videochat_tap_to_open">Druk om te openen</string>
+    <string name="videochat_instance">Videogespreksinstantie</string>
+    <string name="videochat_instance_placeholder">Mijn videogespreksinstantie</string>
+    <string name="videochat_instance_explain">Als je een videogespreksinstantie opgeeft, kun je een videogesprek starten vanuit elk één-op-ééngesprek. Voor videogesprekken hebben zowel jij als je gesprekspartner een compatibele app of webbrowser nodig.\n\nVoorbeelden: https://meet.jit.si/$KAMER of basicwebrtc:https://mijn-server</string>
+    <string name="videochat_instance_from_qr">Wil je \"%1$s\" gebruiken om anderen uit te nodigen voor videogesprekken?\n\nNa het instellen kun je een videogesprek starten vanuit elk één-op-ééngesprek. Deze instelling vervangt de vorige videogespreksinstelling.</string>
+    <string name="videochat_invitation">Uitnodiging voor videogesprek</string>
+    <string name="videochat_invitation_body">Je bent uitgenodigd voor een videogesprek. Druk op %1$s om deel te nemen.</string>
+
     <!-- get confirmations -->
     <string name="ask_leave_group">Weet je zeker dat je deze groep wilt verlaten?</string>
     <plurals name="ask_delete_chat">
@@ -219,6 +241,7 @@
         <item quantity="other">Wil je %d berichten verwijderen, zowel hier als op de server?</item>
     </plurals>
     <string name="ask_forward">Wil je de berichten doorsturen aan %1$s?</string>
+    <string name="ask_forward_multiple">Wil je de berichten doorsturen naar %1$d gesprekken?</string>
     <string name="ask_export_attachment">Als je de bijlage exporteert, geef je andere apps op je apparaat toegang om hem uit te lezen.\n\nWil je doorgaan?</string>
     <string name="ask_block_contact">Wil je deze contactpersoon blokkeren? Hij/zij kan je geen berichten meer sturen.</string>
     <string name="ask_unblock_contact">Wil je deze contactpersoon deblokkeren? Hij/zij kan je wederom berichten sturen.</string>
@@ -332,6 +355,8 @@
     <string name="login_smtp_port">SMTP-poort</string>
     <string name="login_smtp_security">SMTP-beveiliging</string>
     <string name="login_auth_method">Autorisatiemethode</string>
+    <!-- Translators: %1$s will be replaced by an email address -->
+    <string name="login_oauth2_checking_addr">Bezig met controleren van %1$s</string>
     <string name="login_info_oauth2_title">Wil je doorgaan met vereenvoudigd instellen?</string>
     <string name="login_info_oauth2_text">Het ingevoerde e-mailadres ondersteunt vereenvoudigd instellen (OAuth2).\n\nTijdens de volgende stap moet je Delta Chat toestaan te fungeren als je e-mailapp.\n\nDelta Chat heeft geen eigen servers; jóuw gegevens blijven op jóuw apparaat!</string>
     <string name="login_certificate_checks">Certificaatcontrole</string>
@@ -362,6 +387,8 @@
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
     <string name="forward_to">Doorsturen naar...</string>
     <string name="share_multiple_attachments">Wil je %1$d bestanden delen in het gekozen gesprek?\n\nDe bestanden worden ongewijzigd verstuurd in oorspronkelijke grootte.</string>
+    <string name="share_multiple_attachments_multiple_chats">Wil je %1$d bestand(en) delen in %2$d gesprekken?\n\nDe bestanden worden ongewijzigd verstuurd in oorspronkelijke grootte.</string>
+    <string name="share_text_multiple_chats">Wil je deze tekst versturen naar %1$d gesprekken?\n\n\"%2$s\"</string>
     <string name="share_abort">Kan niet delen wegens ontbrekende machtigingen.</string>
 
 
@@ -471,9 +498,11 @@
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="pref_reliable_service">Betrouwbare achtergrondverbinding</string>
     <string name="pref_reliable_service_explain">Vereist een permanente melding</string>
+    <string name="ephemeral_dialog_title">Gelezen berichten verwijderen</string>
 
 
     <!-- automatically delete message -->
+    <string name="delete_old_messages">Oude berichten verwijderen</string>
     <string name="autodel_title">Berichten automatisch verwijderen</string>
     <string name="autodel_title_short">Automatisch verwijderen</string>
     <string name="autodel_device_title">Berichten verwijderen van apparaat</string>
@@ -484,6 +513,8 @@
     <string name="autodel_server_ask">Wil je nu %1$d berichten verwijderen en toekomstige berichten \'%2$s\'?\n\n• Dit omvat alle media\n\n• Berichten worden verwijderd, ongeacht of ze bekeken zijn\n\n• Het gesprek \'Opgeslagen berichten\' wordt eveneens verwijderd van de server</string>
     <string name="autodel_confirm">Ik begrijp het; verwijder alle berichten</string>
     <string name="autodel_at_once">Direct</string>
+    <string name="after_30_seconds">Na 30 seconden</string>
+    <string name="after_1_minute">Na 1 minuut</string>
     <string name="autodel_after_1_hour">Na 1 uur</string>
     <string name="autodel_after_1_day">Na 1 dag</string>
     <string name="autodel_after_1_week">Na 1 week</string>
@@ -522,6 +553,17 @@
     <string name="systemmsg_action_by_me">%1$s door mij.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s door %2$s.</string>
+    <string name="systemmsg_unknown_sender_for_chat">Onbekende afzender in dit gesprek. Zie \'Informatie\' voor meer informatie.</string>
+    <string name="systemmsg_subject_for_new_contact">Bericht van %1$s</string>
+    <string name="systemmsg_failed_sending_to">Het bericht kan niet worden verstuurd aan %1$s.</string>
+
+    <string name="systemmsg_ephemeral_timer_disabled">De tijdklok van verdwijnende berichten is uitgeschakeld.</string>
+    <string name="systemmsg_ephemeral_timer_enabled">De tijdklok van verdwijnende berichten is ingesteld op %1$s sec.</string>
+    <string name="systemmsg_ephemeral_timer_minute">De tijdklop van verdwijnende berichten is ingesteld op 1 minuut.</string>
+    <string name="systemmsg_ephemeral_timer_hour">De tijdklok van verdwijnende berichten is ingesteld op 1 uur.</string>
+    <string name="systemmsg_ephemeral_timer_day">De tijdklok van verdwijnende berichten is ingesteld op 1 dag.</string>
+    <string name="systemmsg_ephemeral_timer_week">De tijdklok van verdwijnende berichten is ingesteld op 1 week.</string>
+    <string name="systemmsg_ephemeral_timer_four_weeks">De tijdklok van verdwijnende berichten is ingesteld op 4 weken.</string>
 
 
     <!-- screen lock -->
@@ -692,8 +734,10 @@
     <string name="InfoPlist_NSContactsUsageDescription">Geef Delta Chat toegang tot je adresboek om gesprekken te voeren met contactpersonen. Delta Chat heeft geen servers, dus je contactpersonen worden niet opgestuurd.</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Geef Delta Chat toegang tot je microfoon om audio op te nemen voor spraakberichten en in video\'s.</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Geef Delta Chat toegang tot je foto\'s om afbeeldingen te versturen.</string>
+    <string name="InfoPlist_NSPhotoLibraryAddUsageDescription">Delta Chat wil afbeeldingen opslaan in je fotogalerij.</string>
 
 
     <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+    <string name="update_1_10_android">Een klein overzicht van de nieuwe Delta Chat 1.10-functies: sneller, meerdere accounts, afbeeldingen vervagen, nieuwe emoji\'s, verbeterde meldingen, verbeterde foutrapportage, en het allerbelangrijkste:\n\ndruk op een profielafbeelding om deze te vergroten 🚀</string>
 
 </resources>

@@ -9,14 +9,15 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
-
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
@@ -164,6 +165,18 @@ public class ApplicationDcContext extends DcContext {
     setStockTranslation(69, context.getString(R.string.saved_messages));
     setStockTranslation(70, context.getString(R.string.device_talk_explain));
     setStockTranslation(71, context.getString(R.string.device_talk_welcome_message));
+    setStockTranslation(72, context.getString(R.string.systemmsg_unknown_sender_for_chat));
+    setStockTranslation(73, context.getString(R.string.systemmsg_subject_for_new_contact));
+    setStockTranslation(74, context.getString(R.string.systemmsg_failed_sending_to));
+    setStockTranslation(75, context.getString(R.string.systemmsg_ephemeral_timer_disabled));
+    setStockTranslation(76, context.getString(R.string.systemmsg_ephemeral_timer_enabled));
+    setStockTranslation(77, context.getString(R.string.systemmsg_ephemeral_timer_minute));
+    setStockTranslation(78, context.getString(R.string.systemmsg_ephemeral_timer_hour));
+    setStockTranslation(79, context.getString(R.string.systemmsg_ephemeral_timer_day));
+    setStockTranslation(80, context.getString(R.string.systemmsg_ephemeral_timer_week));
+    setStockTranslation(81, context.getString(R.string.systemmsg_ephemeral_timer_four_weeks));
+    setStockTranslation(82, context.getString(R.string.videochat_invitation));
+    setStockTranslation(83, context.getString(R.string.videochat_invitation_body));
   }
 
   public File getImexDir() {
@@ -215,7 +228,7 @@ public class ApplicationDcContext extends DcContext {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, mimeType);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        activity.startActivity(intent);
+        startActivity((Activity) activity, intent);
       } else {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType(mimeType);
@@ -227,6 +240,17 @@ public class ApplicationDcContext extends DcContext {
       Toast.makeText(context, String.format("%s (%s)", context.getString(R.string.no_app_to_handle_data), mimeType), Toast.LENGTH_LONG).show();
       Log.i(TAG, "opening of external activity failed.", e);
     }
+  }
+
+  private void startActivity(Activity activity, Intent intent) {
+    // request for permission to install apks on API 26+ if intent mimetype is an apk
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+              "application/vnd.android.package-archive".equals(intent.getType()) &&
+              !activity.getPackageManager().canRequestPackageInstalls()) {
+            activity.startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData(Uri.parse(String.format("package:%s", activity.getPackageName()))));
+            return;
+      }
+      activity.startActivity(intent);
   }
 
   private String checkMime(String path, String mimeType) {
@@ -265,6 +289,11 @@ public class ApplicationDcContext extends DcContext {
     }
     return getBlobdirFile(filename, ext);
 
+  }
+
+  public boolean isWebrtcConfigOk() {
+    String instance = getConfig(DcHelper.CONFIG_WEBRTC_INSTANCE);
+    return (instance != null && !instance.isEmpty());
   }
 
   /***********************************************************************************************
@@ -340,6 +369,7 @@ public class ApplicationDcContext extends DcContext {
   private final Object lastErrorLock = new Object();
   private String lastErrorString = "";
   private boolean showNextErrorAsToast = true;
+  public boolean showNetworkErrors = true; // set to false if one network error was reported while having no internet
 
   public void captureNextError() {
     synchronized (lastErrorLock) {
@@ -366,7 +396,7 @@ public class ApplicationDcContext extends DcContext {
     }
   }
 
-  private void handleError(int event, boolean popUp, String string) {
+  private void handleError(int event, String string) {
     // log error
     boolean showAsToast;
     Log.e(TAG, string);
@@ -378,12 +408,16 @@ public class ApplicationDcContext extends DcContext {
 
     // show error to user
     Util.runOnMain(() -> {
-      if (popUp && showAsToast) {
-        String toastString = string;
+      if (showAsToast) {
+        String toastString = null;
 
         if (event == DC_EVENT_ERROR_NETWORK) {
-          if (!isNetworkConnected()) {
+          if (isNetworkConnected()) {
+            toastString = string;
+            showNetworkErrors = true;
+          } else if (showNetworkErrors) {
             toastString = context.getString(R.string.error_no_network);
+            showNetworkErrors = false;
           }
         }
         else if (event == DC_EVENT_ERROR_SELF_NOT_IN_GROUP) {
@@ -391,7 +425,7 @@ public class ApplicationDcContext extends DcContext {
         }
 
         ForegroundDetector foregroundDetector = ForegroundDetector.getInstance();
-        if (foregroundDetector==null || foregroundDetector.isForeground()) {
+        if (toastString != null && (foregroundDetector == null || foregroundDetector.isForeground())) {
           Toast.makeText(context, toastString, Toast.LENGTH_LONG).show();
         }
       }
@@ -410,15 +444,15 @@ public class ApplicationDcContext extends DcContext {
         break;
 
       case DC_EVENT_ERROR:
-        handleError(id, true, event.getData2Str());
+        handleError(id, event.getData2Str());
         break;
 
       case DC_EVENT_ERROR_NETWORK:
-        handleError(id, event.getData1Int() != 0, event.getData2Str());
+        handleError(id, event.getData2Str());
         break;
 
       case DC_EVENT_ERROR_SELF_NOT_IN_GROUP:
-        handleError(id, true, event.getData2Str());
+        handleError(id, event.getData2Str());
         break;
 
       case DC_EVENT_INCOMING_MSG:

@@ -13,6 +13,7 @@
     <string name="none">Nenhum</string>
     <string name="open">Abrir</string>
     <string name="delete">Apagar</string>
+    <string name="ephemeral_messages">Destruição de mensagens</string>
     <string name="not_now">Agora não</string>
     <string name="never">Nunca</string>
     <string name="one_moment">Um momento...</string>
@@ -359,8 +360,6 @@
     <string name="systemmsg_action_by_me">%1$s por mim.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s por %2$s.</string>
-
-
     <!-- screen lock -->
     <string name="screenlock_title">Bloqueio do ecrã</string>
     <string name="screenlock_authentication_failed">Falhou autenticação.</string>
@@ -485,6 +484,4 @@
     <string name="message_detail_to_desktop">para</string>
     <string name="menu.view.developer.open.log.folder">Abrir pasta de Log</string>
     <string name="menu.view.developer.open.current.log.file">Abrir o aqrquio do log actual</string>
-    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
-
-</resources>
+    </resources>

@@ -1,18 +1,46 @@
 # Delta Chat Android Changelog
 
-## v1.10.1
+## v1.12.1
+2020-07
+
+* show a device message when the password was changed on the server
+* videochats introduced as experimental feature
+* show experimental disappearing-messags state in chat's title bar
+* improve sending large messages
+* improve receiving messages
+* improve error handling when there is no network
+* use correct aspect ratio of background images
+* fix sending umcompressed images
+* fix emojis for android 4
+* more bug fixes
+
+
+## v1.10.5
+2020-07
+
+* forward and share to multiple contacts in one step
+* disappearing messages added as an experimental feature
+* fix profile image selection
+* fix blurring
+* improve message processing
+* improve overall stability
+
+
+## v1.10.4
 2020-06
 
-* bug fixes
+* add device message, summing up changes
+* update translations and help
 
 
-## v1.10.0
+## v1.10.3
 2020-06
 
 * with this version, Delta Chat enters a whole new level of speed,
   messages will be downloaded and sent way faster -
   technically, this was introduced by using so called "async-processing"
 * avatars can be enlarged
+* add simplified login for gsuite email addresses
 * new emoji selector - including new and diversified emojis
 * you can now "blur" areas in an image before sending
 * new default wallpaper
@@ -32,6 +60,7 @@
 * fix issues with database locking
 * fix importing addresses
 * lots of other fixes
+
 
 ## v1.8.1
 2020-05-14

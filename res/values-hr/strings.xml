@@ -24,6 +24,7 @@
     <string name="archive">Arhiviraj</string>
     <string name="unarchive">Dearhiviraj</string>
     <string name="mute">Prigušiti</string>
+    <string name="ephemeral_messages">Nestajuće poruke</string>
     <string name="save">Spremi</string>
     <string name="media">Medij</string>
     <string name="main_menu">Glavni izbornik</string>
@@ -240,8 +241,6 @@
     <string name="systemmsg_member_removed">Član %1$s uklonjen.</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%1$s od %2$s.</string>
-
-
     <!-- screen lock -->
     <string name="screenlock_title">Zaključavanje zaslona</string>
     <string name="screenlock_explain">Zaključi pristup Delta Chat-u putem zaključavanjem ekrana Androida ili otiska prsta.</string>
@@ -295,6 +294,4 @@
     <string name="message_detail_from_desktop">od</string>
     <string name="message_detail_to_desktop">za</string>
     <string name="a11y_remove_account_btn_label">Ukloni račun</string>
-    <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
-
-</resources>
+    </resources>

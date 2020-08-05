@@ -20,6 +20,7 @@ public class DcContext {
     public final static int DC_EVENT_MSG_FAILED                  = 2012;
     public final static int DC_EVENT_MSG_READ                    = 2015;
     public final static int DC_EVENT_CHAT_MODIFIED               = 2020;
+    public final static int DC_EVENT_CHAT_EPHEMERAL_TIMER_MODIFIED = 2021;
     public final static int DC_EVENT_CONTACTS_CHANGED            = 2030;
     public final static int DC_EVENT_LOCATION_CHANGED            = 2035;
     public final static int DC_EVENT_CONFIGURE_PROGRESS          = 2041;
@@ -48,6 +49,7 @@ public class DcContext {
     public final static int DC_QR_FPR_MISMATCH      = 220;
     public final static int DC_QR_FPR_WITHOUT_ADDR  = 230;
     public final static int DC_QR_ACCOUNT           = 250;
+    public final static int DC_QR_WEBRTC            = 260;
     public final static int DC_QR_ADDR              = 320;
     public final static int DC_QR_TEXT              = 330;
     public final static int DC_QR_URL               = 332;
@@ -150,6 +152,8 @@ public class DcContext {
     public native int[]        getChatMedia         (int chat_id, int type1, int type2, int type3);
     public native int          getNextMedia         (int msg_id, int dir, int type1, int type2, int type3);
     public native int[]        getChatContacts      (int chat_id);
+    public native int          getChatEphemeralTimer (int chat_id);
+    public native boolean      setChatEphemeralTimer (int chat_id, int timer);
     public native boolean      setChatMuteDuration  (int chat_id, long duration);
     public native void         deleteChat           (int chat_id);
     public @NonNull DcMsg      getMsg               (int msg_id) { return new DcMsg(getMsgCPtr(msg_id)); }
@@ -161,6 +165,7 @@ public class DcContext {
     public native int          prepareMsg           (int chat_id, DcMsg msg);
     public native int          sendMsg              (int chat_id, DcMsg msg);
     public native int          sendTextMsg          (int chat_id, String text);
+    public native int          sendVideochatInvitation(int chat_id);
     public native int          addDeviceMsg         (String label, DcMsg msg);
     public native boolean      wasDeviceMsgEverAdded(String label);
     public native void         updateDeviceChats    ();

@@ -6,6 +6,7 @@
     <string name="cancel">取消</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="select">选择</string>
     <string name="on">开</string>
     <string name="off">关</string>
     <string name="def">默认</string>
@@ -14,6 +15,8 @@
     <string name="automatic">自动</string>
     <string name="strict">严格</string>
     <string name="open">打开</string>
+    <string name="join">加入</string>
+    <string name="rejoin">重新加入</string>
     <string name="delete">删除</string>
     <string name="info">信息</string>
     <string name="update">更新</string>
@@ -25,6 +28,8 @@
     <string name="archive">归档</string>
     <string name="unarchive">解档</string>
     <string name="mute">静音</string>
+    <string name="ephemeral_messages">阅后即焚消息</string>
+    <string name="ephemeral_messages_hint">这些设置适用于所有使用 Delta Chat 的参与者。 但是，他们可能会复制、保存和转发消息或者使用其他的电子邮件客户端。</string>
     <string name="save">保存</string>
     <string name="chat">聊天</string>
     <string name="media">媒体</string>
@@ -98,7 +103,9 @@
     <string name="camera">相机</string>
     <string name="location">位置</string>
     <string name="gallery">图库</string>
+    <string name="images_and_videos">图像和视频</string>
     <string name="file">文件</string>
+    <string name="files">文件</string>
     <string name="unknown">未知</string>
 
     <string name="green">绿色</string>
@@ -202,6 +209,21 @@
 
     <string name="file_saved_to">文件已保存到 “%1$s”。</string>
 
+    <string name="videochat">视频聊天</string>
+    <string name="videochat_invite_user_to_videochat">邀请 %1$s 进行视频聊天？</string>
+    <string name="videochat_invite_user_hint">这需要两端都具有兼容的应用或兼容的浏览器。</string>
+    <string name="videochat_contact_invited_hint">%1$s 被邀请参加视频聊天。</string>
+    <string name="videochat_you_invited_hint">您被邀请参加视频聊天。</string>
+    <string name="videochat_will_open_in_your_browser">该视频聊天将在您的浏览器中打开。</string>
+    <string name="videochat_tap_to_join">点击来加入</string>
+    <string name="videochat_tap_to_open">点击来打开</string>
+    <string name="videochat_instance">视频聊天实例</string>
+    <string name="videochat_instance_placeholder">您的视频聊天实例</string>
+    <string name="videochat_instance_explain">定义了视频聊天实例之后，您可以从一对一聊天中启动视频聊天。视频聊天的两端都需要有兼容的应用或兼容的浏览器。\n\n示例: https://meet.jit.si/$ROOM 或 basicwebrtc:https://your-server</string>
+    <string name="videochat_instance_from_qr">使用“%1$s”邀请其他人加入视频聊天吗？\n\n设置好后，您可以从每个一对一聊天中开始视频聊天。 这会取代之前的视频聊天设置（如果有的话）。</string>
+    <string name="videochat_invitation">视频聊天邀请</string>
+    <string name="videochat_invitation_body">您被邀请参加视频聊天，点击 %1$s 来加入。</string>
+
     <!-- get confirmations -->
     <string name="ask_leave_group">您确定要离开此群组吗？</string>
     <plurals name="ask_delete_chat">
@@ -211,6 +233,7 @@
         <item quantity="other">在此处和服务器上删除 %d 条消息？</item>
     </plurals>
     <string name="ask_forward">将消息转发给 %1$s？</string>
+    <string name="ask_forward_multiple">转发消息到 %1$d 个聊天？</string>
     <string name="ask_export_attachment">导出附件？导出附件将允许您设备上的任意应用程序访问它们。\n\n继续？</string>
     <string name="ask_block_contact">屏蔽此联系人？您将不再收到此联系人的消息。</string>
     <string name="ask_unblock_contact">取消屏蔽此联系人？您将再次能收到此联系人的消息。</string>
@@ -321,6 +344,8 @@
     <string name="login_smtp_port">SMTP 端口</string>
     <string name="login_smtp_security">SMTP 安全类型</string>
     <string name="login_auth_method">认证方法</string>
+    <!-- Translators: %1$s will be replaced by an email address -->
+    <string name="login_oauth2_checking_addr">检查 %1$s 中</string>
     <string name="login_info_oauth2_title">使用简化设置继续？</string>
     <string name="login_info_oauth2_text">输入的电子邮件地址支持简化设置（OAuth 2.0）。\n\n在下一步中，请允许 Delta Chat 充当您的“通过电子邮件聊天”应用程序。\n\n不存在 Delta Chat 服务器，您的数据保留于您的设备！</string>
     <string name="login_certificate_checks">证书检查</string>
@@ -350,7 +375,9 @@
     <!-- share and forward messages -->
     <!-- Translators: Title shown above a chat/contact list; the user selects the recipient of the messages he wants to forward to -->
     <string name="forward_to">转发给…</string>
-    <string name="share_multiple_attachments">是否将 %1$d 个文件发送到所选聊天？\n\n文件将以未经修改的、保持原大小的方式发送，例如：图像和视频不会被重新编码。</string>
+    <string name="share_multiple_attachments">发送 %1$d 个文件到所选聊天？\n\n文件将以未经修改的、保持原大小的方式发送，例如：图像和视频不会被重新编码。</string>
+    <string name="share_multiple_attachments_multiple_chats">发送 %1$d 个文件到 %2$d 个聊天？\n\n文件将以未经修改的、保持原大小的方式发送，例如：图像和视频不会被重新编码。</string>
+    <string name="share_text_multiple_chats">发送这段文字到 %1$d 个聊天？\n\n\"%2$s“</string>
     <string name="share_abort">由于缺少权限，分享中止。</string>
 
 
@@ -460,9 +487,11 @@
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="pref_reliable_service">可靠后台连接</string>
     <string name="pref_reliable_service_explain">需要一个永久通知</string>
+    <string name="ephemeral_dialog_title">删除已读消息</string>
 
 
     <!-- automatically delete message -->
+    <string name="delete_old_messages">删除旧消息</string>
     <string name="autodel_title">自动删除消息</string>
     <string name="autodel_title_short">自动删除</string>
     <string name="autodel_device_title">从设备删除消息</string>
@@ -473,6 +502,8 @@
     <string name="autodel_server_ask">您要删除目前的 %1$d 条消息以及之后 %2$s 内新收到的消息吗？\n\n• 这包括所有媒体文件\n\n• 这也会删除被“显示传统电子邮件”选项影响的电子邮件\n\n• “保存的消息”也将从服务器中删除</string>
     <string name="autodel_confirm">我了解，将这些消息全部删除</string>
     <string name="autodel_at_once">立刻</string>
+    <string name="after_30_seconds">30 秒后</string>
+    <string name="after_1_minute">1 分钟后</string>
     <string name="autodel_after_1_hour">1 小时后</string>
     <string name="autodel_after_1_day">1 天后</string>
     <string name="autodel_after_1_week">1 周后</string>
@@ -511,6 +542,17 @@
     <string name="systemmsg_action_by_me">我 %1$s。</string>
     <!-- Translators: %1$s will be replaced by sth. as "member xy added" (trailing full-stop removed). %2$s will be replaced by the name/addr of the person who did this action. -->
     <string name="systemmsg_action_by_user">%2$s %1$s。</string>
+    <string name="systemmsg_unknown_sender_for_chat">此聊天发送者未知。查看“信息”来获取更多详情。</string>
+    <string name="systemmsg_subject_for_new_contact">来自 %1$s 的消息</string>
+    <string name="systemmsg_failed_sending_to">发送消息给 %1$s 失败。</string>
+
+    <string name="systemmsg_ephemeral_timer_disabled">已禁用阅后即焚消息定时器。</string>
+    <string name="systemmsg_ephemeral_timer_enabled">设置阅后即焚消息定时器为 %1$s 秒。</string>
+    <string name="systemmsg_ephemeral_timer_minute">设置阅后即焚消息定时器为 1 分钟。</string>
+    <string name="systemmsg_ephemeral_timer_hour">设置阅后即焚消息定时器为 1 小时。</string>
+    <string name="systemmsg_ephemeral_timer_day">设置阅后即焚消息定时器为 1 天。</string>
+    <string name="systemmsg_ephemeral_timer_week">设置阅后即焚消息定时器为 1 周。</string>
+    <string name="systemmsg_ephemeral_timer_four_weeks">设置阅后即焚消息定时器为 4 周。</string>
 
 
     <!-- screen lock -->
@@ -681,8 +723,10 @@
     <string name="InfoPlist_NSContactsUsageDescription">Delta Chat 使用您的联系人来显示您可以写信到的电子邮件地址列表。 Delta Chat 没有服务器，您的联系人不会被发送到任何地方。</string>
     <string name="InfoPlist_NSMicrophoneUsageDescription">Delta Chat 使用您的麦克风来录制、发送语音消息和带有声音的视频。</string>
     <string name="InfoPlist_NSPhotoLibraryUsageDescription">Delta Chat 将让您选择要从图库中发送哪些照片。</string>
+    <string name="InfoPlist_NSPhotoLibraryAddUsageDescription">Delta Chat 想将图像保存到您的图库。</string>
 
 
     <!-- android specific strings, developers: please take care to remove strings that are no longer used! -->
+    <string name="update_1_10_android">Delta Chat 1.10 新功能概览：更快、多帐户、对图像进行模糊、新表情、通知重做、更好的错误报告，以及最重要的：\n\n点击个人资料中的头像并放大🚀</string>
 
 </resources>

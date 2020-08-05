@@ -64,7 +64,7 @@ public class AccountManager {
 
     private @Nullable Account maybeGetAccount(File file) {
         try {
-            if (!file.isDirectory() && file.getName().endsWith(".db")) {
+            if (!file.isDirectory() && file.getName().startsWith("messenger") && file.getName().endsWith(".db")) {
                 DcContext testContext = new DcContext(null, file.getAbsolutePath());
                 if (testContext.isOk()) {
                     Account ret = new Account();
@@ -102,6 +102,7 @@ public class AccountManager {
         appContext.dcContext.stopIo();
         appContext.dcContext.unref();
         appContext.dcContext = new ApplicationDcContext(context);
+        appContext.dcContext.setStockTranslations();
     }
 
 
